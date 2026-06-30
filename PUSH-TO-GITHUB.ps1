@@ -38,7 +38,14 @@ if ($LASTEXITCODE -ne 0) {
 $repo = "hospital-bills"
 $owner = "Tevskrishna"
 
-if (-not (gh repo view "$owner/$repo" 2>$null)) {
+$repoExists = $false
+$prevEAP = $ErrorActionPreference
+$ErrorActionPreference = "SilentlyContinue"
+gh repo view "$owner/$repo" 2>$null | Out-Null
+if ($LASTEXITCODE -eq 0) { $repoExists = $true }
+$ErrorActionPreference = $prevEAP
+
+if (-not $repoExists) {
     Write-Host "`nCreating public repo $owner/$repo ..." -ForegroundColor Green
     gh repo create $repo --public --source=. --remote=origin --description "Mallareddy Hospital family bill tracker - Venkateswara Rao" --push
 } else {
