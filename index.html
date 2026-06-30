@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="description" content="Mallareddy Hospital bills — Venkateswara Rao family" />
+  <title>ఆసుపత్రి బిల్లులు | Hospital Bills</title>
+  <style>
+    :root {
+      --bg: #f0f4f8; --card: #fff; --navy: #0d1b2a; --blue: #1b4965;
+      --teal: #2a9d8f; --coral: #e76f51; --gold: #e9c46a;
+      --text: #334155; --muted: #64748b; --border: #e2e8f0; --ok: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Nirmala UI", "Gautami", system-ui, sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.55;
+      padding: 12px; max-width: 540px; margin: 0 auto; padding-bottom: 110px;
+    }
+    header {
+      background: linear-gradient(135deg, var(--navy), var(--blue));
+      color: #fff; padding: 20px 16px; border-radius: 16px; margin-bottom: 14px; text-align: center;
+    }
+    header h1 { font-size: 1.2rem; }
+    header .te { font-size: 1rem; opacity: 0.95; margin-top: 4px; }
+    header p { font-size: 0.78rem; opacity: 0.88; margin-top: 6px; }
+    .sync-bar {
+      font-size: 0.72rem; text-align: center; padding: 8px; border-radius: 8px;
+      margin-bottom: 12px; background: #e0f2fe; color: #0369a1;
+    }
+    .sync-bar.offline { background: #fef3c7; color: #92400e; }
+    .sync-bar.error { background: #fee2e2; color: #b91c1c; }
+    .explain {
+      background: #fff8e6; border: 1px solid #fcd34d; border-radius: 12px;
+      padding: 12px; font-size: 0.8rem; margin-bottom: 14px;
+    }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .card {
+      background: var(--card); border-radius: 14px; padding: 12px;
+      border: 1px solid var(--border); text-align: center;
+    }
+    .card.big { grid-column: 1 / -1; background: var(--navy); color: #fff; }
+    .card .te-label { font-size: 0.72rem; color: inherit; opacity: 0.9; }
+    .card .en-label { font-size: 0.62rem; text-transform: uppercase; opacity: 0.7; margin-top: 2px; }
+    .card .value { font-size: 1.3rem; font-weight: 800; margin-top: 6px; }
+    .card.big .value { font-size: 1.65rem; color: var(--gold); }
+    .card.teal { border-top: 4px solid var(--teal); }
+    .card.coral { border-top: 4px solid var(--coral); }
+    .card.blue { border-top: 4px solid var(--blue); }
+    section {
+      background: var(--card); border-radius: 14px; padding: 14px;
+      margin-bottom: 14px; border: 1px solid var(--border);
+    }
+    section h2 { font-size: 0.95rem; color: var(--navy); margin-bottom: 4px; }
+    section h2 span { display: block; font-size: 0.78rem; color: var(--muted); font-weight: normal; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th { text-align: left; color: var(--muted); padding: 6px 4px; border-bottom: 1px solid var(--border); }
+    td { padding: 7px 4px; border-bottom: 1px solid #f1f5f9; }
+    td.amt { text-align: right; font-weight: 700; }
+    tr.day-head td { background: #edf2f7; font-weight: 700; color: var(--navy); }
+    .tag { font-size: 0.62rem; padding: 2px 6px; border-radius: 4px; background: #e2e8f0; }
+    .tag.cash { background: #fef3c7; }
+    .tag.card { background: #dbeafe; }
+    .form-wrap {
+      border: none; width: 100%; min-height: 520px; border-radius: 10px;
+      background: #f8fafc;
+    }
+    .form-link {
+      display: block; text-align: center; padding: 14px; background: var(--teal);
+      color: #fff; text-decoration: none; border-radius: 12px; font-weight: 700; margin-top: 10px;
+    }
+    .verify { background: #fef2f2; border: 1px solid #fecaca; }
+    .verify li { margin: 8px 0 8px 18px; font-size: 0.82rem; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button, .form-link-btn {
+      flex: 1; min-width: 130px; padding: 14px 10px; border: none; border-radius: 12px;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center;
+    }
+    .btn-wa { background: #25d366; color: #fff; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-outline { background: #fff; color: var(--navy); border: 2px solid var(--border); }
+    .sticky-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
+      border-top: 1px solid var(--border); padding: 10px 12px;
+      display: flex; gap: 8px; justify-content: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+    .sticky-bar button { flex: 1; max-width: 260px; padding: 12px; }
+    .config-note {
+      font-size: 0.72rem; color: var(--muted); background: #f1f5f9;
+      padding: 10px; border-radius: 8px; margin-top: 8px;
+    }
+    @media print {
+      .sticky-bar, .no-print, #formSection .config-note { display: none !important; }
+      body { padding-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>మల్లారెడ్డి ఆసుపత్రి బిల్లులు</h1>
+  <div class="te">శ్రీ వెంకటేశ్వర రావు గారు</div>
+  <p>Mallareddy Hospital · Venkateswara Rao · 2026</p>
+  <p id="todayLabel" style="margin-top:8px;font-size:0.72rem"></p>
+</header>
+
+<div id="syncBar" class="sync-bar offline">ఆఫ్‌లైన్ డేటా / Offline data — Google sync pending setup</div>
+
+<div class="explain no-print">
+  <strong>మొత్తం ఖర్చు</strong> = hospital లో మనం చెల్లించిన అన్ని డబ్బు.<br>
+  <strong>వెంకీ / దీప / కల్యాణ్</strong> = ఎవరు wallet నుండి చెల్లించారో.<br>
+  <strong>శివాజీ → వెంకీ</strong> = బిల్లుల కోసం శివాజీ ఇచ్చిన డబ్బు.
+</div>
+
+<div class="cards" id="kpiCards"></div>
+
+<section>
+  <h2>రోజువారీ ఖర్చు <span>Day by day spend</span></h2>
+  <div id="dayTable"></div>
+</section>
+
+<section>
+  <h2>శివాజీ → వెంకీ <span>Shivaji gave Venky for bills</span></h2>
+  <table>
+    <thead><tr><th>తేదీ</th><th>మొత్తం</th></tr></thead>
+    <tbody id="advanceTable"></tbody>
+    <tfoot><tr><td><strong>మొత్తం</strong></td><td class="amt" id="advanceTotal"></td></tr></tfoot>
+  </table>
+</section>
+
+<section class="verify">
+  <h2>దయచేసి చూసి OK అని WhatsApp లో reply చేయండి <span>Please verify & reply OK</span></h2>
+  <ul id="verifyList"></ul>
+</section>
+
+<section id="formSection" class="no-print">
+  <h2>బిల్ చేర్చండి (దీప / కల్యాణ్ / కుటుంబం) <span>Add payment — family form</span></h2>
+  <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px">
+    ఇక్కడ form fill చేస్తే Venky sheet లో automatic గా చేరుతుంది (Google setup తర్వాత).
+  </p>
+  <div id="formContainer">
+    <p class="config-note" id="formPlaceholder">
+      Form appears after you paste <code>formEmbedUrl</code> in CONFIG below (see SETUP-COMBINED.md).
+    </p>
+  </div>
+  <a id="formOpenLink" class="form-link" href="#" target="_blank" style="display:none">
+    ఫారమ్ ఓపెన్ చేయండి / Open payment form
+  </a>
+</section>
+
+<div class="sticky-bar no-print">
+  <button class="btn-wa" onclick="copyWhatsApp()">WhatsApp కు Copy</button>
+  <button class="btn-primary" onclick="refreshData()">Refresh ↻</button>
+  <button class="btn-outline" onclick="window.print()">Print</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — Venky: paste your links after Google setup (once)
+   ═══════════════════════════════════════════════════════════ */
+const CONFIG = {
+  // From Google Apps Script → Deploy → Web app → Anyone → copy URL
+  apiUrl: "",
+
+  // From README sheet: Form URL + "?embedded=true"
+  formEmbedUrl: "",
+
+  // Optional: direct form link for "Open form" button (without ?embedded=true)
+  formShareUrl: "",
+};
+
+const STORAGE_KEY = "mallareddy_bills_v2";
+
+const DEFAULT_DATA = {
+  bills: [
+    { d: "2026-06-28", who: "Venky", amt: 50, mode: "", note: "" },
+    { d: "2026-06-28", who: "Venky", amt: 733, mode: "", note: "" },
+    { d: "2026-06-28", who: "Venky", amt: 300, mode: "", note: "" },
+    { d: "2026-06-29", who: "Venky", amt: 500, mode: "", note: "" },
+    { d: "2026-06-29", who: "Venky", amt: 68.16, mode: "", note: "" },
+    { d: "2026-06-29", who: "Venky", amt: 250, mode: "", note: "" },
+    { d: "2026-06-29", who: "Venky", amt: 888, mode: "", note: "" },
+    { d: "2026-06-29", who: "Venky", amt: 1300, mode: "", note: "" },
+    { d: "2026-06-30", who: "Venky", amt: 95, mode: "", note: "" },
+    { d: "2026-06-30", who: "Venky", amt: 888, mode: "", note: "" },
+    { d: "2026-06-30", who: "Venky", amt: 908.28, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 1100, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 110.66, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 550, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 22.86, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 500, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 58, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 800, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 1500, mode: "", note: "" },
+    { d: "2026-06-28", who: "Deepa", amt: 800, mode: "", note: "" },
+    { d: "2026-06-29", who: "Deepa", amt: 1051.85, mode: "", note: "" },
+    { d: "2026-06-29", who: "Deepa", amt: 990, mode: "", note: "" },
+    { d: "2026-06-29", who: "Deepa", amt: 500, mode: "", note: "" },
+    { d: "2026-06-29", who: "Deepa", amt: 2500, mode: "", note: "" },
+    { d: "2026-06-29", who: "Deepa", amt: 60, mode: "", note: "" },
+    { d: "2026-06-30", who: "Deepa", amt: 800, mode: "", note: "" },
+    { d: "2026-06-30", who: "Deepa", amt: 90.66, mode: "", note: "" },
+    { d: "2026-06-30", who: "Deepa", amt: 1334.54, mode: "", note: "" },
+    { d: "2026-06-30", who: "Deepa", amt: 1850, mode: "Cash", note: "Paid in cash" },
+    { d: "2026-06-30", who: "Kalyan", amt: 3600, mode: "Credit Card", note: "Credit card" },
+  ],
+  advances: [
+    { d: "2026-06-28", amt: 3009 },
+    { d: "2026-06-29", amt: 2000 },
+    { d: "2026-06-30", amt: 1000 },
+    { d: "2026-06-30", amt: 1000 },
+    { d: "2026-06-30", amt: 500 },
+  ],
+};
+
+let data = loadLocal();
+let syncSource = "offline";
+
+function loadLocal() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) return JSON.parse(s);
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveLocal() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function fmt(n) {
+  return "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtDate(iso) {
+  const [y, m, d] = iso.split("-");
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const teMonths = ["జన","ఫిబ్ర","మార్చి","ఏప్రి","మే","జూన్","జులై","ఆగ","సెప్టె","అక్టో","నవ","డిసె"];
+  return `${d} ${teMonths[+m-1]} / ${d}-${months[+m-1]}-${y}`;
+}
+
+function sumWho(who) {
+  return data.bills.filter(b => b.who === who).reduce((s, b) => s + b.amt, 0);
+}
+
+function totalBills() { return data.bills.reduce((s, b) => s + b.amt, 0); }
+function totalAdvances() { return data.advances.reduce((s, a) => s + a.amt, 0); }
+
+function setSyncBar(state, msg) {
+  const el = document.getElementById("syncBar");
+  el.className = "sync-bar " + state;
+  el.textContent = msg;
+}
+
+function render() {
+  const total = totalBills();
+  const venky = sumWho("Venky");
+  const deepa = sumWho("Deepa");
+  const kalyan = sumWho("Kalyan");
+  const adv = totalAdvances();
+  const balance = adv - venky;
+
+  document.getElementById("todayLabel").textContent =
+    new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short", year: "numeric" });
+
+  document.getElementById("kpiCards").innerHTML = `
+    <div class="card big">
+      <div class="te-label">మొత్తం ఖర్చు</div>
+      <div class="en-label">Total hospital spend</div>
+      <div class="value">${fmt(total)}</div>
+    </div>
+    <div class="card teal">
+      <div class="te-label">వెంకీ</div>
+      <div class="en-label">Venky paid</div>
+      <div class="value">${fmt(venky)}</div>
+    </div>
+    <div class="card coral">
+      <div class="te-label">దీప (రజినీ)</div>
+      <div class="en-label">Deepa paid</div>
+      <div class="value">${fmt(deepa)}</div>
+    </div>
+    <div class="card blue">
+      <div class="te-label">కల్యాణ్</div>
+      <div class="en-label">Kalyan paid</div>
+      <div class="value">${fmt(kalyan)}</div>
+    </div>
+    <div class="card" style="grid-column:1/-1;border-top:4px solid var(--gold)">
+      <div class="te-label">శివాజీ → వెంకీ · బ్యాలెన్స్</div>
+      <div class="en-label">Shivaji advances · Venky balance</div>
+      <div class="value" style="font-size:1rem">${fmt(adv)} · <span style="color:${balance>=0?"var(--ok)":"var(--coral)"}">${fmt(balance)}</span></div>
+    </div>
+  `;
+
+  const byDate = {};
+  data.bills.forEach(b => { (byDate[b.d] = byDate[b.d] || []).push(b); });
+  let html = "<table><thead><tr><th>వ్యక్తి</th><th>విధం</th><th>మొత్తం</th></tr></thead><tbody>";
+  Object.keys(byDate).sort().forEach(d => {
+    const dayTotal = byDate[d].reduce((s, b) => s + b.amt, 0);
+    html += `<tr class="day-head"><td colspan="2">${fmtDate(d)}</td><td class="amt">${fmt(dayTotal)}</td></tr>`;
+    byDate[d].forEach(b => {
+      const tag = b.mode ? `<span class="tag ${b.mode==="Cash"?"cash":b.mode.includes("Card")?"card":""}">${b.mode}</span>` : "";
+      html += `<tr><td>${b.who}</td><td>${tag} ${b.note||""}</td><td class="amt">${fmt(b.amt)}</td></tr>`;
+    });
+  });
+  html += "</tbody></table>";
+  document.getElementById("dayTable").innerHTML = html;
+
+  document.getElementById("advanceTable").innerHTML = data.advances
+    .map(a => `<tr><td>${fmtDate(a.d)}</td><td class="amt">${fmt(a.amt)}</td></tr>`).join("");
+  document.getElementById("advanceTotal").textContent = fmt(adv);
+
+  document.getElementById("verifyList").innerHTML = `
+    <li><strong>వెంకీ:</strong> ${fmt(venky)} చెల్లించారు · శివాజీ ${fmt(adv)} ఇచ్చారు</li>
+    <li><strong>దీప:</strong> ${fmt(deepa)} (₹1,850 నగదు — 30-Jun)</li>
+    <li><strong>కల్యాణ్:</strong> ${fmt(kalyan)} (క్రెడిట్ కార్డ్ — 30-Jun)</li>
+    <li><strong>మొత్తం:</strong> ${fmt(total)} — సరైతే <strong>OK</strong> అని reply చేయండి</li>
+  `;
+}
+
+function copyWhatsApp() {
+  const total = totalBills();
+  const venky = sumWho("Venky");
+  const deepa = sumWho("Deepa");
+  const kalyan = sumWho("Kalyan");
+  const adv = totalAdvances();
+  const balance = adv - venky;
+  const pageUrl = location.href.startsWith("http") ? location.href.split("?")[0] : "https://tevskrishna.github.io/hospital-bills/";
+  const formLine = CONFIG.formShareUrl ? `\n➕ చెల్లింపు జోడించండి / Add payment:\n${CONFIG.formShareUrl}` : "";
+
+  const text = `🏥 *మల్లారెడ్డి ఆసుపత్రి బిల్లులు*
+*Mallareddy Hospital — Venkateswara Rao*
+📅 ${new Date().toLocaleDateString("en-IN")}
+
+*మొత్తం ఖర్చు / TOTAL:* ${fmt(total)}
+
+వెంకీ Venky: ${fmt(venky)}
+దీప Deepa: ${fmt(deepa)}
+కల్యాణ్ Kalyan: ${fmt(kalyan)}
+
+శివాజీ → వెంకీ: ${fmt(adv)}
+వెంకీ బ్యాలెన్స్: ${fmt(balance)}
+
+దయచేసి చూసి *OK* అని reply చేయండి
+Please verify & reply *OK*
+
+📎 Live page: ${pageUrl}${formLine}
+— Venky`;
+
+  navigator.clipboard.writeText(text).then(() => alert("Copied! WhatsApp లో paste చేయండి."))
+    .catch(() => prompt("Copy this:", text));
+}
+
+async function refreshData() {
+  if (!CONFIG.apiUrl) {
+    setSyncBar("offline", "Google API URL లేదు — offline data చూపిస్తున్నాం. SETUP-COMBINED.md చూడండి.");
+    render();
+    return;
+  }
+  setSyncBar("", "లోడ్ అవుతోంది... Loading from Google...");
+  try {
+    const res = await fetch(CONFIG.apiUrl);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const json = await res.json();
+    if (json.bills && json.bills.length) {
+      data.bills = json.bills;
+      data.advances = json.advances || [];
+      saveLocal();
+      syncSource = "google";
+      const when = json.updated ? new Date(json.updated).toLocaleString("en-IN") : "now";
+      setSyncBar("", `✓ Google నుండి sync — ${when}`);
+    }
+  } catch (e) {
+    setSyncBar("error", "Google sync fail — offline cache చూపిస్తున్నాం. " + e.message);
+  }
+  render();
+}
+
+function setupForm() {
+  const embed = CONFIG.formEmbedUrl;
+  const share = CONFIG.formShareUrl || (embed ? embed.replace("?embedded=true", "") : "");
+  const container = document.getElementById("formContainer");
+  const openLink = document.getElementById("formOpenLink");
+
+  if (embed) {
+    container.innerHTML = `<iframe class="form-wrap" src="${embed}" frameborder="0" allowfullscreen></iframe>`;
+    openLink.style.display = "block";
+    openLink.href = share;
+  } else if (share) {
+    container.innerHTML = "";
+    openLink.style.display = "block";
+    openLink.href = share;
+  }
+}
+
+setupForm();
+refreshData();
+</script>
+</body>
+</html>

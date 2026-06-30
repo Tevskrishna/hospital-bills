@@ -1,0 +1,9 @@
+{
+  "name": "hospital-bills",
+  "version": "1.0.0",
+  "description": "Mallareddy Hospital family bill tracker",
+  "private": false,
+  "scripts": {
+    "start": "python -m http.server 8080"
+  }
+}
