@@ -150,6 +150,41 @@
     .shivaji-card .row { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.85rem; }
     .shivaji-card .big { font-size: 1.1rem; font-weight: 800; color: var(--gold-light); }
 
+    /* ── Fair share split ── */
+    .split-section {
+      background: linear-gradient(180deg, #fff, #f8fafc);
+      border: 2px solid #e2e8f0;
+    }
+    .split-intro {
+      font-size: 0.78rem; color: var(--muted); margin: 8px 0 14px;
+      padding: 10px; background: #f0f9ff; border-radius: 10px; border: 1px solid #bae6fd;
+    }
+    .split-card {
+      border-radius: 14px; padding: 14px; margin-bottom: 10px;
+      background: #fff; border: 1px solid var(--border);
+      border-left: 5px solid var(--c);
+    }
+    .split-card:last-child { margin-bottom: 0; }
+    .split-card .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .split-card .name { font-weight: 800; font-size: 0.9rem; color: var(--bg); }
+    .split-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center;
+    }
+    .split-grid .cell { padding: 8px 4px; background: #f8fafc; border-radius: 8px; }
+    .split-grid .lbl { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+    .split-grid .val { font-size: 0.82rem; font-weight: 800; margin-top: 4px; color: var(--bg); }
+    .split-grid .val.owe { color: #dc2626; }
+    .split-grid .val.credit { color: #16a34a; }
+    .split-grid .val.done { color: #16a34a; }
+    .fulfill-bar { height: 8px; background: #e2e8f0; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+    .fulfill-fill { height: 100%; border-radius: 4px; background: var(--c); }
+    .fulfill-label { font-size: 0.65rem; color: var(--muted); margin-top: 4px; text-align: center; }
+    .split-total {
+      margin-top: 14px; padding: 12px; background: var(--bg); color: #fff;
+      border-radius: 12px; font-size: 0.8rem; text-align: center;
+    }
+    .split-total strong { color: var(--gold-light); font-size: 1rem; }
+
     /* ── Sections ── */
     section {
       background: var(--card);
@@ -278,6 +313,16 @@
 
   <div class="shivaji-card" id="shivajiCard"></div>
 
+  <section class="split-section">
+    <h2>మీ వాటా ఎంత మిగిలింది? <span>Fair share split — what each son still owes till date</span></h2>
+    <div class="split-intro">
+      మొత్తం ఖర్చును <strong>3 కుమారులకు సమానంగా</strong> విభజించాం (prathi kumarudu 1/3).
+      <strong>మిగిలిన మొత్తం</strong> = మీ వాటా minus మీరు చెల్లించినది.
+    </div>
+    <div id="splitCards"></div>
+    <div class="split-total" id="splitTotal"></div>
+  </section>
+
   <section>
     <h2>రోజువారీ ఖర్చు <span>Day by day — from hospital group screenshots</span></h2>
     <div id="dayTable"></div>
@@ -339,7 +384,7 @@
 </div>
 
 <script>
-const PAGE_VERSION = "2026-07-01-v4";
+const PAGE_VERSION = "2026-07-01-v5";
 const SONS = [
   { branch: "Shivaji", payer: "Venky", te: "శివాజీ", color: "#3d9b8f", icon: "🙏" },
   { branch: "Rajini", payer: "Deepa", te: "రజినీ · దీప", color: "#c97b63", icon: "💛" },
@@ -373,6 +418,19 @@ function fmtDate(iso) {
 function sumWho(w) { return data.bills.filter(b => b.who === w).reduce((s, b) => s + b.amt, 0); }
 function totalBills() { return data.bills.reduce((s, b) => s + b.amt, 0); }
 function totalAdv() { return data.advances.reduce((s, a) => s + a.amt, 0); }
+
+function totalAdv() { return data.advances.reduce((s, a) => s + a.amt, 0); }
+
+function computeSplit(total) {
+  const fair = total / 3;
+  const paid = { Venky: sumWho("Venky"), Deepa: sumWho("Deepa"), Kalyan: sumWho("Kalyan") };
+  return SONS.map(s => {
+    const p = paid[s.payer];
+    const remaining = fair - p;
+    const fulfillPct = fair > 0 ? Math.min(100, Math.round(p / fair * 100)) : 0;
+    return { ...s, fair, paid: p, remaining, fulfillPct };
+  });
+}
 
 function render() {
   const total = totalBills();
@@ -427,6 +485,38 @@ function render() {
     <div class="row"><span>Venky paid at hospital</span><span>${fmt(venky)}</span></div>
     <div class="row"><span>Balance with Venky</span><span class="big" style="color:${adv-venky>=0?'#86efac':'#fca5a5'}">${fmt(adv - venky)}</span></div>`;
 
+  const splits = computeSplit(total);
+  document.getElementById("splitCards").innerHTML = splits.map(s => {
+    const owe = s.remaining > 0.01;
+    const credit = s.remaining < -0.01;
+    const remLabel = owe ? "మిగిలింది" : credit ? "ఎక్కువ చెల్లించారు" : "పూర్తి";
+    const remClass = owe ? "owe" : credit ? "credit" : "done";
+    const remText = owe ? fmt(s.remaining) : credit ? fmt(Math.abs(s.remaining)) : "✓ Done";
+    const extra = s.payer === "Venky" ? `<div style="font-size:0.68rem;color:var(--muted);margin-top:8px">శివాజీ advance: ${fmt(adv)} · Venky balance: ${fmt(adv - venky)}</div>` : "";
+    return `
+      <div class="split-card" style="--c:${s.color}">
+        <div class="head">
+          <div class="name">${s.te} · ${s.branch}</div>
+          <div style="font-size:0.72rem;color:var(--muted)">Paid by ${s.payer}</div>
+        </div>
+        <div class="split-grid">
+          <div class="cell"><div class="lbl">మీ వాటా 1/3</div><div class="val">${fmt(s.fair)}</div></div>
+          <div class="cell"><div class="lbl">చెల్లించారు</div><div class="val">${fmt(s.paid)}</div></div>
+          <div class="cell"><div class="lbl">${remLabel}</div><div class="val ${remClass}">${remText}</div></div>
+        </div>
+        <div class="fulfill-bar"><div class="fulfill-fill" style="width:${s.fulfillPct}%;background:${s.color}"></div></div>
+        <div class="fulfill-label">${s.fulfillPct}% of fair share fulfilled</div>
+        ${extra}
+      </div>`;
+  }).join("");
+
+  const totalOwe = splits.filter(s => s.remaining > 0.01).reduce((a, s) => a + s.remaining, 0);
+  const totalCredit = splits.filter(s => s.remaining < -0.01).reduce((a, s) => a + Math.abs(s.remaining), 0);
+  document.getElementById("splitTotal").innerHTML =
+    totalOwe > 0.01
+      ? `మొత్తం ఇంకా చెల్లించాల్సినది: <strong>${fmt(totalOwe)}</strong> (across sons who owe)`
+      : `వాటా పూర్తి · All fair shares met`;
+
   const byDate = {};
   data.bills.forEach(b => { (byDate[b.d] = byDate[b.d] || []).push(b); });
   let html = "<table><thead><tr><th>వ్యక్తి</th><th>విధం</th><th>మొత్తం</th></tr></thead><tbody>";
@@ -442,28 +532,36 @@ function render() {
   document.getElementById("dayTable").innerHTML = html;
 
   document.getElementById("verifyList").innerHTML = `
-    <li><strong>వెంకీ (శివాజీ):</strong> ${fmt(venky)} — శివాజీ ఇచ్చినది ${fmt(adv)}</li>
-    <li><strong>దీప (రజినీ):</strong> ${fmt(deepa)}</li>
-    <li><strong>కల్యాణ్:</strong> ${fmt(kalyan)}</li>
+    <li><strong>వెంకీ (శివాజీ):</strong> ${fmt(venky)} paid · వాటా ${fmt(total/3)} · మిగిలింది ${fmt(Math.max(0, total/3 - venky))}</li>
+    <li><strong>దీప (రజినీ):</strong> ${fmt(deepa)} paid · ${deepa > total/3 ? "ఎక్కువ చెల్లించారు " + fmt(deepa - total/3) : "మిగిలింది " + fmt(total/3 - deepa)}</li>
+    <li><strong>కల్యాణ్:</strong> ${fmt(kalyan)} paid · మిగిలింది ${fmt(Math.max(0, total/3 - kalyan))}</li>
     <li><strong>మొత్తం:</strong> ${fmt(total)} — సరైతే <strong>OK</strong> అని WhatsApp లో reply చేయండి</li>`;
 }
 
 function copyWhatsApp() {
   const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), a = totalAdv();
+  const fair = t / 3;
   const url = "https://tevskrishna.github.io/hospital-bills/";
   const text = `🏥 *మల్లారెడ్డి ఆసుపత్రి — వెంకటేశ్వర రావు గారు*
-మూడు కుమారులు · Three sons united
+మూడు కుమారులు · Fair share = ${fmt(fair)} each (1/3)
 
 📅 ${new Date().toLocaleDateString("en-IN")}
 *మొత్తం:* ${fmt(t)}
 
+*చెల్లించారు / Paid:*
 వెంకీ (శివాజీ): ${fmt(v)}
 దీప (రజినీ): ${fmt(d)}
 కల్యాణ్: ${fmt(k)}
-శివాజీ→వెంకీ: ${fmt(a)}
+
+*మిగిలింది / Still to pay (fair share):*
+వెంకీ: ${fmt(Math.max(0, fair - v))}
+దీప: ${d >= fair ? "✓ Extra " + fmt(d - fair) : fmt(fair - d)}
+కల్యాణ్: ${fmt(Math.max(0, fair - k))}
+
+శివాజీ→వెంకీ advance: ${fmt(a)}
 
 📎 ${url}
-దయచేసి మీ మొత్తం చూసి *OK* అని reply చేయండి
+దయచేసి చూసి *OK* అని reply చేయండి
 — Venky`;
   navigator.clipboard.writeText(text).then(() => alert("Copied! WhatsApp లో paste చేయండి."))
     .catch(() => prompt("Copy:", text));
@@ -479,7 +577,12 @@ function downloadHistory() {
   const sorted = [...data.bills].sort((a, b) => a.d.localeCompare(b.d));
   let csv = `Mallareddy Hospital - ${meta.patient}\nPeriod,${start} to ${today}\n\nDate,Paid By,Amount,Mode,Notes\n`;
   sorted.forEach(b => { csv += [b.d, b.who, b.amt, csvEsc(b.mode), csvEsc(b.note)].join(",") + "\n"; });
-  csv += `\nTOTAL,${totalBills()}\n\nShivaji advances\nDate,Amount\n`;
+  csv += `\nTOTAL,${totalBills()}\n\nFAIR SHARE SPLIT (equal 1/3 each)\nSon,Fair Share,Paid,Remaining\n`;
+  const fair = totalBills() / 3;
+  [["Shivaji/Venky", sumWho("Venky")], ["Rajini/Deepa", sumWho("Deepa")], ["Kalyan", sumWho("Kalyan")]].forEach(([name, p]) => {
+    csv += `${name},${fair.toFixed(2)},${p.toFixed(2)},${(fair - p).toFixed(2)}\n`;
+  });
+  csv += `\nShivaji advances\nDate,Amount\n`;
   data.advances.forEach(a => { csv += `${a.d},${a.amt}\n`; });
   const blob = new Blob([csv], { type: "text/csv" });
   const el = document.createElement("a");
