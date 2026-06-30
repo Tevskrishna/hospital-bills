@@ -4,393 +4,462 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <title>మల్లారెడ్డి ఆసుపత్రి బిల్లులు | Venkateswara Rao Family</title>
+  <title>Hospital Bills · Venkateswara Rao Family</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a1628;
-      --bg2: #12243a;
+      --bg: #070b14;
+      --surface: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.12);
       --card: #ffffff;
-      --gold: #d4a853;
-      --gold-light: #f0dfa0;
-      --teal: #3d9b8f;
-      --rose: #c97b63;
-      --navy: #1e3a5f;
-      --sky: #7eb8da;
-      --text: #1e293b;
+      --card-soft: #f8fafc;
+      --gold: #e8c468;
+      --gold-dim: rgba(232,196,104,0.15);
+      --teal: #2dd4bf;
+      --teal-dim: #0d9488;
+      --rose: #fb7185;
+      --rose-dim: #e11d48;
+      --blue: #60a5fa;
+      --blue-dim: #1d4ed8;
+      --text: #0f172a;
       --muted: #64748b;
-      --border: #e2e8f0;
+      --radius: 20px;
+      --font: "Inter", "Noto Sans Telugu", system-ui, sans-serif;
+      --display: "Outfit", "Noto Sans Telugu", sans-serif;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: "Segoe UI", "Nirmala UI", "Gautami", system-ui, sans-serif;
-      background: linear-gradient(180deg, var(--bg) 0%, #0f2847 40%, #e8eef4 40%, #e8eef4 100%);
+      font-family: var(--font);
+      background: var(--bg);
       color: var(--text);
-      line-height: 1.55;
-      min-height: 100vh;
-      padding-bottom: 88px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 96px;
     }
-    .wrap { max-width: 520px; margin: 0 auto; padding: 0 14px 20px; }
 
-    /* ── Hero ── */
+    /* Ambient background */
+    .ambient {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(80px);
+      animation: float 12s ease-in-out infinite;
+    }
+    .orb-1 { width: 400px; height: 400px; background: #1e3a5f; top: -100px; left: -100px; }
+    .orb-2 { width: 350px; height: 350px; background: #0f766e; top: 20%; right: -120px; animation-delay: -4s; }
+    .orb-3 { width: 300px; height: 300px; background: #7c2d12; bottom: 10%; left: 20%; animation-delay: -8s; opacity: 0.5; }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -30px) scale(1.05); }
+    }
+
+    /* Hero */
     .hero {
-      text-align: center;
-      padding: 28px 16px 24px;
-      color: #fff;
+      position: relative; z-index: 1;
+      padding: 48px 24px 56px;
+      text-align: center; color: #fff;
+      max-width: 900px; margin: 0 auto;
     }
-    .hero-badge {
-      display: inline-block;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      border: 1px solid rgba(212,168,83,0.4);
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 12px;
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 999px;
+      background: var(--glass); border: 1px solid var(--glass-border);
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold);
+      animation: fadeDown 0.8s ease both;
     }
-    .hero h1 { font-size: 1.05rem; font-weight: 600; opacity: 0.9; }
-    .hero .father {
-      font-size: 1.45rem;
-      font-weight: 800;
-      margin: 8px 0;
-      background: linear-gradient(90deg, var(--gold-light), var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .pill::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 8px var(--teal);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .hero h1 {
+      font-family: var(--display); font-size: clamp(1.1rem, 3vw, 1.35rem);
+      font-weight: 600; margin-top: 20px; opacity: 0.85;
+      animation: fadeDown 0.8s 0.1s ease both;
+    }
+    .hero .father-name {
+      font-family: var(--display);
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 800; margin: 12px 0;
+      background: linear-gradient(135deg, #fff 0%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: fadeDown 0.8s 0.2s ease both;
     }
-    .hero .sub { font-size: 0.78rem; opacity: 0.75; }
-    .hero .date { font-size: 0.7rem; opacity: 0.55; margin-top: 10px; }
+    .hero .meta { font-size: 0.8rem; opacity: 0.55; animation: fadeDown 0.8s 0.3s ease both; }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
 
-    /* ── Family tree visual ── */
-    .family-visual {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 20px 12px;
-      margin: 0 0 20px;
+    /* Main layout */
+    .main {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 16px 40px;
     }
-    .fv-father {
-      width: 72px; height: 72px;
-      margin: 0 auto 8px;
+    .content-light {
+      background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+      border-radius: 32px 32px 0 0;
+      margin-top: -28px;
+      padding: 32px 16px 24px;
+      min-height: 60vh;
+    }
+    @media (min-width: 768px) {
+      .content-light { padding: 40px 32px 32px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Family hub */
+    .family-hub {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 24px rgba(15,23,42,0.08);
+    }
+    .father-node {
+      text-align: center; margin-bottom: 24px;
+    }
+    .father-avatar {
+      width: 88px; height: 88px; margin: 0 auto 12px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #b8862a);
+      background: linear-gradient(145deg, var(--gold), #b45309);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 0 24px rgba(212,168,83,0.35);
+      font-size: 2.5rem;
+      box-shadow: 0 0 0 4px #fff, 0 0 40px rgba(232,196,104,0.35);
+      animation: glow 3s ease-in-out infinite;
     }
-    .fv-father-label { color: #fff; font-size: 0.72rem; font-weight: 700; text-align: center; margin-bottom: 16px; }
-    .fv-line {
-      width: 2px; height: 20px; background: rgba(255,255,255,0.2);
-      margin: 0 auto;
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 0 4px #fff, 0 0 30px rgba(232,196,104,0.3); }
+      50% { box-shadow: 0 0 0 4px #fff, 0 0 50px rgba(232,196,104,0.5); }
     }
-    .fv-sons {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-top: 4px;
+    .father-node h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 700; }
+    .father-node p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .connector {
+      width: 2px; height: 24px; margin: 0 auto 16px;
+      background: linear-gradient(180deg, var(--gold), transparent);
     }
-    .fv-son {
-      text-align: center;
-      padding: 10px 4px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.08);
-      border-top: 3px solid var(--son-color, #fff);
+    .sons-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
     }
-    .fv-son .icon { font-size: 1.3rem; }
-    .fv-son .name { color: #fff; font-size: 0.68rem; font-weight: 700; margin-top: 4px; }
-    .fv-son .payer { color: rgba(255,255,255,0.6); font-size: 0.6rem; }
-    .fv-son .amt { color: var(--gold-light); font-size: 0.75rem; font-weight: 800; margin-top: 4px; }
-
-    /* ── Total banner ── */
-    .total-banner {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 14px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    }
-    .total-banner .label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
-    .total-banner .amount {
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--bg);
-      margin: 6px 0;
-    }
-    .total-banner .note { font-size: 0.75rem; color: var(--muted); }
-
-    /* ── Son cards with progress ── */
-    .son-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-    .son-card {
-      background: var(--card);
+    @media (min-width: 768px) { .sons-row { gap: 16px; } }
+    .son-pill {
+      text-align: center; padding: 16px 8px;
       border-radius: 16px;
-      padding: 14px 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      border-left: 5px solid var(--c);
+      background: var(--card-soft);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .son-card-head { display: flex; justify-content: space-between; align-items: flex-start; }
-    .son-card .branch { font-size: 0.68rem; color: var(--muted); }
-    .son-card .title { font-size: 0.95rem; font-weight: 800; color: var(--bg); }
-    .son-card .paid-by { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-    .son-card .value { font-size: 1.2rem; font-weight: 900; color: var(--c); }
-    .progress-track {
-      height: 6px; background: #f1f5f9; border-radius: 3px;
-      margin-top: 10px; overflow: hidden;
+    .son-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+    .son-pill .dot {
+      width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 8px;
+      background: var(--c);
     }
-    .progress-fill { height: 100%; border-radius: 3px; background: var(--c); transition: width 0.6s ease; }
-    .progress-pct { font-size: 0.65rem; color: var(--muted); margin-top: 4px; text-align: right; }
+    .son-pill .sn { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+    .son-pill .sp { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+    .son-pill .sa {
+      font-family: var(--display); font-size: 0.9rem; font-weight: 800;
+      color: var(--c); margin-top: 8px;
+    }
 
-    .shivaji-card {
-      background: linear-gradient(135deg, #1e3a5f, #2a5298);
-      color: #fff;
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 14px;
+    /* Status + total */
+    .status-chip {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 16px; border-radius: 12px; margin-bottom: 16px;
+      background: #ecfdf5; color: #047857; font-size: 0.75rem; font-weight: 600;
     }
-    .shivaji-card .row { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.85rem; }
-    .shivaji-card .big { font-size: 1.1rem; font-weight: 800; color: var(--gold-light); }
+    .status-chip::before { content: "✓"; font-weight: 800; }
+    .mega-total {
+      text-align: center; padding: 32px 24px; margin-bottom: 24px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: var(--radius); color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .mega-total::after {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(45,212,191,0.15), transparent 50%);
+    }
+    .mega-total .lbl {
+      font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); position: relative;
+    }
+    .mega-total .num {
+      font-family: var(--display); font-size: clamp(2.2rem, 6vw, 3rem);
+      font-weight: 800; color: var(--gold); margin: 8px 0;
+      position: relative;
+    }
+    .mega-total .sub { font-size: 0.78rem; color: rgba(255,255,255,0.45); position: relative; }
 
-    /* ── Fair share split ── */
-    .split-section {
-      background: linear-gradient(180deg, #fff, #f8fafc);
+    /* Cards */
+    .card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(15,23,42,0.06);
+      border: 1px solid rgba(226,232,240,0.8);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,23,42,0.1); }
+    .card-head {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .card-head .tag-sm {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted);
+    }
+    .card-head h3 { font-family: var(--display); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
+    .card-head .amt { font-family: var(--display); font-size: 1.35rem; font-weight: 800; color: var(--c, var(--text)); }
+    .bar-track {
+      height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 60%, white));
+      width: 0; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .bar-fill.animated { /* width set inline */ }
+    .bar-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.68rem; color: var(--muted); }
+
+    .glass-dark {
+      background: linear-gradient(135deg, #1e3a5f, #0f2847);
+      color: #fff; border: none;
+    }
+    .glass-dark .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.85rem;
+    }
+    .glass-dark .row:last-child { border: none; }
+    .glass-dark .hi { font-family: var(--display); font-weight: 800; color: var(--gold); }
+
+    /* Section titles */
+    .sec-title { margin-bottom: 16px; }
+    .sec-title h2 {
+      font-family: var(--display); font-size: 1.15rem; font-weight: 700; color: var(--text);
+    }
+    .sec-title p { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .sec-title .line {
+      width: 40px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--blue));
+      margin-top: 10px;
+    }
+
+    /* Split cards */
+    .split-info {
+      padding: 14px 16px; border-radius: 14px; margin-bottom: 16px;
+      background: linear-gradient(135deg, #eff6ff, #f0fdfa);
+      border: 1px solid #bae6fd; font-size: 0.8rem; color: #334155;
+    }
+    .split-card { --c: var(--teal); }
+    .split-metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0;
+    }
+    .metric {
+      text-align: center; padding: 12px 6px;
+      background: var(--card-soft); border-radius: 12px;
+    }
+    .metric .ml { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    .metric .mv { font-family: var(--display); font-size: 0.85rem; font-weight: 800; margin-top: 6px; }
+    .metric .mv.owe { color: var(--rose-dim); }
+    .metric .mv.credit { color: #059669; }
+    .split-banner {
+      text-align: center; padding: 16px; border-radius: 14px; margin-top: 16px;
+      background: #0f172a; color: #fff; font-size: 0.85rem;
+    }
+    .split-banner strong { color: var(--gold); font-family: var(--display); font-size: 1.1rem; }
+
+    /* Table */
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 10px 12px; background: #f8fafc; color: var(--muted); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    td { padding: 10px 12px; border-top: 1px solid #f1f5f9; }
+    td.amt { text-align: right; font-family: var(--display); font-weight: 700; }
+    tr.day-row td { background: #f0f9ff; font-weight: 700; color: #0c4a6e; }
+    .badge { font-size: 0.6rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    .badge.cash { background: #fef3c7; color: #92400e; }
+    .badge.card { background: #dbeafe; color: #1e40af; }
+
+    .verify-card {
+      background: linear-gradient(135deg, #fffbeb, #fff);
+      border: 1px solid #fde68a;
+    }
+    .verify-card li { margin: 10px 0 10px 20px; font-size: 0.85rem; }
+
+    /* Buttons */
+    .dock {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(15,23,42,0.92);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; gap: 10px; justify-content: center;
+    }
+    .dock button {
+      flex: 1; max-width: 140px; padding: 14px 10px;
+      border: none; border-radius: 14px;
+      font-family: var(--display); font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .dock button:active { transform: scale(0.96); }
+    .dock .ic { font-size: 1.1rem; }
+    .b-wa { background: #22c55e; color: #fff; box-shadow: 0 4px 20px rgba(34,197,94,0.35); }
+    .b-dl { background: #8b5cf6; color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.35); }
+    .b-pr { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+    .btn-block {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      font-family: var(--display); font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: #fff; transition: transform 0.2s;
+    }
+    .btn-block:active { transform: scale(0.98); }
+
+    /* Admin */
+    .admin-fab {
+      text-align: center; padding: 14px; margin-top: 8px;
+      font-size: 0.75rem; color: var(--muted); cursor: pointer;
+      border: 1px dashed #cbd5e1; border-radius: 14px;
+      transition: background 0.2s;
+    }
+    .admin-fab:hover { background: #f1f5f9; }
+    .admin-box {
+      display: none; padding: 20px; margin-top: 12px;
+      background: #fff; border-radius: var(--radius);
       border: 2px solid #e2e8f0;
     }
-    .split-intro {
-      font-size: 0.78rem; color: var(--muted); margin: 8px 0 14px;
-      padding: 10px; background: #f0f9ff; border-radius: 10px; border: 1px solid #bae6fd;
+    .admin-box.open { display: block; animation: fadeDown 0.4s ease; }
+    .fld { margin-bottom: 12px; }
+    .fld label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+    .fld input, .fld select {
+      width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0;
+      border-radius: 12px; font-size: 1rem; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .split-card {
-      border-radius: 14px; padding: 14px; margin-bottom: 10px;
-      background: #fff; border: 1px solid var(--border);
-      border-left: 5px solid var(--c);
+    .fld input:focus, .fld select:focus {
+      outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,212,191,0.2);
     }
-    .split-card:last-child { margin-bottom: 0; }
-    .split-card .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .split-card .name { font-weight: 800; font-size: 0.9rem; color: var(--bg); }
-    .split-grid {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center;
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .admin-actions button {
+      flex: 1; min-width: 100px; padding: 12px; border: none; border-radius: 12px;
+      font-weight: 700; font-size: 0.78rem; cursor: pointer; color: #fff;
     }
-    .split-grid .cell { padding: 8px 4px; background: #f8fafc; border-radius: 8px; }
-    .split-grid .lbl { font-size: 0.58rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
-    .split-grid .val { font-size: 0.82rem; font-weight: 800; margin-top: 4px; color: var(--bg); }
-    .split-grid .val.owe { color: #dc2626; }
-    .split-grid .val.credit { color: #16a34a; }
-    .split-grid .val.done { color: #16a34a; }
-    .fulfill-bar { height: 8px; background: #e2e8f0; border-radius: 4px; margin-top: 10px; overflow: hidden; }
-    .fulfill-fill { height: 100%; border-radius: 4px; background: var(--c); }
-    .fulfill-label { font-size: 0.65rem; color: var(--muted); margin-top: 4px; text-align: center; }
-    .split-total {
-      margin-top: 14px; padding: 12px; background: var(--bg); color: #fff;
-      border-radius: 12px; font-size: 0.8rem; text-align: center;
-    }
-    .split-total strong { color: var(--gold-light); font-size: 1rem; }
-
-    /* ── Sections ── */
-    section {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-    }
-    section h2 { font-size: 0.92rem; color: var(--bg); font-weight: 800; }
-    section h2 span { display: block; font-size: 0.72rem; color: var(--muted); font-weight: 400; margin-top: 2px; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.76rem; margin-top: 10px; }
-    th { text-align: left; color: var(--muted); padding: 6px 4px; border-bottom: 1px solid var(--border); font-size: 0.68rem; }
-    td { padding: 7px 4px; border-bottom: 1px solid #f8fafc; }
-    td.amt { text-align: right; font-weight: 700; color: var(--bg); }
-    tr.day-head td {
-      background: #f0f6ff; font-weight: 700; color: var(--navy);
-      padding: 9px 4px; font-size: 0.78rem;
-    }
-    .tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; background: #f1f5f9; }
-    .tag.cash { background: #fef3c7; color: #92400e; }
-    .tag.card { background: #dbeafe; color: #1e40af; }
-
-    .verify {
-      background: linear-gradient(135deg, #fff9f0, #fff);
-      border: 1px solid #fcd9a0;
-    }
-    .verify li { margin: 8px 0 8px 18px; font-size: 0.82rem; }
-
-    .status-bar {
-      font-size: 0.72rem; text-align: center; padding: 8px 12px;
-      border-radius: 10px; margin-bottom: 12px;
-      background: #dcfce7; color: #166534;
-    }
-
-    /* ── Buttons ── */
-    .sticky-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(8px);
-      border-top: 1px solid var(--border);
-      padding: 10px 12px;
-      display: flex; gap: 8px; justify-content: center;
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
-    }
-    .sticky-bar button {
-      flex: 1; max-width: 160px; padding: 12px 8px;
-      border: none; border-radius: 12px;
-      font-size: 0.78rem; font-weight: 700; cursor: pointer;
-    }
-    .btn-wa { background: #25d366; color: #fff; }
-    .btn-dl { background: #7c3aed; color: #fff; }
-    .btn-print { background: var(--bg); color: #fff; }
-
-    .btn-full {
-      width: 100%; padding: 14px; border: none; border-radius: 12px;
-      font-weight: 700; font-size: 0.88rem; cursor: pointer; margin-top: 8px;
-    }
-
-    /* ── Venky admin ── */
-    .admin-toggle {
-      text-align: center; padding: 12px;
-      font-size: 0.72rem; color: var(--muted);
-      cursor: pointer; user-select: none;
-    }
-    .admin-panel {
-      display: none;
-      background: #f8fafc;
-      border: 2px dashed #94a3b8;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .admin-panel.open { display: block; }
-    .admin-panel h3 { font-size: 0.88rem; color: var(--bg); margin-bottom: 12px; }
-    .field { margin-bottom: 10px; }
-    .field label { font-size: 0.72rem; font-weight: 600; color: var(--muted); display: block; margin-bottom: 4px; }
-    .field input, .field select {
-      width: 100%; padding: 11px; border: 1px solid var(--border);
-      border-radius: 10px; font-size: 0.95rem;
-    }
-    .admin-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-    .admin-btns button {
-      flex: 1; min-width: 120px; padding: 12px;
-      border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.8rem;
-    }
-    .btn-add { background: var(--teal); color: #fff; }
-    .btn-save { background: var(--navy); color: #fff; }
-    .btn-adv { background: var(--rose); color: #fff; }
-
-    .publish-note {
-      background: #eff6ff; border: 1px solid #bfdbfe;
-      border-radius: 12px; padding: 12px;
-      font-size: 0.78rem; color: #1e40af; margin-bottom: 14px;
-    }
+    .ab-add { background: var(--teal-dim); }
+    .ab-adv { background: var(--rose-dim); }
+    .ab-save { background: #0f172a; }
 
     @media print {
-      .sticky-bar, .no-print, .admin-panel, .admin-toggle { display: none !important; }
-      body { background: #fff; padding-bottom: 0; }
+      .dock, .no-print, .ambient { display: none !important; }
+      body { background: #fff; padding: 0; }
+      .content-light { background: #fff; margin: 0; border-radius: 0; }
     }
   </style>
 </head>
 <body>
 
-<div class="hero">
-  <div class="hero-badge">మూడు కుమారుల సేవ · Three Sons United</div>
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<header class="hero">
+  <div class="pill">Three Sons United · మూడు కుమారుల సేవ</div>
   <h1>మల్లారెడ్డి ఆసుపత్రి బిల్లులు</h1>
-  <div class="father">శ్రీ వెంకటేశ్వర రావు గారు</div>
-  <div class="sub">Mallareddy Hospital · 2026</div>
-  <div class="date" id="todayLabel"></div>
+  <div class="father-name">శ్రీ వెంకటేశ్వర రావు గారు</div>
+  <div class="meta">Mallareddy Hospital · 2026 · <span id="todayLabel"></span></div>
+</header>
+
+<div class="main">
+  <div class="content-light">
+
+    <div class="reveal family-hub" id="familyHub"></div>
+
+    <div class="reveal status-chip" id="statusBar">Loading...</div>
+
+    <div class="reveal mega-total">
+      <div class="lbl">Total Hospital Spend · మొత్తం ఖర్చు</div>
+      <div class="num" id="grandTotal">—</div>
+      <div class="sub">From 28 Jun 2026 · Three sons for father</div>
+    </div>
+
+    <div class="reveal sec-title"><h2>Contributions</h2><p>Who paid at hospital</p><div class="line"></div></div>
+    <div class="reveal grid-3" id="sonCards" style="margin-bottom:24px"></div>
+
+    <div class="reveal card glass-dark" id="shivajiCard" style="margin-bottom:24px"></div>
+
+    <div class="reveal sec-title"><h2>మీ వాటా · Fair Share</h2><p>Equal 1/3 split — what's left till date</p><div class="line"></div></div>
+    <div class="reveal split-info">
+      మొత్తం ఖర్చు <strong>3 కుమారులకు సమానం</strong>. మిగిలింది = మీ వాటా − చెల్లించినది.
+    </div>
+    <div class="reveal grid-3" id="splitCards"></div>
+    <div class="reveal split-banner" id="splitTotal"></div>
+
+    <div class="reveal sec-title" style="margin-top:32px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
+    <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
+
+    <div class="reveal card verify-card" style="margin-top:24px">
+      <div class="sec-title"><h2>Please Verify ✓</h2><p>మీ మొత్తం చూసి WhatsApp లో OK అని reply చేయండి</p></div>
+      <ul id="verifyList"></ul>
+    </div>
+
+    <div class="reveal card" style="margin-top:16px">
+      <div class="sec-title"><h2>Download History</h2><p>పూర్తి చరిత్ర CSV</p></div>
+      <button class="btn-block" onclick="downloadHistory()">⬇ Download full history</button>
+    </div>
+
+    <div class="reveal no-print">
+      <div class="admin-fab" onclick="toggleAdmin()">🔒 Venky — Add today's bills</div>
+      <div class="admin-box" id="adminPanel">
+        <div class="sec-title"><h3>Add Payment</h3></div>
+        <div class="fld"><label>Date</label><input type="date" id="aDate" /></div>
+        <div class="fld"><label>Who paid</label>
+          <select id="aWho">
+            <option value="Venky">Venky (Shivaji)</option>
+            <option value="Deepa">Deepa (Rajini)</option>
+            <option value="Kalyan">Kalyan</option>
+          </select>
+        </div>
+        <div class="fld"><label>Amount ₹</label><input type="number" id="aAmt" step="0.01" /></div>
+        <div class="fld"><label>Type</label>
+          <select id="aMode"><option value="">—</option><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Credit Card">Credit Card</option></select>
+        </div>
+        <div class="fld"><label>Note</label><input type="text" id="aNote" placeholder="pharmacy, room..." /></div>
+        <div class="admin-actions">
+          <button class="ab-add" onclick="addBill()">+ Bill</button>
+          <button class="ab-adv" onclick="addAdvance()">+ Advance</button>
+          <button class="ab-save" onclick="saveJson()">💾 Save JSON</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<div class="wrap">
-
-  <div class="family-visual" id="familyVisual"></div>
-
-  <div id="statusBar" class="status-bar">లోడ్ అవుతోంది...</div>
-
-  <div class="total-banner">
-    <div class="label">మొత్తం ఆసుపత్రి ఖర్చు · Total Hospital Spend</div>
-    <div class="amount" id="grandTotal">—</div>
-    <div class="note">28-Jun-2026 నుండి · All 3 sons contributing for father</div>
-  </div>
-
-  <div class="son-cards" id="sonCards"></div>
-
-  <div class="shivaji-card" id="shivajiCard"></div>
-
-  <section class="split-section">
-    <h2>మీ వాటా ఎంత మిగిలింది? <span>Fair share split — what each son still owes till date</span></h2>
-    <div class="split-intro">
-      మొత్తం ఖర్చును <strong>3 కుమారులకు సమానంగా</strong> విభజించాం (prathi kumarudu 1/3).
-      <strong>మిగిలిన మొత్తం</strong> = మీ వాటా minus మీరు చెల్లించినది.
-    </div>
-    <div id="splitCards"></div>
-    <div class="split-total" id="splitTotal"></div>
-  </section>
-
-  <section>
-    <h2>రోజువారీ ఖర్చు <span>Day by day — from hospital group screenshots</span></h2>
-    <div id="dayTable"></div>
-  </section>
-
-  <section class="verify">
-    <h2>✓ దయచేసి మీ మొత్తం చూసి OK అని reply చేయండి <span>Please verify your amount & reply OK on WhatsApp</span></h2>
-    <ul id="verifyList"></ul>
-  </section>
-
-  <section>
-    <h2>⬇ పూర్తి చరిత్ర డౌన్లోడ్ <span>Download full history CSV (Excel)</span></h2>
-    <button class="btn-full btn-dl" onclick="downloadHistory()">Download from start date to today</button>
-  </section>
-
-  <div class="publish-note no-print" id="publishNote" style="display:none">
-    <strong>Venky — after adding bills:</strong> tap "Save & Download JSON" → upload to GitHub → family sees update in 2 min.
-  </div>
-
-  <div class="admin-toggle no-print" onclick="toggleAdmin()">🔒 Venky: Add today's bills</div>
-  <div class="admin-panel no-print" id="adminPanel">
-    <h3>వెంకీ — కొత్త చెల్లింపు జోడించండి</h3>
-    <div class="field"><label>తేదీ / Date</label><input type="date" id="aDate" /></div>
-    <div class="field">
-      <label>ఎవరు చెల్లించారు? / Who paid?</label>
-      <select id="aWho">
-        <option value="Venky">Venky (Shivaji)</option>
-        <option value="Deepa">Deepa (Rajini)</option>
-        <option value="Kalyan">Kalyan</option>
-      </select>
-    </div>
-    <div class="field"><label>మొత్తం ₹ / Amount</label><input type="number" id="aAmt" step="0.01" placeholder="500" /></div>
-    <div class="field">
-      <label>రకం / Type</label>
-      <select id="aMode">
-        <option value="">—</option>
-        <option value="Cash">Cash</option>
-        <option value="UPI">UPI</option>
-        <option value="Credit Card">Credit Card</option>
-      </select>
-    </div>
-    <div class="field"><label>గమనిక / Note</label><input type="text" id="aNote" placeholder="pharmacy, room..." /></div>
-    <div class="admin-btns">
-      <button class="btn-add" onclick="addBill()">+ Add bill</button>
-      <button class="btn-adv" onclick="addAdvance()">+ Shivaji→Venky</button>
-      <button class="btn-save" onclick="saveJson()">💾 Save & Download JSON</button>
-    </div>
-    <p style="font-size:0.72rem;color:var(--muted);margin-top:10px">
-      After download: replace <code>data/bills.json</code> on GitHub → run PUSH script or tell Cursor to push.
-    </p>
-  </div>
-
-</div>
-
-<div class="sticky-bar no-print">
-  <button class="btn-wa" onclick="copyWhatsApp()">WhatsApp</button>
-  <button class="btn-dl" onclick="downloadHistory()">Download</button>
-  <button class="btn-print" onclick="window.print()">Print</button>
-</div>
+<nav class="dock no-print">
+  <button class="b-wa" onclick="copyWhatsApp()"><span class="ic">💬</span>WhatsApp</button>
+  <button class="b-dl" onclick="downloadHistory()"><span class="ic">⬇</span>Download</button>
+  <button class="b-pr" onclick="window.print()"><span class="ic">🖨</span>Print</button>
+</nav>
 
 <script>
-const PAGE_VERSION = "2026-07-01-v5";
+const PAGE_VERSION = "2026-07-01-v6";
 const SONS = [
-  { branch: "Shivaji", payer: "Venky", te: "శివాజీ", color: "#3d9b8f", icon: "🙏" },
-  { branch: "Rajini", payer: "Deepa", te: "రజినీ · దీప", color: "#c97b63", icon: "💛" },
-  { branch: "Kalyan", payer: "Kalyan", te: "కల్యాణ్", color: "#1e3a5f", icon: "💙" },
+  { branch: "Shivaji", payer: "Venky", te: "శివాజీ", color: "#0d9488", icon: "🙏" },
+  { branch: "Rajini", payer: "Deepa", te: "రజినీ · దీప", color: "#e11d48", icon: "💛" },
+  { branch: "Kalyan", payer: "Kalyan", te: "కల్యాణ్", color: "#1d4ed8", icon: "💙" },
 ];
-
 let meta = { patient: "Sri Venkateswara Rao", hospital: "Mallareddy Hospital", startDate: "2026-06-28" };
 let data = { bills: [], advances: [] };
 
@@ -413,13 +482,22 @@ function fmtDate(iso) {
   const [y, m, d] = iso.split("-");
   const en = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const te = ["జన","ఫిబ్ర","మార్చి","ఏప్రి","మే","జూన్","జులై","ఆగ","సెప్టె","అక్టో","నవ","డిసె"];
-  return `${d} ${te[+m-1]} / ${d}-${en[+m-1]}-${y}`;
+  return `${d} ${te[+m-1]} · ${d} ${en[+m-1]} ${y}`;
 }
 function sumWho(w) { return data.bills.filter(b => b.who === w).reduce((s, b) => s + b.amt, 0); }
 function totalBills() { return data.bills.reduce((s, b) => s + b.amt, 0); }
 function totalAdv() { return data.advances.reduce((s, a) => s + a.amt, 0); }
 
-function totalAdv() { return data.advances.reduce((s, a) => s + a.amt, 0); }
+function animateValue(el, end, duration = 1200) {
+  const start = 0, t0 = performance.now();
+  function step(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(start + (end - start) * ease);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 
 function computeSplit(total) {
   const fair = total / 3;
@@ -437,27 +515,30 @@ function render() {
   const venky = sumWho("Venky"), deepa = sumWho("Deepa"), kalyan = sumWho("Kalyan");
   const adv = totalAdv();
   const amounts = { Venky: venky, Deepa: deepa, Kalyan: kalyan };
+  const last = data.bills.map(b => b.d).sort().pop() || meta.startDate;
 
   document.getElementById("todayLabel").textContent =
-    new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short", year: "numeric" }) + " · v" + PAGE_VERSION;
+    new Date().toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) + " · v" + PAGE_VERSION;
 
-  const last = data.bills.map(b => b.d).sort().pop() || meta.startDate;
   document.getElementById("statusBar").textContent =
-    `✓ డేటా సిద్ధం · Records till ${fmtDate(last)} · మొత్తం ${fmt(total)}`;
+    `Records till ${fmtDate(last)} · Total ${fmt(total)}`;
 
-  document.getElementById("grandTotal").textContent = fmt(total);
+  animateValue(document.getElementById("grandTotal"), total);
 
-  document.getElementById("familyVisual").innerHTML = `
-    <div class="fv-father">👴</div>
-    <div class="fv-father-label">${meta.patient}<br><span style="opacity:0.7;font-weight:400">Our Father · మా నాన్నగారు</span></div>
-    <div class="fv-line"></div>
-    <div class="fv-sons">
+  document.getElementById("familyHub").innerHTML = `
+    <div class="father-node">
+      <div class="father-avatar">👴</div>
+      <h3>${meta.patient}</h3>
+      <p>Our Father · మా నాన్నగారు · Mallareddy Hospital</p>
+    </div>
+    <div class="connector"></div>
+    <div class="sons-row">
       ${SONS.map(s => `
-        <div class="fv-son" style="--son-color:${s.color}">
-          <div class="icon">${s.icon}</div>
-          <div class="name">${s.te}</div>
-          <div class="payer">${s.payer} paid</div>
-          <div class="amt">${fmt(amounts[s.payer])}</div>
+        <div class="son-pill" style="--c:${s.color}">
+          <div class="dot" style="background:${s.color}"></div>
+          <div class="sn">${s.te}</div>
+          <div class="sp">${s.payer}</div>
+          <div class="sa" style="color:${s.color}">${fmt(amounts[s.payer])}</div>
         </div>`).join("")}
     </div>`;
 
@@ -465,128 +546,125 @@ function render() {
     const amt = amounts[s.payer];
     const pct = total ? Math.round(amt / total * 100) : 0;
     return `
-      <div class="son-card" style="--c:${s.color}">
-        <div class="son-card-head">
-          <div>
-            <div class="branch">${s.branch}'s son · ${s.te}</div>
-            <div class="title">Paid by ${s.payer}</div>
-            <div class="paid-by">Hospital payments at Mallareddy</div>
-          </div>
-          <div class="value">${fmt(amt)}</div>
+      <div class="card" style="--c:${s.color}">
+        <div class="card-head">
+          <div><div class="tag-sm">${s.branch}'s son</div><h3>${s.payer}</h3></div>
+          <div class="amt" style="color:${s.color}">${fmt(amt)}</div>
         </div>
-        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <div class="progress-pct">${pct}% of family total</div>
+        <div class="bar-track"><div class="bar-fill" data-w="${pct}" style="width:0;background:linear-gradient(90deg,${s.color},${s.color}88)"></div></div>
+        <div class="bar-meta"><span>Hospital paid</span><span>${pct}% of total</span></div>
       </div>`;
   }).join("");
 
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll(".bar-fill").forEach(b => { b.style.width = b.dataset.w + "%"; });
+    }, 200);
+  });
+
   document.getElementById("shivajiCard").innerHTML = `
-    <div style="font-size:0.72rem;opacity:0.8">శివాజీ → వెంకీ · Shivaji gave Venky for bill management</div>
-    <div class="row"><span>Total advances</span><span class="big">${fmt(adv)}</span></div>
+    <div class="sec-title" style="margin-bottom:12px"><h2 style="color:#fff">Shivaji → Venky</h2><p style="color:rgba(255,255,255,0.5)">Bill management advances</p></div>
+    <div class="row"><span>Total advances</span><span class="hi">${fmt(adv)}</span></div>
     <div class="row"><span>Venky paid at hospital</span><span>${fmt(venky)}</span></div>
-    <div class="row"><span>Balance with Venky</span><span class="big" style="color:${adv-venky>=0?'#86efac':'#fca5a5'}">${fmt(adv - venky)}</span></div>`;
+    <div class="row"><span>Balance with Venky</span><span class="hi" style="color:${adv-venky>=0?'#86efac':'#fca5a5'}">${fmt(adv-venky)}</span></div>`;
 
   const splits = computeSplit(total);
   document.getElementById("splitCards").innerHTML = splits.map(s => {
-    const owe = s.remaining > 0.01;
-    const credit = s.remaining < -0.01;
-    const remLabel = owe ? "మిగిలింది" : credit ? "ఎక్కువ చెల్లించారు" : "పూర్తి";
-    const remClass = owe ? "owe" : credit ? "credit" : "done";
-    const remText = owe ? fmt(s.remaining) : credit ? fmt(Math.abs(s.remaining)) : "✓ Done";
-    const extra = s.payer === "Venky" ? `<div style="font-size:0.68rem;color:var(--muted);margin-top:8px">శివాజీ advance: ${fmt(adv)} · Venky balance: ${fmt(adv - venky)}</div>` : "";
+    const owe = s.remaining > 0.01, credit = s.remaining < -0.01;
+    const remL = owe ? "మిగిలింది" : credit ? "ఎక్కువ" : "పూర్తి";
+    const remV = owe ? fmt(s.remaining) : credit ? fmt(Math.abs(s.remaining)) : "✓";
+    const remC = owe ? "owe" : credit ? "credit" : "";
+    const extra = s.payer === "Venky" ? `<p style="font-size:0.68rem;color:var(--muted);margin-top:10px">Advance ${fmt(adv)} · Balance ${fmt(adv-venky)}</p>` : "";
     return `
-      <div class="split-card" style="--c:${s.color}">
-        <div class="head">
-          <div class="name">${s.te} · ${s.branch}</div>
-          <div style="font-size:0.72rem;color:var(--muted)">Paid by ${s.payer}</div>
+      <div class="card split-card" style="--c:${s.color}">
+        <div class="card-head">
+          <div><div class="tag-sm">Paid by ${s.payer}</div><h3>${s.te}</h3></div>
         </div>
-        <div class="split-grid">
-          <div class="cell"><div class="lbl">మీ వాటా 1/3</div><div class="val">${fmt(s.fair)}</div></div>
-          <div class="cell"><div class="lbl">చెల్లించారు</div><div class="val">${fmt(s.paid)}</div></div>
-          <div class="cell"><div class="lbl">${remLabel}</div><div class="val ${remClass}">${remText}</div></div>
+        <div class="split-metrics">
+          <div class="metric"><div class="ml">వాటా 1/3</div><div class="mv">${fmt(s.fair)}</div></div>
+          <div class="metric"><div class="ml">చెల్లించారు</div><div class="mv">${fmt(s.paid)}</div></div>
+          <div class="metric"><div class="ml">${remL}</div><div class="mv ${remC}">${remV}</div></div>
         </div>
-        <div class="fulfill-bar"><div class="fulfill-fill" style="width:${s.fulfillPct}%;background:${s.color}"></div></div>
-        <div class="fulfill-label">${s.fulfillPct}% of fair share fulfilled</div>
+        <div class="bar-track"><div class="bar-fill" data-w="${s.fulfillPct}" style="background:${s.color}"></div></div>
+        <div class="bar-meta"><span>${s.fulfillPct}% fulfilled</span></div>
         ${extra}
       </div>`;
   }).join("");
 
+  setTimeout(() => {
+    document.querySelectorAll("#splitCards .bar-fill").forEach(b => { b.style.width = b.dataset.w + "%"; });
+  }, 300);
+
   const totalOwe = splits.filter(s => s.remaining > 0.01).reduce((a, s) => a + s.remaining, 0);
-  const totalCredit = splits.filter(s => s.remaining < -0.01).reduce((a, s) => a + Math.abs(s.remaining), 0);
-  document.getElementById("splitTotal").innerHTML =
-    totalOwe > 0.01
-      ? `మొత్తం ఇంకా చెల్లించాల్సినది: <strong>${fmt(totalOwe)}</strong> (across sons who owe)`
-      : `వాటా పూర్తి · All fair shares met`;
+  document.getElementById("splitTotal").innerHTML = totalOwe > 0.01
+    ? `మొత్తం ఇంకా చెల్లించాల్సినది: <strong>${fmt(totalOwe)}</strong>`
+    : `వాటా పూర్తి · All shares met ✓`;
 
   const byDate = {};
   data.bills.forEach(b => { (byDate[b.d] = byDate[b.d] || []).push(b); });
-  let html = "<table><thead><tr><th>వ్యక్తి</th><th>విధం</th><th>మొత్తం</th></tr></thead><tbody>";
+  let html = "<table><thead><tr><th>Person</th><th>Details</th><th>Amount</th></tr></thead><tbody>";
   Object.keys(byDate).sort().forEach(d => {
     const dayT = byDate[d].reduce((s, b) => s + b.amt, 0);
-    html += `<tr class="day-head"><td colspan="2">${fmtDate(d)}</td><td class="amt">${fmt(dayT)}</td></tr>`;
+    html += `<tr class="day-row"><td colspan="2">${fmtDate(d)}</td><td class="amt">${fmt(dayT)}</td></tr>`;
     byDate[d].forEach(b => {
-      const tag = b.mode ? `<span class="tag ${b.mode==="Cash"?"cash":b.mode.includes("Card")?"card":""}">${b.mode}</span>` : "";
-      html += `<tr><td>${b.who}</td><td>${tag} ${b.note||""}</td><td class="amt">${fmt(b.amt)}</td></tr>`;
+      const tag = b.mode ? `<span class="badge ${b.mode==="Cash"?"cash":"card"}">${b.mode}</span> ` : "";
+      html += `<tr><td>${b.who}</td><td>${tag}${b.note||""}</td><td class="amt">${fmt(b.amt)}</td></tr>`;
     });
   });
   html += "</tbody></table>";
   document.getElementById("dayTable").innerHTML = html;
 
   document.getElementById("verifyList").innerHTML = `
-    <li><strong>వెంకీ (శివాజీ):</strong> ${fmt(venky)} paid · వాటా ${fmt(total/3)} · మిగిలింది ${fmt(Math.max(0, total/3 - venky))}</li>
-    <li><strong>దీప (రజినీ):</strong> ${fmt(deepa)} paid · ${deepa > total/3 ? "ఎక్కువ చెల్లించారు " + fmt(deepa - total/3) : "మిగిలింది " + fmt(total/3 - deepa)}</li>
-    <li><strong>కల్యాణ్:</strong> ${fmt(kalyan)} paid · మిగిలింది ${fmt(Math.max(0, total/3 - kalyan))}</li>
-    <li><strong>మొత్తం:</strong> ${fmt(total)} — సరైతే <strong>OK</strong> అని WhatsApp లో reply చేయండి</li>`;
+    <li><strong>Venky (Shivaji):</strong> ${fmt(venky)} paid · owes ${fmt(Math.max(0, total/3 - venky))}</li>
+    <li><strong>Deepa (Rajini):</strong> ${fmt(deepa)} · ${deepa > total/3 ? "extra " + fmt(deepa - total/3) : "owes " + fmt(total/3 - deepa)}</li>
+    <li><strong>Kalyan:</strong> ${fmt(kalyan)} · owes ${fmt(Math.max(0, total/3 - kalyan))}</li>
+    <li><strong>Total:</strong> ${fmt(total)} — reply <strong>OK</strong> on WhatsApp</li>`;
+
+  initReveal();
+}
+
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+  document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
 }
 
 function copyWhatsApp() {
-  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), a = totalAdv();
-  const fair = t / 3;
-  const url = "https://tevskrishna.github.io/hospital-bills/";
+  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), a = totalAdv(), fair = t/3;
   const text = `🏥 *మల్లారెడ్డి ఆసుపత్రి — వెంకటేశ్వర రావు గారు*
-మూడు కుమారులు · Fair share = ${fmt(fair)} each (1/3)
+మూడు కుమారుల సేవ · Fair share ${fmt(fair)} each
 
 📅 ${new Date().toLocaleDateString("en-IN")}
 *మొత్తం:* ${fmt(t)}
 
-*చెల్లించారు / Paid:*
-వెంకీ (శివాజీ): ${fmt(v)}
-దీప (రజినీ): ${fmt(d)}
-కల్యాణ్: ${fmt(k)}
+వెంకీ: ${fmt(v)} (owes ${fmt(Math.max(0,fair-v))})
+దీప: ${fmt(d)} ${d>=fair?"✓":"(owes "+fmt(fair-d)+")"}
+కల్యాణ్: ${fmt(k)} (owes ${fmt(Math.max(0,fair-k))})
 
-*మిగిలింది / Still to pay (fair share):*
-వెంకీ: ${fmt(Math.max(0, fair - v))}
-దీప: ${d >= fair ? "✓ Extra " + fmt(d - fair) : fmt(fair - d)}
-కల్యాణ్: ${fmt(Math.max(0, fair - k))}
-
-శివాజీ→వెంకీ advance: ${fmt(a)}
-
-📎 ${url}
-దయచేసి చూసి *OK* అని reply చేయండి
-— Venky`;
-  navigator.clipboard.writeText(text).then(() => alert("Copied! WhatsApp లో paste చేయండి."))
+📎 https://tevskrishna.github.io/hospital-bills/
+Reply *OK* after verifying — Venky`;
+  navigator.clipboard.writeText(text).then(() => alert("Copied for WhatsApp!"))
     .catch(() => prompt("Copy:", text));
 }
 
-function csvEsc(s) {
-  const t = String(s ?? "");
-  return t.includes(",") ? '"' + t.replace(/"/g, '""') + '"' : t;
-}
+function csvEsc(s) { const t = String(s??""); return t.includes(",") ? '"'+t.replace(/"/g,'""')+'"' : t; }
 
 function downloadHistory() {
-  const start = meta.startDate, today = new Date().toISOString().slice(0, 10);
-  const sorted = [...data.bills].sort((a, b) => a.d.localeCompare(b.d));
-  let csv = `Mallareddy Hospital - ${meta.patient}\nPeriod,${start} to ${today}\n\nDate,Paid By,Amount,Mode,Notes\n`;
-  sorted.forEach(b => { csv += [b.d, b.who, b.amt, csvEsc(b.mode), csvEsc(b.note)].join(",") + "\n"; });
-  csv += `\nTOTAL,${totalBills()}\n\nFAIR SHARE SPLIT (equal 1/3 each)\nSon,Fair Share,Paid,Remaining\n`;
-  const fair = totalBills() / 3;
-  [["Shivaji/Venky", sumWho("Venky")], ["Rajini/Deepa", sumWho("Deepa")], ["Kalyan", sumWho("Kalyan")]].forEach(([name, p]) => {
-    csv += `${name},${fair.toFixed(2)},${p.toFixed(2)},${(fair - p).toFixed(2)}\n`;
+  const start = meta.startDate, today = new Date().toISOString().slice(0,10);
+  const fair = totalBills()/3;
+  let csv = `Hospital Bills - ${meta.patient}\nPeriod,${start} to ${today}\n\nDate,Paid By,Amount,Mode,Notes\n`;
+  [...data.bills].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b => {
+    csv += [b.d,b.who,b.amt,csvEsc(b.mode),csvEsc(b.note)].join(",")+"\n";
   });
-  csv += `\nShivaji advances\nDate,Amount\n`;
+  csv += `\nTOTAL,${totalBills()}\n\nFAIR SHARE\nSon,Fair,Paid,Remaining\n`;
+  [["Shivaji/Venky",sumWho("Venky")],["Rajini/Deepa",sumWho("Deepa")],["Kalyan",sumWho("Kalyan")]].forEach(([n,p])=>{
+    csv += `${n},${fair.toFixed(2)},${p.toFixed(2)},${(fair-p).toFixed(2)}\n`;
+  });
+  csv += `\nShivaji Advances\nDate,Amount\n`;
   data.advances.forEach(a => { csv += `${a.d},${a.amt}\n`; });
-  const blob = new Blob([csv], { type: "text/csv" });
   const el = document.createElement("a");
-  el.href = URL.createObjectURL(blob);
+  el.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   el.download = `hospital-bills-${start}-to-${today}.csv`;
   el.click();
 }
@@ -595,44 +673,31 @@ let adminOpen = false;
 function toggleAdmin() {
   adminOpen = !adminOpen;
   document.getElementById("adminPanel").classList.toggle("open", adminOpen);
-  document.getElementById("publishNote").style.display = adminOpen ? "block" : "none";
-  if (adminOpen) document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
+  if (adminOpen) document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
 }
-
 function addBill() {
-  const d = document.getElementById("aDate").value;
-  const who = document.getElementById("aWho").value;
+  const d = document.getElementById("aDate").value, who = document.getElementById("aWho").value;
   const amt = parseFloat(document.getElementById("aAmt").value);
-  const mode = document.getElementById("aMode").value;
-  const note = document.getElementById("aNote").value.trim();
-  if (!d || !amt) { alert("Date and amount required"); return; }
-  data.bills.push({ d, who, amt, mode, note });
-  document.getElementById("aAmt").value = "";
-  document.getElementById("aNote").value = "";
+  const mode = document.getElementById("aMode").value, note = document.getElementById("aNote").value.trim();
+  if (!d || !amt) return alert("Date and amount required");
+  data.bills.push({d,who,amt,mode,note});
+  document.getElementById("aAmt").value = ""; document.getElementById("aNote").value = "";
   render();
-  alert("Added! Tap 'Save & Download JSON' then push to GitHub.");
 }
-
 function addAdvance() {
   const d = document.getElementById("aDate").value;
-  const amt = parseFloat(prompt("Shivaji gave Venky how much? (₹)"));
-  if (!d || !amt) return;
-  data.advances.push({ d, amt });
-  render();
+  const amt = parseFloat(prompt("Shivaji → Venky amount (₹)"));
+  if (d && amt) { data.advances.push({d,amt}); render(); }
 }
-
 function saveJson() {
-  const payload = { ...meta, bills: data.bills, advances: data.advances };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify({...meta,bills:data.bills,advances:data.advances},null,2)],{type:"application/json"});
   const el = document.createElement("a");
-  el.href = URL.createObjectURL(blob);
-  el.download = "bills.json";
-  el.click();
-  alert("Downloaded bills.json\n\nReplace file at:\nGitHub → hospital-bills → data → bills.json → upload\n\nOr tell Cursor to push for you.");
+  el.href = URL.createObjectURL(blob); el.download = "bills.json"; el.click();
+  alert("Downloaded bills.json — push to GitHub or tell Cursor.");
 }
 
 loadData().then(render);
-document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
+document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
 </script>
 </body>
 </html>
