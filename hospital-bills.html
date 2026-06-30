@@ -29,6 +29,7 @@
       margin-bottom: 12px; background: #e0f2fe; color: #0369a1;
     }
     .sync-bar.offline { background: #fef3c7; color: #92400e; }
+    .sync-bar.ok { background: #dcfce7; color: #166534; }
     .sync-bar.error { background: #fee2e2; color: #b91c1c; }
     .explain {
       background: #fff8e6; border: 1px solid #fcd34d; border-radius: 12px;
@@ -105,7 +106,7 @@
   <p id="todayLabel" style="margin-top:8px;font-size:0.72rem"></p>
 </header>
 
-<div id="syncBar" class="sync-bar offline">ఆఫ్‌లైన్ డేటా / Offline data — Google sync pending setup</div>
+<div id="syncBar" class="sync-bar ok">ఆసుపత్రి ఖర్చు నమోదులు · Hospital records loaded</div>
 
 <div class="explain no-print">
   <strong>మొత్తం ఖర్చు</strong> = hospital లో మనం చెల్లించిన అన్ని డబ్బు.<br>
@@ -135,13 +136,13 @@
 </section>
 
 <section id="formSection" class="no-print">
-  <h2>బిల్ చేర్చండి (దీప / కల్యాణ్ / కుటుంబం) <span>Add payment — family form</span></h2>
-  <p style="font-size:0.8rem;color:var(--muted);margin-bottom:10px">
-    ఇక్కడ form fill చేస్తే Venky sheet లో automatic గా చేరుతుంది (Google setup తర్వాత).
-  </p>
+  <h2>కొత్త చెల్లింపు చేర్చాలా? <span>New payment to add?</span></h2>
   <div id="formContainer">
-    <p class="config-note" id="formPlaceholder">
-      Form appears after you paste <code>formEmbedUrl</code> in CONFIG below (see SETUP-COMBINED.md).
+    <p id="formPlaceholder" style="font-size:0.88rem;line-height:1.6;color:var(--text)">
+      <strong>దీప / కల్యాణ్ / కుటుంబం:</strong> కొత్త బిల్ చెల్లించారా?<br>
+      వెంకీకి WhatsApp లో మొత్తం + తేదీ పంపండి — వెంకీ update చేస్తాడు.<br><br>
+      <strong>Deepa / Kalyan / family:</strong> Paid a new bill?<br>
+      Send amount + date to Venky on WhatsApp.
     </p>
   </div>
   <a id="formOpenLink" class="form-link" href="#" target="_blank" style="display:none">
@@ -151,7 +152,7 @@
 
 <div class="sticky-bar no-print">
   <button class="btn-wa" onclick="copyWhatsApp()">WhatsApp కు Copy</button>
-  <button class="btn-primary" onclick="refreshData()">Refresh ↻</button>
+  <button class="btn-primary" id="refreshBtn" onclick="refreshData()" style="display:none">Refresh ↻</button>
   <button class="btn-outline" onclick="window.print()">Print</button>
 </div>
 
@@ -249,8 +250,21 @@ function totalAdvances() { return data.advances.reduce((s, a) => s + a.amt, 0); 
 
 function setSyncBar(state, msg) {
   const el = document.getElementById("syncBar");
-  el.className = "sync-bar " + state;
+  el.className = "sync-bar " + (state || "ok");
   el.textContent = msg;
+}
+
+function showReadyBar() {
+  const last = data.bills.length
+    ? data.bills.map(b => b.d).sort().pop()
+    : "";
+  const lastFmt = last ? fmtDate(last) : "";
+  setSyncBar(
+    "ok",
+    lastFmt
+      ? `✓ డేటా సిద్ధం · Records till ${lastFmt} · మొత్తం ${fmt(totalBills())}`
+      : `✓ డేటా సిద్ధం · Hospital records ready`
+  );
 }
 
 function render() {
@@ -353,10 +367,11 @@ Please verify & reply *OK*
 
 async function refreshData() {
   if (!CONFIG.apiUrl) {
-    setSyncBar("offline", "Google API URL లేదు — offline data చూపిస్తున్నాం. SETUP-COMBINED.md చూడండి.");
+    showReadyBar();
     render();
     return;
   }
+  document.getElementById("refreshBtn").style.display = "";
   setSyncBar("", "లోడ్ అవుతోంది... Loading from Google...");
   try {
     const res = await fetch(CONFIG.apiUrl);
@@ -371,9 +386,10 @@ async function refreshData() {
       setSyncBar("", `✓ Google నుండి sync — ${when}`);
     }
   } catch (e) {
-    setSyncBar("error", "Google sync fail — offline cache చూపిస్తున్నాం. " + e.message);
+    setSyncBar("error", "లోడ్ కాలేదు — మునుపటి డేటా చూపిస్తున్నాం / Could not refresh");
   }
   render();
+  if (syncSource !== "google") showReadyBar();
 }
 
 function setupForm() {
@@ -381,8 +397,10 @@ function setupForm() {
   const share = CONFIG.formShareUrl || (embed ? embed.replace("?embedded=true", "") : "");
   const container = document.getElementById("formContainer");
   const openLink = document.getElementById("formOpenLink");
+  const section = document.getElementById("formSection");
 
   if (embed) {
+    section.querySelector("h2").innerHTML = 'బిల్ చేర్చండి <span>Add payment — family form</span>';
     container.innerHTML = `<iframe class="form-wrap" src="${embed}" frameborder="0" allowfullscreen></iframe>`;
     openLink.style.display = "block";
     openLink.href = share;
@@ -391,6 +409,10 @@ function setupForm() {
     openLink.style.display = "block";
     openLink.href = share;
   }
+}
+
+if (CONFIG.apiUrl) {
+  document.getElementById("refreshBtn").style.display = "";
 }
 
 setupForm();
