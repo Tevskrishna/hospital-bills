@@ -83,6 +83,7 @@
     .btn-wa { background: #25d366; color: #fff; }
     .btn-primary { background: var(--blue); color: #fff; }
     .btn-outline { background: #fff; color: var(--navy); border: 2px solid var(--border); }
+    .btn-download { background: #7c3aed; color: #fff; }
     .sticky-bar {
       position: fixed; bottom: 0; left: 0; right: 0; background: #fff;
       border-top: 1px solid var(--border); padding: 10px 12px;
@@ -138,14 +139,23 @@
   <ul id="verifyList"></ul>
 </section>
 
+<section>
+  <h2>పూర్తి డేటా డౌన్లోడ్ <span>Download complete history (start to today)</span></h2>
+  <p style="font-size:0.82rem;color:var(--muted);margin-bottom:10px">
+    అన్ని బిల్లులు + శివాజీ advances — Excel లో ఓపెన్ అవుతుంది (CSV file).
+  </p>
+  <button type="button" class="btn-download" style="width:100%;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:0.9rem;cursor:pointer" onclick="downloadHistory()">
+    ⬇ పూర్తి చరిత్ర డౌన్లోడ్ / Download full history CSV
+  </button>
+</section>
+
 <section id="formSection" class="no-print">
-  <h2>కొత్త చెల్లింపు చేర్చాలా? <span>New payment to add?</span></h2>
+  <h2>కొత్త బిల్ చేర్చండి <span>Add new payment (simple form)</span></h2>
   <div id="formContainer">
     <p id="formPlaceholder" style="font-size:0.88rem;line-height:1.6;color:var(--text)">
-      <strong>దీప / కల్యాణ్ / కుటుంబం:</strong> కొత్త బిల్ చెల్లించారా?<br>
-      వెంకీకి WhatsApp లో మొత్తం + తేదీ పంపండి — వెంకీ update చేస్తాడు.<br><br>
-      <strong>Deepa / Kalyan / family:</strong> Paid a new bill?<br>
-      Send amount + date to Venky on WhatsApp.
+      <strong>4 questions only:</strong> Date → Who paid → Amount → Cash/UPI/Card<br>
+      Form link appears here after Venky completes Google setup (see GOOGLE-FORM-SETUP.md).<br><br>
+      Until then: WhatsApp Venky with date + amount.
     </p>
   </div>
   <a id="formOpenLink" class="form-link" href="#" target="_blank" style="display:none">
@@ -154,6 +164,7 @@
 </section>
 
 <div class="sticky-bar no-print">
+  <button class="btn-download" onclick="downloadHistory()">⬇ Download</button>
   <button class="btn-wa" onclick="copyWhatsApp()">WhatsApp కు Copy</button>
   <button class="btn-primary" id="refreshBtn" onclick="refreshData()" style="display:none">Refresh ↻</button>
   <button class="btn-outline" onclick="window.print()">Print</button>
@@ -174,7 +185,8 @@ const CONFIG = {
   formShareUrl: "",
 };
 
-const PAGE_VERSION = "2026-07-01-v2";
+const PAGE_VERSION = "2026-07-01-v3";
+const STORAGE_KEY = "mallareddy_bills_v2";
 
 const DEFAULT_DATA = {
   bills: [
@@ -369,6 +381,56 @@ Please verify & reply *OK*
     .catch(() => prompt("Copy this:", text));
 }
 
+function csvEscape(s) {
+  const t = String(s == null ? "" : s);
+  return t.includes(",") || t.includes('"') ? '"' + t.replace(/"/g, '""') + '"' : t;
+}
+
+async function downloadHistory() {
+  if (CONFIG.apiUrl) {
+    try {
+      const res = await fetch(CONFIG.apiUrl);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.bills) { data.bills = json.bills; data.advances = json.advances || []; saveLocal(); }
+      }
+    } catch (e) { /* use local data */ }
+  }
+
+  const start = "2026-06-28";
+  const today = new Date().toISOString().slice(0, 10);
+  const sorted = [...data.bills].sort((a, b) => a.d.localeCompare(b.d) || a.who.localeCompare(b.who));
+  const advSorted = [...data.advances].sort((a, b) => a.d.localeCompare(b.d));
+
+  let csv = "Mallareddy Hospital - Sri Venkateswara Rao\n";
+  csv += "Period," + start + " to " + today + "\n";
+  csv += "Generated," + new Date().toLocaleString("en-IN") + "\n\n";
+  csv += "HOSPITAL BILLS\n";
+  csv += "Date,Paid By,Amount (INR),Payment Mode,Notes\n";
+  sorted.forEach(b => {
+    csv += [b.d, b.who, b.amt, csvEscape(b.mode || ""), csvEscape(b.note || "")].join(",") + "\n";
+  });
+  csv += "\nSubtotal Venky," + sumWho("Venky") + "\n";
+  csv += "Subtotal Deepa," + sumWho("Deepa") + "\n";
+  csv += "Subtotal Kalyan," + sumWho("Kalyan") + "\n";
+  csv += "TOTAL HOSPITAL SPEND," + totalBills() + "\n\n";
+  csv += "SHIVAJI ADVANCES TO VENKY\n";
+  csv += "Date,From,To,Amount (INR)\n";
+  advSorted.forEach(a => {
+    csv += [a.d, "Shivaji", "Venky", a.amt].join(",") + "\n";
+  });
+  csv += "Total Shivaji to Venky," + totalAdvances() + "\n";
+  csv += "Venky balance (Shivaji minus Venky paid)," + (totalAdvances() - sumWho("Venky")) + "\n";
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "hospital-bills-" + start + "-to-" + today + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 async function refreshData() {
   if (!CONFIG.apiUrl) {
     showReadyBar();
@@ -404,8 +466,9 @@ function setupForm() {
   const section = document.getElementById("formSection");
 
   if (embed) {
-    section.querySelector("h2").innerHTML = 'బిల్ చేర్చండి <span>Add payment — family form</span>';
-    container.innerHTML = `<iframe class="form-wrap" src="${embed}" frameborder="0" allowfullscreen></iframe>`;
+    section.querySelector("h2").innerHTML = 'కొత్త బిల్ చేర్చండి <span>Add payment — 4 simple questions</span>';
+    container.innerHTML = '<p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px">తేదీ · ఎవరు · మొత్తం · Cash/UPI/Card — submit once per payment</p>' +
+      `<iframe class="form-wrap" src="${embed}" frameborder="0" allowfullscreen></iframe>`;
     openLink.style.display = "block";
     openLink.href = share;
   } else if (share) {

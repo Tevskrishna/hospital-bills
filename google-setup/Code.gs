@@ -1,13 +1,6 @@
 /**
  * MALLAREDDY HOSPITAL BILLS — Google Setup (run once)
- *
- * HOW TO USE:
- * 1. Go to https://sheets.google.com → New blank spreadsheet
- * 2. Extensions → Apps Script → delete default code → paste ALL of this file
- * 3. Run function: setupEverything (authorize when asked)
- * 4. Check your email / spreadsheet — Form link + Web App URL are in sheet "README"
- * 5. Copy Web App URL + Form embed URL into hospital-bills.html CONFIG
- * 6. Host HTML (see SETUP-COMBINED.md) and share link on WhatsApp
+ * Paste into Extensions → Apps Script → Run setupEverything
  */
 
 function setupEverything() {
@@ -16,38 +9,41 @@ function setupEverything() {
 
   setupBillsSheet_(ss);
   setupAdvancesSheet_(ss);
-  setupFormResponsesSheet_(ss);
   setupSummarySheet_(ss);
+  setupHistorySheet_(ss);
 
   const form = createFamilyForm_(ss);
   const readme = getOrCreateSheet_(ss, 'README');
   readme.clear();
-  readme.getRange('A1').setValue('SETUP COMPLETE — copy these links');
-  readme.getRange('A3').setValue('Google Form (share with Deepa, Kalyan, family):');
+  const webAppHint = 'Deploy → New deployment → Web app → Me → Anyone';
+  readme.getRange('A1').setValue('LINKS — copy to hospital-bills.html CONFIG on GitHub');
+  readme.getRange('A3').setValue('1. Form link (WhatsApp to family):');
   readme.getRange('B3').setValue(form.getPublishedUrl());
-  readme.getRange('A4').setValue('Form edit link (Venky only):');
-  readme.getRange('B4').setValue(form.getEditUrl());
-  readme.getRange('A6').setValue('Web App URL (paste in hospital-bills.html CONFIG.apiUrl):');
-  readme.getRange('B6').setValue('Deploy → New deployment → Web app → Execute as: Me → Who has access: Anyone → copy URL');
-  readme.getRange('A8').setValue('Form embed URL (paste in CONFIG.formEmbedUrl):');
-  readme.getRange('B8').setValue(form.getPublishedUrl() + '?embedded=true');
+  readme.getRange('A4').setValue('2. Form embed (CONFIG.formEmbedUrl):');
+  readme.getRange('B4').setValue(form.getPublishedUrl() + '?embedded=true');
+  readme.getRange('A6').setValue('3. Web App JSON (CONFIG.apiUrl):');
+  readme.getRange('B6').setValue(webAppHint);
+  readme.getRange('A7').setValue('4. Download CSV (full history):');
+  readme.getRange('B7').setValue('YOUR_WEB_APP_URL?format=csv');
+  readme.getRange('A9').setValue('Patient start date:');
+  readme.getRange('B9').setValue('2026-06-28');
 
   importSeedData_(ss);
-  updateSummary_(ss);
+  rebuildHistorySheet_(ss);
 
   SpreadsheetApp.getUi().alert(
-    'Setup done!\n\n1. Deploy Web App (see README sheet)\n2. Copy links into hospital-bills.html\n3. Host HTML and share on WhatsApp'
+    'Done!\n\n1. Deploy Web App (Anyone)\n2. Copy 3 links from README tab\n3. Paste into index.html CONFIG on GitHub'
   );
 }
 
 function getOrCreateSheet_(ss, name) {
-  let sh = ss.getSheetByName(name);
+  var sh = ss.getSheetByName(name);
   if (!sh) sh = ss.insertSheet(name);
   return sh;
 }
 
 function setupBillsSheet_(ss) {
-  const sh = getOrCreateSheet_(ss, 'Bills');
+  var sh = getOrCreateSheet_(ss, 'Bills');
   sh.clear();
   sh.getRange(1, 1, 1, 6).setValues([['Date', 'Paid By', 'Amount', 'Payment Mode', 'Notes', 'Source']]);
   sh.getRange(1, 1, 1, 6).setFontWeight('bold').setBackground('#1b4965').setFontColor('#ffffff');
@@ -55,118 +51,157 @@ function setupBillsSheet_(ss) {
 }
 
 function setupAdvancesSheet_(ss) {
-  const sh = getOrCreateSheet_(ss, 'Advances');
+  var sh = getOrCreateSheet_(ss, 'Advances');
   sh.clear();
   sh.getRange(1, 1, 1, 4).setValues([['Date', 'From', 'To', 'Amount']]);
   sh.getRange(1, 1, 1, 4).setFontWeight('bold').setBackground('#1b4965').setFontColor('#ffffff');
   sh.setFrozenRows(1);
 }
 
-function setupFormResponsesSheet_(ss) {
-  const sh = getOrCreateSheet_(ss, 'FormResponses');
-  sh.clear();
-  sh.getRange(1, 1, 1, 1).setValue('Form submissions appear on separate tab created by Google Form');
-}
-
 function setupSummarySheet_(ss) {
-  const sh = getOrCreateSheet_(ss, 'Summary');
+  var sh = getOrCreateSheet_(ss, 'Summary');
   sh.clear();
   sh.getRange('A1').setValue('DAILY REPORT / రోజువారీ నివేదిక').setFontSize(14).setFontWeight('bold');
-  sh.getRange('A3').setValue('Total Spend / మొత్తం ఖర్చు');
+  sh.getRange('A3').setValue('Total Spend / మొత్తం');
   sh.getRange('B3').setFormula('=SUM(Bills!C:C)');
-  sh.getRange('A4').setValue('Venky paid / వెంకీ');
+  sh.getRange('A4').setValue('Venky / వెంకీ');
   sh.getRange('B4').setFormula('=SUMIF(Bills!B:B,"Venky",Bills!C:C)');
-  sh.getRange('A5').setValue('Deepa paid / దీప');
+  sh.getRange('A5').setValue('Deepa / దీప');
   sh.getRange('B5').setFormula('=SUMIF(Bills!B:B,"Deepa",Bills!C:C)');
-  sh.getRange('A6').setValue('Kalyan paid / కల్యాణ్');
+  sh.getRange('A6').setValue('Kalyan / కల్యాణ్');
   sh.getRange('B6').setFormula('=SUMIF(Bills!B:B,"Kalyan",Bills!C:C)');
   sh.getRange('A7').setValue('Shivaji → Venky');
   sh.getRange('B7').setFormula('=SUM(Advances!D:D)');
   sh.getRange('A8').setValue('Venky balance');
   sh.getRange('B8').setFormula('=B7-B4');
   sh.getRange('B3:B8').setNumberFormat('₹#,##0.00');
-  sh.getRange('A3:A8').setFontWeight('bold');
+}
+
+function setupHistorySheet_(ss) {
+  var sh = getOrCreateSheet_(ss, 'FullHistory');
+  sh.clear();
+  sh.getRange('A1').setValue('Complete history — auto-updated. File → Download this tab as CSV');
+  sh.getRange('A1').setFontWeight('bold');
+}
+
+function rebuildHistorySheet_(ss) {
+  var sh = ss.getSheetByName('FullHistory');
+  var bills = ss.getSheetByName('Bills');
+  var adv = ss.getSheetByName('Advances');
+  if (!sh || !bills) return;
+
+  sh.clear();
+  sh.getRange(1, 1, 1, 5).setValues([['Date', 'Type', 'Paid By', 'Amount', 'Payment Mode / Notes']]);
+  sh.getRange(1, 1, 1, 5).setFontWeight('bold').setBackground('#1b4965').setFontColor('#ffffff');
+
+  var rows = [];
+  if (bills.getLastRow() > 1) {
+    var billData = bills.getRange(2, 1, bills.getLastRow(), 6).getValues();
+    billData.forEach(function (r) {
+      if (!r[2]) return;
+      rows.push([formatDate_(r[0]), 'Hospital bill', r[1], r[2], (r[3] || '') + (r[4] ? ' — ' + r[4] : '')]);
+    });
+  }
+  if (adv && adv.getLastRow() > 1) {
+    var advData = adv.getRange(2, 1, adv.getLastRow(), 4).getValues();
+    advData.forEach(function (r) {
+      if (!r[3]) return;
+      rows.push([formatDate_(r[0]), 'Shivaji → Venky', r[1], r[3], 'Advance for bills']);
+    });
+  }
+  rows.sort(function (a, b) { return String(a[0]).localeCompare(String(b[0])); });
+
+  if (rows.length) {
+    sh.getRange(2, 1, 1 + rows.length, 5).setValues(rows);
+  }
+  var totalRow = 2 + rows.length + 1;
+  sh.getRange(totalRow, 1).setValue('TOTAL HOSPITAL SPEND');
+  sh.getRange(totalRow, 4).setFormula('=SUMIF(B2:B' + (1 + rows.length) + ',"Hospital bill",D2:D' + (1 + rows.length) + ')');
+  sh.getRange(totalRow, 4).setNumberFormat('₹#,##0.00');
+  sh.setFrozenRows(1);
 }
 
 function createFamilyForm_(ss) {
-  const form = FormApp.create('ఆసుపత్రి బిల్ — Hospital Payment (Venkateswara Rao)');
+  var form = FormApp.create('మల్లారెడ్డి హాస్పిటల్ బిల్ / Hospital Bill');
   form.setDescription(
-    'మల్లారెడ్డి ఆసుపత్రి ఖర్చులు చేర్చండి\n' +
-    'Add a payment for Mallareddy Hospital\n\n' +
-    'దయచేసి ఒక్కొక్క చెల్లింపును వేరుగా submit చేయండి / Submit each payment separately'
+    'ఒక్క చెల్లింపు = ఒక్క సారి submit\n' +
+    'One payment = submit once\n' +
+    'Patient: Venkateswara Rao'
   );
   form.setCollectEmail(false);
-  form.setConfirmationMessage('ధన్యవాదాలు! Thank you! Venky will verify. / వెంకీ చూస్తాడు.');
+  form.setConfirmationMessage('ధన్యవాదాలు! Venky verify చేస్తాడు. Thank you!');
 
-  form.addDateItem()
-    .setTitle('తేదీ / Date of payment')
-    .setRequired(true);
+  form.addDateItem().setTitle('తేదీ / Date').setRequired(true);
 
   form.addMultipleChoiceItem()
     .setTitle('ఎవరు చెల్లించారు? / Who paid?')
-    .setChoiceValues(['Venky / వెంకీ', 'Deepa / దీప (Rajini wife)', 'Kalyan / కల్యాణ్'])
+    .setChoiceValues(['Venky', 'Deepa', 'Kalyan'])
     .setRequired(true);
 
   form.addTextItem()
-    .setTitle('మొత్తం (రూపాయలు) / Amount in ₹')
+    .setTitle('మొత్తం ₹ / Amount')
+    .setHelpText('numbers only e.g. 500')
     .setRequired(true);
 
   form.addMultipleChoiceItem()
-    .setTitle('ఎలా చెల్లించారు? / Payment type')
-    .setChoiceValues(['Cash / నగదు', 'UPI / GPay / PhonePe', 'Credit Card', 'Debit Card', 'Other / ఇతర'])
+    .setTitle('ఎలా చెల్లించారు? / How paid?')
+    .setChoiceValues(['Cash', 'UPI', 'Credit Card', 'Other'])
     .setRequired(true);
-
-  form.addParagraphTextItem()
-    .setTitle('గమనిక / Note (optional)')
-    .setHelpText('e.g. pharmacy, room, lab');
 
   form.setDestination(FormApp.DestinationType.SPREADSHEET, ss.getId());
 
-  // Trigger to copy form rows into Bills sheet
-  ScriptApp.newTrigger('onFormSubmit')
-    .forSpreadsheet(ss)
-    .onFormSubmit()
-    .create();
+  var triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(function (t) {
+    if (t.getHandlerFunction() === 'onFormSubmit') ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger('onFormSubmit').forSpreadsheet(ss).onFormSubmit().create();
 
   return form;
 }
 
 function onFormSubmit(e) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const bills = ss.getSheetByName('Bills');
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var bills = ss.getSheetByName('Bills');
   if (!bills || !e || !e.namedValues) return;
 
-  const nv = e.namedValues;
-  const dateVal = parseFormDate_(nv['తేదీ / Date of payment'] ? nv['తేదీ / Date of payment'][0] : '');
-  const whoRaw = (nv['ఎవరు చెల్లించారు? / Who paid?'] || [''])[0];
-  const who = whoRaw.includes('Deepa') ? 'Deepa' : whoRaw.includes('Kalyan') ? 'Kalyan' : 'Venky';
-  const amt = parseFloat(String((nv['మొత్తం (రూపాయలు) / Amount in ₹'] || ['0'])[0]).replace(/[^\d.]/g, '')) || 0;
-  const modeRaw = (nv['ఎలా చెల్లించారు? / Payment type'] || [''])[0];
-  const mode = modeRaw.split('/')[0].trim();
-  const note = (nv['గమనిక / Note (optional)'] || [''])[0];
+  var nv = e.namedValues;
+  var dateKey = findKey_(nv, 'తేదీ');
+  var whoKey = findKey_(nv, 'ఎవరు');
+  var amtKey = findKey_(nv, 'మొత్తం');
+  var modeKey = findKey_(nv, 'ఎలా');
+
+  var dateVal = parseFormDate_(dateKey ? nv[dateKey][0] : '');
+  var whoRaw = whoKey ? nv[whoKey][0] : 'Venky';
+  var who = whoRaw.indexOf('Deepa') >= 0 ? 'Deepa' : whoRaw.indexOf('Kalyan') >= 0 ? 'Kalyan' : 'Venky';
+  var amt = parseFloat(String(amtKey ? nv[amtKey][0] : '0').replace(/[^\d.]/g, '')) || 0;
+  var mode = modeKey ? nv[modeKey][0] : '';
 
   if (amt > 0) {
-    bills.appendRow([dateVal, who, amt, mode, note, 'Google Form']);
-    updateSummary_(ss);
+    bills.appendRow([dateVal, who, amt, mode, '', 'Form']);
+    rebuildHistorySheet_(ss);
   }
+}
+
+function findKey_(nv, part) {
+  var keys = Object.keys(nv);
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i].indexOf(part) >= 0) return keys[i];
+  }
+  return null;
 }
 
 function parseFormDate_(s) {
   if (!s) return new Date();
-  try {
-    return new Date(s);
-  } catch (e) {
-    return new Date();
-  }
+  try { return new Date(s); } catch (err) { return new Date(); }
 }
 
 function importSeedData_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const bills = ss.getSheetByName('Bills');
-  const adv = ss.getSheetByName('Advances');
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var bills = ss.getSheetByName('Bills');
+  var adv = ss.getSheetByName('Advances');
   if (bills.getLastRow() > 1) return;
 
-  const billRows = [
+  var billRows = [
     ['2026-06-28', 'Venky', 50, '', '', 'Seed'],
     ['2026-06-28', 'Venky', 733, '', '', 'Seed'],
     ['2026-06-28', 'Venky', 300, '', '', 'Seed'],
@@ -178,7 +213,7 @@ function importSeedData_() {
     ['2026-06-30', 'Venky', 95, '', '', 'Seed'],
     ['2026-06-30', 'Venky', 888, '', '', 'Seed'],
     ['2026-06-30', 'Venky', 908.28, '', '', 'Seed'],
-    ['2026-06-28', 'Deepa', 1100, '', 'Rajini wife', 'Seed'],
+    ['2026-06-28', 'Deepa', 1100, '', '', 'Seed'],
     ['2026-06-28', 'Deepa', 110.66, '', '', 'Seed'],
     ['2026-06-28', 'Deepa', 550, '', '', 'Seed'],
     ['2026-06-28', 'Deepa', 22.86, '', '', 'Seed'],
@@ -198,63 +233,84 @@ function importSeedData_() {
     ['2026-06-30', 'Deepa', 1850, 'Cash', 'Paid in cash', 'Seed'],
     ['2026-06-30', 'Kalyan', 3600, 'Credit Card', 'Credit card', 'Seed'],
   ];
-  bills.getRange(2, 1, billRows.length, 6).setValues(billRows);
+  bills.getRange(2, 1, 1 + billRows.length, 6).setValues(billRows);
 
-  const advRows = [
+  var advRows = [
     ['2026-06-28', 'Shivaji', 'Venky', 3009],
     ['2026-06-29', 'Shivaji', 'Venky', 2000],
     ['2026-06-30', 'Shivaji', 'Venky', 1000],
     ['2026-06-30', 'Shivaji', 'Venky', 1000],
     ['2026-06-30', 'Shivaji', 'Venky', 500],
   ];
-  adv.getRange(2, 1, advRows.length, 4).setValues(advRows);
+  adv.getRange(2, 1, 1 + advRows.length, 4).setValues(advRows);
 }
 
-function updateSummary_(ss) {
-  const sh = ss.getSheetByName('Summary');
-  if (sh) sh.getRange('B3:B8').setFormula(sh.getRange('B3').getFormula() || '=SUM(Bills!C:C)');
+function doGet(e) {
+  e = e || {};
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (e.parameter && e.parameter.format === 'csv') {
+    return exportCsv_(ss);
+  }
+  return exportJson_(ss);
 }
 
-/** Web App — hospital-bills.html fetches this JSON */
-function doGet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const billsSh = ss.getSheetByName('Bills');
-  const advSh = ss.getSheetByName('Advances');
+function exportJson_(ss) {
+  var billsSh = ss.getSheetByName('Bills');
+  var advSh = ss.getSheetByName('Advances');
+  var bills = [];
+  var advances = [];
 
-  const bills = [];
   if (billsSh && billsSh.getLastRow() > 1) {
-    const rows = billsSh.getRange(2, 1, billsSh.getLastRow() - 1, 6).getValues();
-    rows.forEach(function (r) {
+    billsSh.getRange(2, 1, billsSh.getLastRow(), 6).getValues().forEach(function (r) {
       if (!r[2]) return;
       bills.push({
-        d: formatDate_(r[0]),
-        who: String(r[1]),
-        amt: Number(r[2]),
-        mode: String(r[3] || ''),
-        note: String(r[4] || ''),
+        d: formatDate_(r[0]), who: String(r[1]), amt: Number(r[2]),
+        mode: String(r[3] || ''), note: String(r[4] || ''),
       });
     });
   }
-
-  const advances = [];
   if (advSh && advSh.getLastRow() > 1) {
-    const rows = advSh.getRange(2, 1, advSh.getLastRow() - 1, 4).getValues();
-    rows.forEach(function (r) {
+    advSh.getRange(2, 1, advSh.getLastRow(), 4).getValues().forEach(function (r) {
       if (!r[3]) return;
       advances.push({ d: formatDate_(r[0]), amt: Number(r[3]) });
     });
   }
 
-  const payload = {
+  return ContentService.createTextOutput(JSON.stringify({
     updated: new Date().toISOString(),
     patient: 'Sri Venkateswara Rao',
     hospital: 'Mallareddy Hospital',
+    startDate: '2026-06-28',
     bills: bills,
     advances: advances,
-  };
+  })).setMimeType(ContentService.MimeType.JSON);
+}
 
-  return ContentService.createTextOutput(JSON.stringify(payload))
-    .setMimeType(ContentService.MimeType.JSON);
+function exportCsv_(ss) {
+  rebuildHistorySheet_(ss);
+  var sh = ss.getSheetByName('FullHistory');
+  var lines = [];
+  lines.push('Mallareddy Hospital — Venkateswara Rao — Full history from 2026-06-28');
+  lines.push('Generated,' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm'));
+  lines.push('');
+  lines.push('Date,Type,Paid By,Amount,Payment Mode / Notes');
+
+  if (sh && sh.getLastRow() > 1) {
+    var data = sh.getRange(2, 1, sh.getLastRow(), 5).getValues();
+    data.forEach(function (r) {
+      if (!r[0]) return;
+      lines.push([r[0], r[1], r[2], r[3], csvCell_(r[4])].join(','));
+    });
+  }
+
+  return ContentService.createTextOutput(lines.join('\n'))
+    .setMimeType(ContentService.MimeType.CSV);
+}
+
+function csvCell_(v) {
+  var s = String(v == null ? '' : v);
+  if (s.indexOf(',') >= 0 || s.indexOf('"') >= 0) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
 }
 
 function formatDate_(v) {
@@ -263,9 +319,4 @@ function formatDate_(v) {
     return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   }
   return String(v).slice(0, 10);
-}
-
-/** Manual: run after editing sheet directly */
-function refreshFromSheet() {
-  updateSummary_(SpreadsheetApp.getActiveSpreadsheet());
 }
