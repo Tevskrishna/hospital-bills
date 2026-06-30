@@ -1,0 +1,49 @@
+{
+  "patient": "Sri Venkateswara Rao",
+  "hospital": "Mallareddy Hospital",
+  "startDate": "2026-06-28",
+  "sons": [
+    { "name": "Shivaji", "payer": "Venky", "label": "శివాజీ కుమారుడు · Venky", "color": "#2a9d8f" },
+    { "name": "Rajini", "payer": "Deepa", "label": "రజినీ కుమారుడు · Deepa", "color": "#e76f51" },
+    { "name": "Kalyan", "payer": "Kalyan", "label": "కల్యాణ్ కుమారుడు", "color": "#1b4965" }
+  ],
+  "bills": [
+    { "d": "2026-06-28", "who": "Venky", "amt": 50, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Venky", "amt": 733, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Venky", "amt": 300, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Venky", "amt": 500, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Venky", "amt": 68.16, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Venky", "amt": 250, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Venky", "amt": 888, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Venky", "amt": 1300, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Venky", "amt": 95, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Venky", "amt": 888, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Venky", "amt": 908.28, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 1100, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 110.66, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 550, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 22.86, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 500, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 58, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 800, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 1500, "mode": "", "note": "" },
+    { "d": "2026-06-28", "who": "Deepa", "amt": 800, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Deepa", "amt": 1051.85, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Deepa", "amt": 990, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Deepa", "amt": 500, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Deepa", "amt": 2500, "mode": "", "note": "" },
+    { "d": "2026-06-29", "who": "Deepa", "amt": 60, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Deepa", "amt": 800, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Deepa", "amt": 90.66, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Deepa", "amt": 1334.54, "mode": "", "note": "" },
+    { "d": "2026-06-30", "who": "Deepa", "amt": 1850, "mode": "Cash", "note": "Paid in cash" },
+    { "d": "2026-06-30", "who": "Kalyan", "amt": 3600, "mode": "Credit Card", "note": "Credit card" }
+  ],
+  "advances": [
+    { "d": "2026-06-28", "amt": 3009 },
+    { "d": "2026-06-29", "amt": 2000 },
+    { "d": "2026-06-30", "amt": 1000 },
+    { "d": "2026-06-30", "amt": 1000 },
+    { "d": "2026-06-30", "amt": 500 }
+  ]
+}
