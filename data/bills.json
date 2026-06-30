@@ -45,5 +45,15 @@
     { "d": "2026-06-30", "amt": 1000 },
     { "d": "2026-06-30", "amt": 1000 },
     { "d": "2026-06-30", "amt": 500 }
-  ]
+  ],
+  "careStatus": {
+    "ward": "General Ward",
+    "condition": "Stable, under observation",
+    "conditionTe": "స్థిరంగా ఉన్నారు, పర్యవేక్షణలో",
+    "expectedDischarge": "2026-07-03",
+    "dischargeNote": "Doctor will confirm after reports",
+    "dischargeNoteTe": "రిపోర్ట్స్ వచ్చాక డాక్టర్ నిర్ణయిస్తారు",
+    "lastUpdate": "2026-06-30",
+    "lastUpdateBy": "Venky"
+  }
 }
