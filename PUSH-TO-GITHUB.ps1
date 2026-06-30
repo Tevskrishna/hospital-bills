@@ -4,7 +4,7 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 
 Set-Location $PSScriptRoot
 
-Write-Host "`n=== Hospital Bills → GitHub ===" -ForegroundColor Cyan
+Write-Host "`n=== Hospital Bills -> GitHub ===" -ForegroundColor Cyan
 
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
     Write-Host "Installing GitHub CLI..." -ForegroundColor Yellow
@@ -12,13 +12,13 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
-$auth = gh auth status 2>&1
-if ($LASTEXITCODE -ne 0) {
+$loggedIn = $false
+try { gh auth status *> $null; if ($LASTEXITCODE -eq 0) { $loggedIn = $true } } catch {}
+
+if (-not $loggedIn) {
     Write-Host "`nLog in to GitHub in the browser window..." -ForegroundColor Yellow
     gh auth login -h github.com -p https -w
 }
-
-gh auth status
 
 if (-not (Test-Path .git)) { git init }
 git branch -M main 2>$null
