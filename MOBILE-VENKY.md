@@ -1,61 +1,43 @@
-# Add bills from your phone (Venky) — no laptop needed
+# Add bills from phone — 2 minutes (Venky)
 
-## Why laptop was needed before
-GitHub Pages is **read-only**. The old "Save JSON" only downloaded a file — it never reached the family link.
-
-## Fix: Google cloud (free, 15 min once)
-After setup, you tap **➕** on your phone → bill saves → **whole family sees it** when they open the link.
+## Same link always
+**https://tevskrishna.github.io/hospital-bills/**
 
 ---
 
-## Setup (do once — can use phone browser + Google Sheets app)
+## Setup (once, on your phone)
 
-### 1. Create Google Sheet
-1. Open https://sheets.google.com → **Blank spreadsheet**
-2. **Extensions** → **Apps Script**
-3. Delete default code → paste all of `google-setup/Code.gs` from this project
-4. **Save** → Run **`setupEverything`** → Authorize
+### Step 1 — GitHub token
+1. Open: https://github.com/settings/personal-access-tokens/new
+2. **Token name:** Hospital Bills  
+3. **Expiration:** 90 days  
+4. **Repository access:** Only **hospital-bills**  
+5. **Permissions → Repository → Contents:** Read and write  
+6. **Generate token** → copy it (you only see it once)
 
-### 2. Import current bills (one time)
-In Apps Script, run this once from the editor (or use Run → import):
-- After setup, open the site on laptop once with browser console, or ask Cursor to run `importAll` with your `bills.json`
-
-**Easier:** In Apps Script, add a temporary function or run `importAllFromJson_` via doPost from browser after deploy.
-
-**Simplest for Venky:** After deploy, open the hospital page → scroll to setup box → we'll push import via Cursor once you give the Web App URL.
-
-### 3. Deploy Web App
-1. **Deploy** → **New deployment** → **Web app**
-2. Execute as: **Me**
-3. Who has access: **Anyone**
-4. **Deploy** → copy the URL (ends in `/exec`)
-
-### 4. On your phone
-1. Open https://tevskrishna.github.io/hospital-bills/
-2. Scroll to **One-time setup** → paste Web App URL → **Save**
-3. Tap green **➕** (bottom left) → PIN **7582** → add bill → **✓ Save bill**
-
-You'll see: **✅ Saved! Family can refresh the link.**
+### Step 2 — Save on the hospital page
+1. Open https://tevskrishna.github.io/hospital-bills/ on your phone  
+2. Scroll to **2-minute phone setup**  
+3. Paste token → **Save token**  
+4. Green banner appears: **Mobile sync ON**
 
 ---
 
 ## Daily use (30 seconds)
-1. Open link from WhatsApp
-2. Tap **➕** → enter date, who paid, amount
-3. Tap **✓ Save bill**
-4. Tap **WhatsApp** to share updated totals with family
+1. Tap **➕** (bottom left)  
+2. PIN: **7582**  
+3. Date, who paid, amount → **✓ Save bill**  
+4. Family refreshes the same link in ~1 minute  
 
 ---
 
 ## PIN
-Default: **7582** — change in `google-setup/Code.gs` (`SYNC_PIN`) and `index.html` (`CONFIG.syncPin`) together.
+Default **7582** — change in `index.html` → `CONFIG.syncPin`
+
+## Token safety
+Token stays **only on your phone** (not in GitHub code). Never share it on WhatsApp.
 
 ---
 
-## Without cloud setup (temporary)
-Bills save **on your phone only**. Orange banner appears → tap **Copy new bills** → paste here in Cursor or WhatsApp.
-
----
-
-## Same family link (never changes)
-**https://tevskrishna.github.io/hospital-bills/**
+## Alternative: Google Sheet
+See `google-setup/Code.gs` and paste Web App URL under "Alternative" on the setup box.

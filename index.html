@@ -716,7 +716,7 @@
 <div class="main">
   <div class="content-light">
 
-    <div class="reveal cloud-ok" id="cloudOk">☁️ Cloud sync ON — bills you add update for everyone instantly</div>
+    <div class="reveal cloud-ok" id="cloudOk">☁️ Mobile sync ON — bills you add update for everyone in ~1 minute</div>
     <div class="reveal sync-banner" id="syncBanner">
       📱 Bills saved on <strong>this phone only</strong>. Family won't see them until cloud sync is on.
       <button onclick="copyPendingBills()">📤 Copy new bills → paste in WhatsApp to Venky</button>
@@ -762,13 +762,16 @@
     <div class="reveal no-print">
       <div class="admin-fab" onclick="openAddModal()">➕ Venky — Add bill from phone (tap here)</div>
       <div class="setup-box" id="setupBox">
-        <strong>One-time setup (15 min)</strong> so bills save from phone for whole family:<br>
-        1. Google Sheet → Apps Script → paste <code>google-setup/Code.gs</code> → Run setup<br>
-        2. Deploy → Web app → Anyone → copy URL<br>
-        3. Paste URL below → Save
-        <input type="url" id="setupApiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-        <button class="btn-block" style="margin-top:8px;font-size:0.8rem;padding:12px" onclick="saveApiUrl()">Save cloud URL on this phone</button>
-        <button class="btn-block" style="margin-top:8px;font-size:0.75rem;padding:10px;background:#64748b" onclick="saveJson()">💾 Backup JSON (laptop)</button>
+        <strong>⚡ 2-minute phone setup</strong> (do once on your phone):<br><br>
+        <b>Step 1:</b> <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create GitHub token</a><br>
+        <span style="font-size:0.7rem">Name: Hospital Bills · Expiry: 90 days · Repo: <b>hospital-bills</b> only · Permission: <b>Contents</b> Read & Write</span><br><br>
+        <b>Step 2:</b> Copy token → paste below → Save<br>
+        <input type="password" id="setupGithubToken" placeholder="ghp_xxxx or github_pat_xxxx" autocomplete="off" />
+        <button class="btn-block" style="margin-top:8px;font-size:0.85rem;padding:14px" onclick="saveGithubToken()">✓ Save token — enable mobile add</button>
+        <details style="margin-top:12px;font-size:0.7rem"><summary>Alternative: Google Sheet sync</summary>
+          <input type="url" id="setupApiUrl" placeholder="Google Web App URL" style="margin-top:8px" />
+          <button class="btn-block" style="margin-top:6px;font-size:0.75rem;padding:10px" onclick="saveApiUrl()">Save Google URL</button>
+        </details>
       </div>
     </div>
 
@@ -847,12 +850,15 @@
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-/* ── Cloud sync: paste your Google Web App URL after one-time setup (see MOBILE-VENKY.md) ── */
+/* ── Mobile sync: GitHub token (recommended) or Google Web App URL ── */
 const CONFIG = {
   apiUrl: localStorage.getItem("hb_apiUrl") || "",
+  githubToken: localStorage.getItem("hb_github_token") || "",
+  githubRepo: "Tevskrishna/hospital-bills",
+  githubPath: "data/bills.json",
   syncPin: "7582",
 };
-const PAGE_VERSION = "2026-07-01-v9";
+const PAGE_VERSION = "2026-07-01-v10";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -936,11 +942,96 @@ function clearLocalPending() {
 function updateSyncUI() {
   const pending = getLocalPending();
   const hasPending = (pending.pendingBills || []).length > 0 || (pending.pendingAdvances || []).length > 0;
-  document.getElementById("syncBanner")?.classList.toggle("show", !CONFIG.apiUrl && hasPending);
-  document.getElementById("cloudOk")?.classList.toggle("show", !!CONFIG.apiUrl);
-  document.getElementById("setupBox")?.style.setProperty("display", CONFIG.apiUrl ? "none" : "block");
-  const urlInput = document.getElementById("setupApiUrl");
-  if (urlInput && CONFIG.apiUrl) urlInput.value = CONFIG.apiUrl;
+  const synced = !!(CONFIG.githubToken || CONFIG.apiUrl);
+  document.getElementById("syncBanner")?.classList.toggle("show", !synced && hasPending);
+  document.getElementById("cloudOk")?.classList.toggle("show", synced);
+  document.getElementById("setupBox")?.style.setProperty("display", synced ? "none" : "block");
+  if (CONFIG.apiUrl) document.getElementById("setupApiUrl").value = CONFIG.apiUrl;
+}
+
+function buildPayload() {
+  return {
+    patient: meta.patient,
+    hospital: meta.hospital,
+    startDate: meta.startDate,
+    sons: [
+      { name: "Shivaji", payer: "Venky", label: "శివాజీ కుమారుడు · Venky", color: "#2a9d8f" },
+      { name: "Rajini", payer: "Deepa", label: "రజినీ కుమారుడు · Deepa", color: "#e76f51" },
+      { name: "Kalyan", payer: "Kalyan", label: "కల్యాణ్ కుమారుడు", color: "#1b4965" },
+    ],
+    bills: data.bills,
+    advances: data.advances,
+    careStatus,
+  };
+}
+
+function jsonToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach(b => { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+
+async function saveToGitHub() {
+  const token = CONFIG.githubToken || localStorage.getItem("hb_github_token");
+  if (!token) return { ok: false, offline: true };
+  const headers = {
+    Authorization: "Bearer " + token,
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  const jsonStr = JSON.stringify(buildPayload(), null, 2);
+  const content = jsonToBase64(jsonStr);
+  const url = `https://api.github.com/repos/${CONFIG.githubRepo}/contents/${CONFIG.githubPath}`;
+
+  let sha = null;
+  const getRes = await fetch(url, { headers });
+  if (getRes.ok) sha = (await getRes.json()).sha;
+  else if (getRes.status !== 404) {
+    const err = await getRes.json().catch(() => ({}));
+    return { ok: false, error: err.message || "GitHub read failed" };
+  }
+
+  const putRes = await fetch(url, {
+    method: "PUT",
+    headers: { ...headers, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: "Mobile bill update " + new Date().toISOString().slice(0, 16),
+      content,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+  const result = await putRes.json().catch(() => ({}));
+  if (!putRes.ok) return { ok: false, error: result.message || "GitHub save failed" };
+  return { ok: true };
+}
+
+async function pushAllToCloud() {
+  if (CONFIG.githubToken) {
+    const gh = await saveToGitHub();
+    if (gh.ok) return gh;
+    if (!CONFIG.apiUrl) return gh;
+  }
+  if (CONFIG.apiUrl) {
+    return cloudPost("importAll", {
+      bills: data.bills,
+      advances: data.advances,
+      careStatus,
+    });
+  }
+  return { ok: false, offline: true };
+}
+
+function saveGithubToken() {
+  const token = document.getElementById("setupGithubToken").value.trim();
+  if (!token.startsWith("ghp_") && !token.startsWith("github_pat_")) {
+    return alert("Paste the full token from GitHub (starts with ghp_ or github_pat_)");
+  }
+  localStorage.setItem("hb_github_token", token);
+  CONFIG.githubToken = token;
+  document.getElementById("setupGithubToken").value = "";
+  toast("Token saved! You can add bills from phone now.");
+  updateSyncUI();
 }
 
 function saveApiUrl() {
@@ -1224,15 +1315,16 @@ async function addBill() {
   document.getElementById("aAmt").value = ""; document.getElementById("aNote").value = "";
   render();
   closeAddModal();
+  toast("Saving...");
 
-  const r = await cloudPost("addBill", { bill });
+  const r = await pushAllToCloud();
   if (r.ok) {
-    toast("✅ Saved! Family can refresh the link.");
+    toast("✅ Saved! Family refresh link in ~1 min.");
     clearLocalPending();
   } else {
     const p = getLocalPending();
     saveLocalPending({ pendingBills: [...(p.pendingBills || []), bill] });
-    toast(CONFIG.apiUrl ? "⚠️ Cloud failed — saved on this phone" : "📱 Saved on phone — set up cloud sync");
+    toast(r.error ? "⚠️ " + r.error : "📱 Saved on phone — complete setup below");
   }
 }
 async function addAdvance() {
@@ -1243,13 +1335,14 @@ async function addAdvance() {
   data.advances.push(advance);
   render();
   closeAddModal();
+  toast("Saving...");
 
-  const r = await cloudPost("addAdvance", { advance });
+  const r = await pushAllToCloud();
   if (r.ok) toast("✅ Advance saved for family!");
   else {
     const p = getLocalPending();
     saveLocalPending({ pendingAdvances: [...(p.pendingAdvances || []), advance] });
-    toast("📱 Advance saved on this phone");
+    toast("📱 Advance saved on phone — complete setup");
   }
 }
 function saveJson() {
@@ -1276,11 +1369,11 @@ async function saveStatus() {
   renderCareBanner();
   closeAddModal();
 
-  const r = await cloudPost("updateCareStatus", { careStatus });
+  const r = await pushAllToCloud();
   if (r.ok) toast("✅ Status updated for family!");
   else {
     saveLocalPending({ careStatus });
-    toast("📱 Status saved on this phone");
+    toast("📱 Status saved on phone — complete setup");
   }
 }
 
