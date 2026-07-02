@@ -16,9 +16,9 @@
   <title>FamilyCare · Hospital Bills</title>
   <script>
     (function () {
-      if (!location.search.includes("b=16")) {
+      if (!location.search.includes("b=17")) {
         var u = new URL(location.href);
-        u.searchParams.set("b", "16");
+        u.searchParams.set("b", "17");
         location.replace(u.toString());
       }
     })();
@@ -243,9 +243,9 @@
     }
     .content-light {
       background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(3,7,18,0.95) 100%);
-      border-radius: 32px 32px 0 0;
-      margin-top: -32px;
-      padding: 28px 16px 24px;
+      border-radius: 24px 24px 0 0;
+      margin-top: 0;
+      padding: 24px 16px 24px;
       min-height: 60vh;
       position: relative;
       border-top: 1px solid var(--glass-border);
@@ -723,8 +723,7 @@
     }
 
     /* Chatbot */
-    .chat-fab {
-      position: fixed; bottom: calc(var(--nav-h) + 16px + env(safe-area-inset-bottom)); right: 16px;
+.chat-fab { display: none !important; }
       z-index: 200; width: 58px; height: 58px; border-radius: 50%;
       border: none; cursor: pointer;
       background: linear-gradient(135deg, #0d9488, #0891b2);
@@ -869,6 +868,54 @@
 
     #sec-bills, #sec-share { scroll-margin-top: 80px; }
 
+    /* ── Tab pages ── */
+    .app-page { display: none; animation: fadePage 0.3s ease; }
+    .app-page.active { display: block; }
+    @keyframes fadePage { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .hero-compact {
+      text-align: center; padding: 8px 0 20px; color: #fff;
+    }
+    .hero-compact .father-name {
+      font-family: var(--display); font-size: 1.35rem; font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-compact .meta { font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+    .home-paid-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+    }
+    .home-paid-box {
+      text-align: center; padding: 14px 8px; border-radius: 16px;
+      background: var(--card); border: 1px solid var(--card-border);
+    }
+    .home-paid-box .ic { font-size: 1.4rem; }
+    .home-paid-box .nm { font-size: 0.68rem; font-weight: 700; margin-top: 6px; }
+    .home-paid-box .am {
+      font-family: var(--display); font-size: 0.95rem; font-weight: 800; margin-top: 6px;
+    }
+
+    .btn-add-home {
+      width: 100%; padding: 18px; margin: 16px 0 8px; border: none; border-radius: 18px;
+      background: linear-gradient(135deg, #22c55e, #14b8a6);
+      color: #fff; font-family: var(--display); font-size: 1.05rem; font-weight: 800;
+      cursor: pointer; box-shadow: 0 8px 28px rgba(34,197,94,0.35);
+    }
+    .home-link {
+      display: block; text-align: center; padding: 12px; font-size: 0.8rem;
+      color: var(--teal); font-weight: 600; cursor: pointer; border: none; background: none; width: 100%;
+    }
+    .home-settle-mini { margin-bottom: 8px; }
+    .home-settle-mini .settle-hero { margin: 0 0 12px; padding: 16px; }
+    .home-settle-mini .settle-total-box .val { font-size: 1.4rem; }
+
+    .page-head {
+      padding: 8px 0 16px; border-bottom: 1px solid var(--card-border); margin-bottom: 20px;
+    }
+    .page-head h2 { font-family: var(--display); font-size: 1.2rem; font-weight: 800; }
+    .page-head p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
     @media print {
       .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay, .add-fab, .add-modal, .pin-modal, .toast, .app-nav, .splash, .install-banner { display: none !important; }
       body { background: #fff; padding: 0; }
@@ -907,37 +954,7 @@
   <span class="float-icon fi-4">✨</span>
 </div>
 
-<header class="hero">
-  <div class="pill">FamilyCare · మూడు కుమారుల సేవ</div>
-  <h1>మల్లారెడ్డి ఆసుపత్రి బిల్లులు</h1>
-  <div class="father-name">శ్రీ వెంకటేశ్వర రావు గారు</div>
-  <div class="meta">Mallareddy Hospital · 2026 · <span id="todayLabel"></span></div>
-  <div class="hero-graphic">
-    <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Father -->
-      <circle class="node-father" cx="160" cy="45" r="28" fill="url(#gFather)" stroke="#e8c468" stroke-width="2"/>
-      <text x="160" y="50" text-anchor="middle" font-size="22">👴</text>
-      <text x="160" y="88" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9" font-family="Inter,sans-serif">Father · నాన్నగారు</text>
-      <!-- Lines to sons -->
-      <path class="pulse-line" d="M160 73 L80 130" stroke="url(#gLine1)" stroke-width="2" fill="none"/>
-      <path class="pulse-line" d="M160 73 L160 130" stroke="url(#gLine2)" stroke-width="2" fill="none" style="animation-delay:0.3s"/>
-      <path class="pulse-line" d="M160 73 L240 130" stroke="url(#gLine3)" stroke-width="2" fill="none" style="animation-delay:0.6s"/>
-      <!-- Sons -->
-      <g class="node-son"><circle cx="80" cy="155" r="24" fill="url(#gS1)" stroke="#14b8a6" stroke-width="2"/><text x="80" y="160" text-anchor="middle" font-size="16">🙏</text><text x="80" y="192" text-anchor="middle" fill="#5eead4" font-size="8" font-family="Inter">Shivaji</text></g>
-      <g class="node-son"><circle cx="160" cy="155" r="24" fill="url(#gS2)" stroke="#fb7185" stroke-width="2"/><text x="160" y="160" text-anchor="middle" font-size="16">💛</text><text x="160" y="192" text-anchor="middle" fill="#fda4af" font-size="8" font-family="Inter">Rajini</text></g>
-      <g class="node-son"><circle cx="240" cy="155" r="24" fill="url(#gS3)" stroke="#60a5fa" stroke-width="2"/><text x="240" y="160" text-anchor="middle" font-size="16">💙</text><text x="240" y="192" text-anchor="middle" fill="#93c5fd" font-size="8" font-family="Inter">Kalyan</text></g>
-      <defs>
-        <radialGradient id="gFather"><stop offset="0%" stop-color="#fcd34d"/><stop offset="100%" stop-color="#b45309"/></radialGradient>
-        <radialGradient id="gS1"><stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#0f766e"/></radialGradient>
-        <radialGradient id="gS2"><stop offset="0%" stop-color="#fb7185"/><stop offset="100%" stop-color="#be123c"/></radialGradient>
-        <radialGradient id="gS3"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#1d4ed8"/></radialGradient>
-        <linearGradient id="gLine1" x1="80" y1="130" x2="160" y2="73"><stop stop-color="#14b8a6"/><stop offset="1" stop-color="#e8c468"/></linearGradient>
-        <linearGradient id="gLine2" x1="160" y1="130" x2="160" y2="73"><stop stop-color="#fb7185"/><stop offset="1" stop-color="#e8c468"/></linearGradient>
-        <linearGradient id="gLine3" x1="240" y1="130" x2="160" y2="73"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#e8c468"/></linearGradient>
-      </defs>
-    </svg>
-  </div>
-</header>
+<header class="hero" style="display:none"></header>
 
 <div class="main">
   <div class="content-light">
@@ -948,70 +965,91 @@
       <button onclick="copyPendingBills()">📤 Copy new bills → paste in WhatsApp to Venky</button>
     </div>
 
-    <div class="reveal care-banner" id="careBanner"></div>
-
-    <div class="reveal family-hub" id="familyHub"></div>
-
-    <div class="reveal status-chip" id="statusBar">Loading...</div>
-
-    <div class="reveal mega-total">
-      <div class="lbl">Total Hospital Spend · మొత్తం ఖర్చు</div>
-      <div class="num" id="grandTotal">—</div>
-      <div class="sub">From 28 Jun 2026 · Three sons for father</div>
-    </div>
-
-    <div class="reveal sec-title"><h2>Contributions</h2><p>Who paid at hospital</p><div class="line"></div></div>
-    <div class="reveal grid-3" id="sonCards" style="margin-bottom:24px"></div>
-
-    <div class="reveal card glass-dark" id="shivajiCard" style="margin-bottom:24px"></div>
-
-    <div class="reveal sec-title" id="sec-bills"><h2>మీ వాటా · Fair Share</h2><p>Equal 1/3 split — what's left till date</p><div class="line"></div></div>
-    <div class="reveal split-info">
-      మొత్తం ఖర్చు <strong>3 కుమారులకు సమానం</strong>. మిగిలింది = మీ వాటా − చెల్లించినది.
-    </div>
-    <div class="reveal grid-3" id="splitCards"></div>
-    <div class="reveal split-banner" id="splitTotal"></div>
-
-    <div class="reveal settle-card" id="settlementCard"></div>
-
-    <div class="reveal sec-title" style="margin-top:32px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
-    <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
-
-    <div class="reveal card verify-card" id="sec-share">
-      <div class="share-hero">
-        <div class="peace">✦ Clear numbers · No confusion ✦</div>
-        <h2>ఎవరు ఎంత చెల్లించారు<br><span style="font-size:0.85rem;font-weight:600;color:var(--muted)">Who Paid What — Family Truth</span></h2>
-        <div class="fair-pill">Each brother's fair share: <strong id="shareFair">—</strong></div>
+    <!-- ═══ HOME — simple dashboard ═══ -->
+    <div id="page-home" class="app-page active">
+      <div class="hero-compact">
+        <div class="father-name">శ్రీ వెంకటేశ్వర రావు గారు</div>
+        <div class="meta">Mallareddy Hospital · <span id="todayLabel"></span></div>
       </div>
-      <div class="person-grid" id="personGrid"></div>
-      <div id="settleHero"></div>
-      <div class="share-note" id="shareNote"></div>
-      <div class="share-actions">
-        <button class="btn-wa-big" onclick="copyWhatsApp()">💬 Share on WhatsApp — Ask family OK</button>
-        <p class="share-ok-hint">మీరు చూసి సరైంది అని OK అని reply చేయండి</p>
+
+      <div class="reveal care-banner" id="careBanner"></div>
+      <div class="reveal status-chip" id="statusBar">Loading...</div>
+
+      <div class="reveal mega-total">
+        <div class="lbl">Total Hospital Spend · మొత్తం ఖర్చు</div>
+        <div class="num" id="grandTotal">—</div>
+        <div class="sub">Till date · Three sons for father</div>
+      </div>
+
+      <div class="reveal home-paid-row" id="homePaid"></div>
+
+      <div class="reveal home-settle-mini" id="homeSettle"></div>
+
+      <button class="btn-add-home no-print" onclick="openAddModal()">➕ Add today's bill</button>
+      <button class="home-link no-print" onclick="showPage('bills')">See all bill details →</button>
+    </div>
+
+    <!-- ═══ BILLS — full details ═══ -->
+    <div id="page-bills" class="app-page">
+      <div class="page-head">
+        <h2>📊 All Bills · పూర్తి వివరాలు</h2>
+        <p>Who paid · fair share · day by day</p>
+      </div>
+
+      <div class="reveal family-hub" id="familyHub"></div>
+
+      <div class="reveal sec-title"><h2>Contributions</h2><p>Who paid at hospital</p><div class="line"></div></div>
+      <div class="reveal grid-3" id="sonCards" style="margin-bottom:24px"></div>
+
+      <div class="reveal card glass-dark" id="shivajiCard" style="margin-bottom:24px"></div>
+
+      <div class="reveal sec-title"><h2>మీ వాటా · Fair Share</h2><p>Equal 1/3 split</p><div class="line"></div></div>
+      <div class="reveal split-info">
+        మొత్తం ఖర్చు <strong>3 కుమారులకు సమానం</strong>. మిగిలింది = మీ వాటా − చెల్లించినది.
+      </div>
+      <div class="reveal grid-3" id="splitCards"></div>
+      <div class="reveal split-banner" id="splitTotal"></div>
+
+      <div class="reveal sec-title" style="margin-top:24px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
+      <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
+
+      <div class="reveal card" style="margin-top:16px">
+        <div class="sec-title"><h2>Download History</h2><p>పూర్తి చరిత్ర CSV</p></div>
+        <button class="btn-block" onclick="downloadHistory()">⬇ Download full history</button>
+      </div>
+
+      <div class="reveal no-print" style="margin-top:16px">
+        <div class="setup-box" id="setupBox">
+          <strong>⚡ Phone setup</strong> — paste GitHub token to save bills for family<br>
+          <input type="password" id="setupGithubToken" placeholder="github_pat_xxxx" autocomplete="off" />
+          <button class="btn-block" style="margin-top:8px;font-size:0.8rem;padding:12px" onclick="saveGithubToken()">✓ Save token</button>
+          <details style="margin-top:8px;font-size:0.7rem"><summary>Google Sheet sync</summary>
+            <input type="url" id="setupApiUrl" placeholder="Google Web App URL" style="margin-top:8px" />
+            <button class="btn-block" style="margin-top:6px;font-size:0.75rem;padding:10px" onclick="saveApiUrl()">Save Google URL</button>
+          </details>
+        </div>
       </div>
     </div>
 
-    <div class="reveal card" style="margin-top:16px">
-      <div class="sec-title"><h2>Download History</h2><p>పూర్తి చరిత్ర CSV</p></div>
-      <button class="btn-block" onclick="downloadHistory()">⬇ Download full history</button>
-    </div>
-
-    <div class="reveal no-print">
-      <div class="admin-fab" onclick="openAddModal()">➕ Venky — Add bill from phone (tap here)</div>
-      <div class="setup-box" id="setupBox">
-        <strong>⚡ 2-minute phone setup</strong> (do once on your phone):<br><br>
-        <b>Step 1:</b> <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create GitHub token</a><br>
-        <span style="font-size:0.7rem">Name: Hospital Bills · Expiry: 90 days · Repo: <b>hospital-bills</b> only · Permission: <b>Contents</b> Read & Write</span><br><br>
-        <b>Step 2:</b> Copy token → paste below → Save<br>
-        <input type="password" id="setupGithubToken" placeholder="ghp_xxxx or github_pat_xxxx" autocomplete="off" />
-        <button class="btn-block" style="margin-top:8px;font-size:0.85rem;padding:14px" onclick="saveGithubToken()">✓ Save token — enable mobile add</button>
-        <details style="margin-top:12px;font-size:0.7rem"><summary>Alternative: Google Sheet sync</summary>
-          <input type="url" id="setupApiUrl" placeholder="Google Web App URL" style="margin-top:8px" />
-          <button class="btn-block" style="margin-top:6px;font-size:0.75rem;padding:10px" onclick="saveApiUrl()">Save Google URL</button>
-        </details>
+    <!-- ═══ SHARE — family truth ═══ -->
+    <div id="page-share" class="app-page">
+      <div class="reveal card verify-card" id="sec-share" style="margin:0;border:none;box-shadow:none;background:transparent;padding:0">
+        <div class="share-hero">
+          <div class="peace">✦ Clear numbers · No confusion ✦</div>
+          <h2>ఎవరు ఎంత చెల్లించారు<br><span style="font-size:0.85rem;font-weight:600;color:var(--muted)">Who Paid What</span></h2>
+          <div class="fair-pill">Fair share each: <strong id="shareFair">—</strong></div>
+        </div>
+        <div class="person-grid" id="personGrid"></div>
+        <div id="settleHero"></div>
+        <div class="share-note" id="shareNote"></div>
+        <div class="share-actions">
+          <button class="btn-wa-big" onclick="copyWhatsApp()">💬 Share on WhatsApp — Ask family OK</button>
+          <p class="share-ok-hint">మీరు చూసి సరైంది అని OK అని reply చేయండి</p>
+        </div>
       </div>
     </div>
+
+    <div class="reveal settle-card" id="settlementCard" style="display:none"></div>
 
   </div>
 </div>
@@ -1055,11 +1093,11 @@
 <div class="toast" id="toast"></div>
 
 <nav class="app-nav no-print" id="appNav">
-  <button onclick="navTo('top')" class="active" data-nav="home"><span class="ni">🏠</span>Home</button>
-  <button onclick="navTo('sec-bills')" data-nav="bills"><span class="ni">📊</span>Bills</button>
+  <button onclick="showPage('home')" class="active" data-nav="home"><span class="ni">🏠</span>Home</button>
+  <button onclick="showPage('bills')" data-nav="bills"><span class="ni">📊</span>Bills</button>
   <button class="nav-add" onclick="openAddModal()" aria-label="Add bill"><span>+</span></button>
+  <button onclick="showPage('share')" data-nav="share"><span class="ni">💬</span>Share</button>
   <button onclick="toggleChat(true)" data-nav="care"><span class="ni">🩺</span>Care</button>
-  <button onclick="navShare()" data-nav="share"><span class="ni">💬</span>Share</button>
 </nav>
 
 <nav class="dock no-print" style="display:none">
@@ -1097,7 +1135,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v16";
+const PAGE_VERSION = "2026-07-03-v17";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1489,9 +1527,47 @@ function render() {
   html += "</tbody></table>";
   document.getElementById("dayTable").innerHTML = html;
 
+  renderHomeSummary(total, venky, deepa, kalyan);
   renderShareHub(total, venky, deepa, kalyan);
 
   initReveal();
+}
+
+function renderHomeSummary(total, venky, deepa, kalyan) {
+  const s = computeSettlement(total);
+  document.getElementById("homePaid").innerHTML = [
+    { ic: "🙏", nm: "Venky", am: venky, c: "#2dd4bf" },
+    { ic: "💛", nm: "Deepa", am: deepa, c: "#fb7185" },
+    { ic: "💙", nm: "Kalyan", am: kalyan, c: "#60a5fa" },
+  ].map(p => `
+    <div class="home-paid-box">
+      <div class="ic">${p.ic}</div>
+      <div class="nm">${p.nm}</div>
+      <div class="am" style="color:${p.c}">${fmt(p.am)}</div>
+    </div>`).join("");
+
+  const el = document.getElementById("homeSettle");
+  if (!s.settlements.length) {
+    el.innerHTML = `<div class="settle-te-big"><strong>✓ అందరూ సమానం</strong></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="settle-hero">
+      <h3>💸 Settlement · తీర్పు</h3>
+      <div class="settle-flow">
+        ${s.settlements.map(x => `
+          <div class="settle-arrow">
+            <div class="from"><div class="n">${x.from}</div></div>
+            <div class="mid"><div class="arr">→</div><div class="val">${fmt(x.amt)}</div></div>
+            <div class="to"><div class="n">${x.to}</div></div>
+          </div>`).join("")}
+      </div>
+      <div class="settle-total-box">
+        <div class="lbl">Kalyan pays total</div>
+        <div class="val">${fmt(s.kalyanOwes)}</div>
+      </div>
+    </div>
+    <button class="home-link" onclick="showPage('share')">Full share card for family →</button>`;
 }
 
 function renderShareHub(total, venky, deepa, kalyan) {
@@ -1864,14 +1940,16 @@ function promptInstall() {
 function hideSplash() {
   setTimeout(() => document.getElementById("splash")?.classList.add("hide"), 600);
 }
-function navTo(id) {
-  const el = id === "top" ? document.querySelector(".hero") : document.getElementById(id);
-  el?.scrollIntoView({ behavior: "smooth", block: "start" });
-  document.querySelectorAll(".app-nav button[data-nav]").forEach(b => b.classList.toggle("active", b.dataset.nav === (id === "top" ? "home" : id.replace("sec-",""))));
+function showPage(tab) {
+  document.querySelectorAll(".app-page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + tab)?.classList.add("active");
+  document.querySelectorAll(".app-nav button[data-nav]").forEach(b => {
+    b.classList.toggle("active", b.dataset.nav === tab);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (tab === "care") toggleChat(true);
 }
-function navShare() {
-  navTo("sec-share");
-}
+function navShare() { showPage("share"); }
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) =>
     Promise.all(regs.map((r) => r.unregister()))
