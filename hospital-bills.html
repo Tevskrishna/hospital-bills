@@ -722,20 +722,8 @@
       font-family: var(--display); font-size: 1.1rem; font-weight: 800; color: var(--gold);
     }
 
-    /* Chatbot */
-.chat-fab { display: none !important; }
-      z-index: 200; width: 58px; height: 58px; border-radius: 50%;
-      border: none; cursor: pointer;
-      background: linear-gradient(135deg, #0d9488, #0891b2);
-      color: #fff; font-size: 1.5rem;
-      box-shadow: 0 6px 28px rgba(13,148,136,0.5);
-      animation: chatPulse 2.5s ease-in-out infinite;
-      display: flex; align-items: center; justify-content: center;
-    }
-    @keyframes chatPulse {
-      0%, 100% { box-shadow: 0 6px 28px rgba(13,148,136,0.5); transform: scale(1); }
-      50% { box-shadow: 0 8px 36px rgba(45,212,191,0.65); transform: scale(1.05); }
-    }
+    /* Chatbot — Care tab in bottom nav; hide floating duplicate */
+    .chat-fab { display: none !important; }
     .chat-fab.open { background: #334155; animation: none; }
     .chat-panel {
       position: fixed; bottom: 0; left: 0; right: 0;
