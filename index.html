@@ -443,6 +443,24 @@
     }
     .split-banner strong { color: var(--gold); font-family: var(--display); font-size: 1.1rem; }
 
+    .settle-card {
+      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(13,148,136,0.12));
+      border: 1px solid rgba(129,140,248,0.3);
+      border-radius: var(--radius);
+      padding: 20px; margin-bottom: 20px;
+    }
+    .settle-card h3 { font-family: var(--display); font-size: 1.05rem; margin-bottom: 12px; }
+    .settle-table { width: 100%; font-size: 0.78rem; border-collapse: collapse; margin: 12px 0; }
+    .settle-table th, .settle-table td { padding: 10px 8px; border-bottom: 1px solid var(--card-border); text-align: left; }
+    .settle-table th { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; }
+    .settle-table td.amt { text-align: right; font-weight: 800; color: var(--gold); }
+    .settle-te {
+      padding: 14px; border-radius: 12px; margin-top: 12px;
+      background: rgba(13,148,136,0.15); border: 1px solid rgba(45,212,191,0.25);
+      font-size: 0.85rem; line-height: 1.7;
+    }
+    .settle-note { font-size: 0.68rem; color: var(--muted); margin-top: 10px; }
+
     /* Table */
     .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--card-border); }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; color: var(--text); }
@@ -819,6 +837,8 @@
     <div class="reveal grid-3" id="splitCards"></div>
     <div class="reveal split-banner" id="splitTotal"></div>
 
+    <div class="reveal settle-card" id="settlementCard"></div>
+
     <div class="reveal sec-title" style="margin-top:32px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
     <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
 
@@ -932,7 +952,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v13";
+const PAGE_VERSION = "2026-07-03-v14";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1187,6 +1207,36 @@ function computeSplit(total) {
   });
 }
 
+function computeSettlement(total) {
+  const fair = total / 3;
+  const paid = { Venky: sumWho("Venky"), Deepa: sumWho("Deepa"), Kalyan: sumWho("Kalyan") };
+  const extra = {
+    Venky: paid.Venky - fair,
+    Deepa: paid.Deepa - fair,
+    Kalyan: paid.Kalyan - fair,
+  };
+  const settlements = [];
+  const kalyanOwes = Math.max(0, fair - paid.Kalyan);
+  if (kalyanOwes > 0.01) {
+    const creditors = [
+      { who: "Deepa", te: "దీప", amt: extra.Deepa },
+      { who: "Venky", te: "వెంకీ", amt: extra.Venky },
+    ].filter(c => c.amt > 0.01).sort((a, b) => b.amt - a.amt);
+    let left = kalyanOwes;
+    creditors.forEach(c => {
+      const pay = Math.min(left, c.amt);
+      if (pay > 0.01) {
+        settlements.push({
+          from: "Kalyan", fromTe: "కల్యాణ్", to: c.who, toTe: c.te, amt: pay,
+          why: c.who === "Deepa" ? "Deepa paid the most extra" : "Venky paid a little extra",
+        });
+        left -= pay;
+      }
+    });
+  }
+  return { fair, paid, extra, settlements, kalyanOwes };
+}
+
 function render() {
   const total = totalBills();
   const venky = sumWho("Venky"), deepa = sumWho("Deepa"), kalyan = sumWho("Kalyan");
@@ -1278,6 +1328,8 @@ function render() {
     ? `మొత్తం ఇంకా చెల్లించాల్సినది: <strong>${fmt(totalOwe)}</strong>`
     : `వాటా పూర్తి · All shares met ✓`;
 
+  renderSettlement(total);
+
   const byDate = {};
   data.bills.forEach(b => { (byDate[b.d] = byDate[b.d] || []).push(b); });
   let html = "<table><thead><tr><th>Person</th><th>Details</th><th>Amount</th></tr></thead><tbody>";
@@ -1292,13 +1344,57 @@ function render() {
   html += "</tbody></table>";
   document.getElementById("dayTable").innerHTML = html;
 
-  document.getElementById("verifyList").innerHTML = `
-    <li><strong>Venky (Shivaji):</strong> ${fmt(venky)} paid · owes ${fmt(Math.max(0, total/3 - venky))}</li>
-    <li><strong>Deepa (Rajini):</strong> ${fmt(deepa)} · ${deepa > total/3 ? "extra " + fmt(deepa - total/3) : "owes " + fmt(total/3 - deepa)}</li>
-    <li><strong>Kalyan:</strong> ${fmt(kalyan)} · owes ${fmt(Math.max(0, total/3 - kalyan))}</li>
-    <li><strong>Total:</strong> ${fmt(total)} — reply <strong>OK</strong> on WhatsApp</li>`;
+  document.getElementById("verifyList").innerHTML = buildVerifyHtml(total, venky, deepa, kalyan);
 
   initReveal();
+}
+
+function renderSettlement(total) {
+  const s = computeSettlement(total);
+  const el = document.getElementById("settlementCard");
+  if (!el) return;
+
+  if (!s.settlements.length) {
+    el.innerHTML = `<h3>✓ Settlement · తీర్పు</h3><p style="font-size:0.85rem;color:var(--muted)">All three shares are balanced — no one owes anyone.</p>`;
+    return;
+  }
+
+  let rows = s.settlements.map(x => `
+    <tr>
+      <td><strong>${x.from}</strong><br><span style="font-size:0.65rem;color:var(--muted)">${x.fromTe}</span></td>
+      <td>→ ${x.to}<br><span style="font-size:0.65rem;color:var(--muted)">${x.toTe}</span></td>
+      <td class="amt">${fmt(x.amt)}</td>
+      <td style="font-size:0.68rem;color:var(--muted)">${x.why}</td>
+    </tr>`).join("");
+
+  el.innerHTML = `
+    <h3>💸 Who pays whom · ఎవరు ఎవరికి చెల్లించాలి</h3>
+    <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px">Fair share: <strong>${fmt(s.fair)}</strong> each · Only settlement needed:</p>
+    <table class="settle-table">
+      <thead><tr><th>From</th><th>To</th><th>Amount</th><th>Why</th></tr></thead>
+      <tbody>${rows}
+        <tr style="font-weight:800"><td colspan="2">Kalyan total to pay</td><td class="amt">${fmt(s.kalyanOwes)}</td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="settle-te">
+      <strong>కల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి:</strong><br>
+      ${s.settlements.map(x => `• ${x.toTe}కు ${fmt(x.amt)}`).join("<br>")}
+    </div>
+    <p class="settle-note">Shivaji → Venky advances (₹${totalAdv().toLocaleString("en-IN")}) are separate — between Shivaji & Venky only, not this 3-way split.</p>`;
+}
+
+function buildVerifyHtml(total, venky, deepa, kalyan) {
+  const s = computeSettlement(total);
+  const fair = s.fair;
+  let html = `
+    <li><strong>Venky (Shivaji):</strong> ${fmt(venky)} paid · ${s.extra.Venky > 0.01 ? "extra " + fmt(s.extra.Venky) + " (to receive)" : "settled ✓"}</li>
+    <li><strong>Deepa (Rajini):</strong> ${fmt(deepa)} · ${s.extra.Deepa > 0.01 ? "extra " + fmt(s.extra.Deepa) + " (to receive)" : "owes " + fmt(fair - deepa)}</li>
+    <li><strong>Kalyan:</strong> ${fmt(kalyan)} · owes <strong>${fmt(s.kalyanOwes)}</strong></li>`;
+  if (s.settlements.length) {
+    html += `<li><strong>Settlement:</strong> Kalyan pays Deepa ${fmt(s.settlements.find(x=>x.to==="Deepa")?.amt||0)} + Venky ${fmt(s.settlements.find(x=>x.to==="Venky")?.amt||0)}</li>`;
+  }
+  html += `<li><strong>Total:</strong> ${fmt(total)} — reply <strong>OK</strong> on WhatsApp</li>`;
+  return html;
 }
 
 function renderCareBanner() {
@@ -1327,17 +1423,22 @@ function initReveal() {
 }
 
 function copyWhatsApp() {
-  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), a = totalAdv(), fair = t/3;
+  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), fair = t/3;
+  const s = computeSettlement(t);
+  let settle = "";
+  if (s.settlements.length) {
+    settle = `\n*తీర్పు / Settlement:*\nకల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి\n`;
+    s.settlements.forEach(x => { settle += `→ ${x.to}: ${fmt(x.amt)}\n`; });
+  }
   const text = `🏥 *మల్లారెడ్డి ఆసుపత్రి — వెంకటేశ్వర రావు గారు*
 మూడు కుమారుల సేవ · Fair share ${fmt(fair)} each
 
 📅 ${new Date().toLocaleDateString("en-IN")}
 *మొత్తం:* ${fmt(t)}
 
-వెంకీ: ${fmt(v)} (owes ${fmt(Math.max(0,fair-v))})
-దీప: ${fmt(d)} ${d>=fair?"✓":"(owes "+fmt(fair-d)+")"}
-కల్యాణ్: ${fmt(k)} (owes ${fmt(Math.max(0,fair-k))})
-
+వెంకీ: ${fmt(v)} ${s.extra.Venky>0.01?"(extra "+fmt(s.extra.Venky)+" to receive)":"✓"}
+దీప: ${fmt(d)} ${s.extra.Deepa>0.01?"(extra "+fmt(s.extra.Deepa)+" to receive)":"✓"}
+కల్యాణ్: ${fmt(k)} (owes ${fmt(s.kalyanOwes)})${settle}
 📎 https://tevskrishna.github.io/hospital-bills/
 Reply *OK* after verifying — Venky`;
   navigator.clipboard.writeText(text).then(() => alert("Copied for WhatsApp!"))

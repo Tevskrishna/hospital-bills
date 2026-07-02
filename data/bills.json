@@ -298,10 +298,38 @@
     },
     {
       "d": "2026-07-02",
-      "who": "Venky",
-      "amt": 1,
+      "who": "Deepa",
+      "amt": 699,
       "mode": "UPI",
-      "note": "Test"
+      "note": ""
+    },
+    {
+      "d": "2026-07-02",
+      "who": "Deepa",
+      "amt": 19.2,
+      "mode": "UPI",
+      "note": ""
+    },
+    {
+      "d": "2026-07-02",
+      "who": "Venky",
+      "amt": 3,
+      "mode": "UPI",
+      "note": ""
+    },
+    {
+      "d": "2026-07-02",
+      "who": "Venky",
+      "amt": 3300,
+      "mode": "UPI",
+      "note": ""
+    },
+    {
+      "d": "2026-07-02",
+      "who": "Venky",
+      "amt": 1044.86,
+      "mode": "UPI",
+      "note": ""
     }
   ],
   "advances": [
