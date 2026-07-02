@@ -146,6 +146,8 @@ async function main() {
     if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, f));
   });
 
+  fs.writeFileSync(path.join(DIST, ".nojekyll"), "");
+
   console.log("Done → dist/ (readable js/ sources excluded)");
 }
 
