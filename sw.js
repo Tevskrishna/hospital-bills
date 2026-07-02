@@ -1,4 +1,4 @@
-const CACHE = "familycare-v11";
+const CACHE = "familycare-v12";
 const ASSETS = ["./", "./index.html", "./data/bills.json", "./manifest.json", "./icons/icon.svg"];
 
 self.addEventListener("install", (e) => {

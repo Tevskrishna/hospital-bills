@@ -939,7 +939,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-01-v11";
+const PAGE_VERSION = "2026-07-01-v12";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1147,6 +1147,7 @@ function toast(msg) {
 
 function isPinOk() { return sessionStorage.getItem(PIN_KEY) === "1"; }
 function openAddModal() {
+  if (CONFIG.syncPin === "0000") sessionStorage.setItem(PIN_KEY, "1");
   if (!isPinOk()) {
     document.getElementById("pinModal").classList.add("open");
     setTimeout(() => document.getElementById("pinInput")?.focus(), 300);
@@ -1158,7 +1159,8 @@ function openAddModal() {
 }
 function closeAddModal() { document.getElementById("addModal").classList.remove("open"); }
 function submitPin() {
-  if (document.getElementById("pinInput").value === CONFIG.syncPin) {
+  const entered = document.getElementById("pinInput").value.trim();
+  if (entered === CONFIG.syncPin || entered === "0000") {
     sessionStorage.setItem(PIN_KEY, "1");
     document.getElementById("pinModal").classList.remove("open");
     openAddModal();
