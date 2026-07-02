@@ -25,14 +25,14 @@
 
 ## Daily use (30 seconds)
 1. Tap **➕** (bottom left)  
-2. PIN: **7582**  
+2. PIN: **0000**  
 3. Date, who paid, amount → **✓ Save bill**  
 4. Family refreshes the same link in ~1 minute  
 
 ---
 
 ## PIN
-Default **7582** — change in `index.html` → `CONFIG.syncPin`
+Default **0000** — change in `index.html` → `CONFIG.syncPin`
 
 ## Token safety
 Token stays **only on your phone** (not in GitHub code). Never share it on WhatsApp.

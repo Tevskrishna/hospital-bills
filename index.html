@@ -856,7 +856,7 @@
 <div class="pin-modal no-print" id="pinModal">
   <div class="pin-sheet">
     <h3>🔒 Venky PIN</h3>
-    <p class="sub">Enter PIN to add bills · default: 7582</p>
+    <p class="sub">Enter PIN to add bills · default: 0000</p>
     <div class="fld"><input type="password" id="pinInput" inputmode="numeric" placeholder="PIN" maxlength="8" onkeydown="if(event.key==='Enter')submitPin()" /></div>
     <button class="btn-block" onclick="submitPin()">Unlock</button>
   </div>
@@ -937,7 +937,7 @@ const CONFIG = {
   githubToken: localStorage.getItem("hb_github_token") || "",
   githubRepo: "Tevskrishna/hospital-bills",
   githubPath: "data/bills.json",
-  syncPin: "7582",
+  syncPin: "0000",
 };
 const PAGE_VERSION = "2026-07-01-v11";
 const LS_KEY = "hospitalBillsLocal";

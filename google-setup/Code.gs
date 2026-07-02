@@ -323,7 +323,7 @@ function formatDate_(v) {
 }
 
 /** PIN for mobile add-bill from the website. Change SYNC_PIN below. */
-var SYNC_PIN = '7582';
+var SYNC_PIN = '0000';
 
 function doPost(e) {
   try {
