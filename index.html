@@ -16,9 +16,9 @@
   <title>FamilyCare · Hospital Bills</title>
   <script>
     (function () {
-      if (!location.search.includes("b=20")) {
+      if (!location.search.includes("b=21")) {
         var u = new URL(location.href);
-        u.searchParams.set("b", "20");
+        u.searchParams.set("b", "21");
         location.replace(u.toString());
       }
     })();
@@ -1106,16 +1106,16 @@
     <div id="page-share" class="app-page">
       <div class="reveal card verify-card" id="sec-share" style="margin:0;border:none;box-shadow:none;background:transparent;padding:0">
         <div class="share-hero">
-          <div class="peace">✦ Clear numbers · No confusion ✦</div>
-          <h2>ఎవరు ఎంత చెల్లించారు<br><span style="font-size:0.85rem;font-weight:600;color:var(--muted)">Who Paid What</span></h2>
+          <div class="peace">✦ శాంతియుతంగా · స్పష్టమైన సంఖ్యలు ✦</div>
+          <h2>ఎవరు ఎంత చెల్లించారు<br><span style="font-size:0.85rem;font-weight:600;color:var(--muted)">Who paid what — family summary</span></h2>
           <div class="fair-pill">Fair share each: <strong id="shareFair">—</strong></div>
         </div>
         <div class="person-grid" id="personGrid"></div>
         <div id="settleHero"></div>
         <div class="share-note" id="shareNote"></div>
         <div class="share-actions">
-          <button class="btn-wa-big" onclick="copyWhatsApp()">💬 Share on WhatsApp — Ask family OK</button>
-          <p class="share-ok-hint">మీరు చూసి సరైంది అని OK అని reply చేయండి</p>
+          <button class="btn-wa-big" onclick="copyWhatsApp()">💬 WhatsApp లో పంపండి — కుటుంబంతో షేర్</button>
+          <p class="share-ok-hint">చూసి సరిగా ఉంటే OK అని reply చేయండి 🙏</p>
         </div>
       </div>
     </div>
@@ -1212,7 +1212,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v20";
+const PAGE_VERSION = "2026-07-03-v21";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1649,7 +1649,7 @@ function renderHomeSummary(total, venky, deepa, kalyan) {
   }
   el.innerHTML = `
     <div class="settle-hero">
-      <h3>💸 Settlement · తీర్పు</h3>
+      <h3>🤝 Fair adjustment · సమన్యయం</h3>
       <div class="settle-flow">
         ${s.settlements.map(x => `
           <div class="settle-arrow">
@@ -1659,7 +1659,7 @@ function renderHomeSummary(total, venky, deepa, kalyan) {
           </div>`).join("")}
       </div>
       <div class="settle-total-box">
-        <div class="lbl">Kalyan pays total</div>
+        <div class="lbl">Balance to settle</div>
         <div class="val">${fmt(s.kalyanOwes)}</div>
       </div>
     </div>
@@ -1682,11 +1682,11 @@ function renderShareHub(total, venky, deepa, kalyan) {
     const cls = owes ? "owe" : receives ? "receive" : "ok";
     let badge, badgeTe;
     if (owes) {
-      badge = `MUST PAY ${fmt(Math.abs(p.extra))}`;
-      badgeTe = `చెల్లించాలి ${fmt(Math.abs(p.extra))}`;
+      badge = `Balance ${fmt(Math.abs(p.extra))}`;
+      badgeTe = `సమన్యయం ${fmt(Math.abs(p.extra))}`;
     } else if (receives) {
-      badge = `TO RECEIVE ${fmt(p.extra)}`;
-      badgeTe = `వచ్చేది ${fmt(p.extra)}`;
+      badge = `Credit ${fmt(p.extra)}`;
+      badgeTe = `తిరిగి వస్తుంది ${fmt(p.extra)}`;
     } else {
       badge = "SETTLED ✓";
       badgeTe = "పూర్తి ✓";
@@ -1706,22 +1706,22 @@ function renderShareHub(total, venky, deepa, kalyan) {
   if (s.settlements.length) {
     hero.innerHTML = `
       <div class="settle-hero">
-        <h3>💸 Who pays whom · ఎవరు ఎవరికి</h3>
+        <h3>🤝 Fair adjustment · సమన్యయం</h3>
         <div class="settle-flow">
           ${s.settlements.map(x => `
             <div class="settle-arrow">
-              <div class="from"><div class="n">${x.from}</div><div class="t">${x.fromTe} pays</div></div>
+              <div class="from"><div class="n">${x.from}</div><div class="t">${x.fromTe} → ${x.toTe}</div></div>
               <div class="mid"><div class="arr">→</div><div class="val">${fmt(x.amt)}</div></div>
-              <div class="to"><div class="n">${x.to}</div><div class="t">${x.toTe} receives</div></div>
+              <div class="to"><div class="n">${x.to}</div><div class="t">తిరిగి వస్తుంది</div></div>
             </div>`).join("")}
         </div>
         <div class="settle-total-box">
-          <div class="lbl">Kalyan total to pay · కల్యాణ్ మొత్తం</div>
+          <div class="lbl">Balance to settle · సమన్యయం</div>
           <div class="val">${fmt(s.kalyanOwes)}</div>
         </div>
       </div>
       <div class="settle-te-big">
-        <strong>కల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి</strong><br>
+        <strong>కల్యాణ్ గారు ఈ మొత్తం పంపితే అందరికి సమానం అవుతుంది — ${fmt(s.kalyanOwes)}</strong><br>
         ${s.settlements.map(x => `${x.toTe}కు <strong>${fmt(x.amt)}</strong>`).join(" · ")}
       </div>`;
   } else {
@@ -1729,7 +1729,7 @@ function renderShareHub(total, venky, deepa, kalyan) {
   }
 
   document.getElementById("shareNote").innerHTML =
-    `<strong>Note:</strong> Venky & Deepa <em>do not pay each other</em>. Only Kalyan settles with them. Shivaji→Venky advances (₹${totalAdv().toLocaleString("en-IN")}) are separate.`;
+    `<strong>గమనిక:</strong> వెంకీ & దీప ఒకరికొకరు డబ్బు ఇవ్వరు — ఎవరు ఎక్కువ చెల్లించారో వారికి మాత్రమే తిరిగి ఇవ్వడం. శివాజీ→వెంకీ అడ్వాన్స్ (₹${totalAdv().toLocaleString("en-IN")}) వేరు.`;
 }
 
 function renderSettlement(total) {
@@ -1762,25 +1762,54 @@ function initReveal() {
 }
 
 function copyWhatsApp() {
-  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), fair = t/3;
+  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), fair = t / 3;
   const s = computeSettlement(t);
+  const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+
+  const paidLine = (name, te, amt, extra) => {
+    if (extra > 0.01) return `${te} — ${fmt(amt)} (ఎక్కువ చెల్లించారు 🙏)`;
+    if (extra < -0.01) return `${te} — ${fmt(amt)}`;
+    return `${te} — ${fmt(amt)} ✓`;
+  };
+
   let settle = "";
   if (s.settlements.length) {
-    settle = `\n*తీర్పు / Settlement:*\nకల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి\n`;
-    s.settlements.forEach(x => { settle += `→ ${x.to}: ${fmt(x.amt)}\n`; });
+    const credits = [];
+    if (s.extra.Venky > 0.01) credits.push(`వెంకీకి తిరిగి: ${fmt(s.extra.Venky)}`);
+    if (s.extra.Deepa > 0.01) credits.push(`దీపకు తిరిగి: ${fmt(s.extra.Deepa)}`);
+    settle = `\n*సమన్యయం — అందరికి సమానం చేయడానికి* 🙏\n`;
+    settle += `(ఎవరు ఎక్కువ చెల్లించారో వారికి తిరిగి ఇవ్వడం మాత్రమే)\n\n`;
+    if (credits.length) settle += credits.join("\n") + "\n\n";
+    settle += `కల్యాణ్ గారు ఈ విధంగా పంపితే అందరికి సరిపోతుంది:\n`;
+    s.settlements.forEach(x => { settle += `→ ${x.toTe} గారికి: ${fmt(x.amt)}\n`; });
+    settle += `(మొత్తం: ${fmt(s.kalyanOwes)})\n`;
+  } else {
+    settle = `\n✓ అందరూ సమాన వాటా పూర్తి — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు 🙏\n`;
   }
-  const text = `🏥 *మల్లారెడ్డి ఆసుపత్రి — వెంకటేశ్వర రావు గారు*
-మూడు కుమారుల సేవ · Fair share ${fmt(fair)} each
 
-📅 ${new Date().toLocaleDateString("en-IN")}
-*మొత్తం:* ${fmt(t)}
+  const text = `🙏 నమస్కారం అందరికీ,
 
-వెంకీ: ${fmt(v)} ${s.extra.Venky>0.01?"(extra "+fmt(s.extra.Venky)+" to receive)":"✓"}
-దీప: ${fmt(d)} ${s.extra.Deepa>0.01?"(extra "+fmt(s.extra.Deepa)+" to receive)":"✓"}
-కల్యాణ్: ${fmt(k)} (owes ${fmt(s.kalyanOwes)})${settle}
-📎 https://tevskrishna.github.io/hospital-bills/
-Reply *OK* after verifying — Venky`;
-  navigator.clipboard.writeText(text).then(() => alert("Copied for WhatsApp!"))
+నాన్నగారు *శ్రీ వెంకటేశ్వర రావు* — మల్లారెడ్డి ఆసుపత్రి ఖర్చుల సారాంశం.
+మూడు కుమారులు కలిసి సమానంగా భాగస్వామ్యం చేస్తున్నాం 🙏
+
+📅 ${date}
+💚 మొత్తం ఖర్చు: *${fmt(t)}*
+📊 ప్రతి ఒక్కరి వాటా (1/3): ${fmt(fair)}
+
+*ఆసుపత్రిలో ఎవరు ఎంత చెల్లించారు:*
+${paidLine("Venky", "🙏 వెంకీ", v, s.extra.Venky)}
+${paidLine("Deepa", "💛 దీప", d, s.extra.Deepa)}
+${paidLine("Kalyan", "💙 కల్యాణ్", k, s.extra.Kalyan)}
+${settle}
+పూర్తి వివరాలు:
+https://tevskrishna.github.io/hospital-bills/
+
+దయచేసి చూసి సరిగా అనిపిస్తే *OK* అని reply చేయండి 🙏
+ఏ సందేహం ఉంటే కాల్ చేయండి.
+
+— వెంకీ (శివాజీ)`;
+
+  navigator.clipboard.writeText(text).then(() => toast("Copied — warm message ready for WhatsApp!"))
     .catch(() => prompt("Copy:", text));
 }
 
