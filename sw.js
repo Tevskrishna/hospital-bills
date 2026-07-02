@@ -1,5 +1,5 @@
 /* FamilyCare PWA v25 LTS — cache-first static, network-first data */
-const CACHE_VERSION = "familycare-v25-lts";
+const CACHE_VERSION = "familycare-v25-family-dashboard";
 const CSS_FILES = [
   "./css/theme.css",
   "./css/app.css",

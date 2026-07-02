@@ -67,7 +67,7 @@ function patchSw(sw) {
     "./css/theme.css", "./css/app.css", "./css/components.css",
     "./css/utilities.css", "./css/animations.css", "./css/responsive.css",
   ].map((c) => `  "${c}",`).join("\n");
-  const precache = `const CACHE_VERSION = "familycare-v25-lts-prod";
+  const precache = `const CACHE_VERSION = "familycare-v25-family-dashboard-prod";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
