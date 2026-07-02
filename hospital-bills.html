@@ -638,6 +638,25 @@
     }
     .app-nav .nav-add span { font-size: 1.6rem; }
 
+    .powered-by-tevs {
+      text-align: center; padding: 28px 16px 8px; margin-top: 8px;
+      font-size: 0.68rem; font-weight: 500; color: rgba(148,163,184,0.55);
+      letter-spacing: 0.04em;
+    }
+    .powered-by-tevs a {
+      color: inherit; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .powered-by-tevs a:active { transform: scale(0.97); }
+    .powered-by-tevs .brand {
+      font-family: var(--display); font-weight: 800; font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      background: linear-gradient(135deg, #2dd4bf, #60a5fa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
     .dock { display: none; }
     .dock button {
       flex: 1; max-width: 140px; padding: 14px 10px;
@@ -1039,6 +1058,12 @@
 
     <div class="reveal settle-card" id="settlementCard" style="display:none"></div>
 
+    <footer class="powered-by-tevs no-print" aria-label="Built by Tevs">
+      <a href="https://github.com/Tevskrishna" target="_blank" rel="noopener noreferrer">
+        Powered by <span class="brand">Tevs</span>
+      </a>
+    </footer>
+
   </div>
 </div>
 
@@ -1123,7 +1148,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v17";
+const PAGE_VERSION = "2026-07-03-v18";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
