@@ -821,21 +821,7 @@
     .chat-overlay.open { opacity: 1; pointer-events: auto; }
 
     .add-fab { display: none; }
-    .sync-banner {
-      display: none; padding: 12px 16px; border-radius: 14px; margin-bottom: 16px;
-      background: #fff7ed; border: 1px solid #fdba74; font-size: 0.78rem; color: #9a3412;
-    }
-    .sync-banner.show { display: block; }
-    .sync-banner button {
-      margin-top: 8px; padding: 10px 14px; border: none; border-radius: 10px;
-      background: #ea580c; color: #fff; font-weight: 700; font-size: 0.75rem; cursor: pointer; width: 100%;
-    }
-    .cloud-ok {
-      padding: 10px 14px; border-radius: 12px; margin-bottom: 16px;
-      background: rgba(16,185,129,0.12); border: 1px solid rgba(52,211,153,0.3); font-size: 0.75rem; color: #6ee7b7;
-      display: none;
-    }
-    .cloud-ok.show { display: block; }
+
     .add-modal, .pin-modal {
       position: fixed; inset: 0; z-index: 400;
       background: rgba(0,0,0,0.55); display: none;
@@ -965,12 +951,6 @@
 
 <div class="main">
   <div class="content-light">
-
-    <div class="reveal cloud-ok" id="cloudOk">☁️ Mobile sync ON — bills you add update for everyone in ~1 minute</div>
-    <div class="reveal sync-banner" id="syncBanner">
-      📱 Bills saved on <strong>this phone only</strong>. Family won't see them until cloud sync is on.
-      <button onclick="copyPendingBills()">📤 Copy new bills → paste in WhatsApp to Venky</button>
-    </div>
 
     <!-- ═══ HOME — simple dashboard ═══ -->
     <div id="page-home" class="app-page active">
@@ -1148,7 +1128,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v18";
+const PAGE_VERSION = "2026-07-03-v19";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1169,13 +1149,15 @@ let careStatus = {
   lastUpdateBy: "Venky"
 };
 
-async function loadData() {
+async function loadData(silent) {
+  const before = JSON.stringify({ b: data.bills, a: data.advances, c: careStatus });
   if (CONFIG.apiUrl) {
     try {
       const res = await fetch(CONFIG.apiUrl + (CONFIG.apiUrl.includes("?") ? "&" : "?") + "t=" + Date.now());
       if (res.ok) {
         applyJson(await res.json());
         updateSyncUI();
+        if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
         return;
       }
     } catch (e) {}
@@ -1186,11 +1168,13 @@ async function loadData() {
       applyJson(await res.json());
       mergeLocalStorage();
       updateSyncUI();
+      if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
       return;
     }
   } catch (e) {}
   mergeLocalStorage();
   updateSyncUI();
+  if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
 }
 
 function applyJson(json) {
@@ -1230,13 +1214,20 @@ function clearLocalPending() {
 }
 
 function updateSyncUI() {
-  const pending = getLocalPending();
-  const hasPending = (pending.pendingBills || []).length > 0 || (pending.pendingAdvances || []).length > 0;
   const synced = !!(CONFIG.githubToken || CONFIG.apiUrl);
-  document.getElementById("syncBanner")?.classList.toggle("show", !synced && hasPending);
-  document.getElementById("cloudOk")?.classList.toggle("show", synced);
   document.getElementById("setupBox")?.style.setProperty("display", synced ? "none" : "block");
   if (CONFIG.apiUrl) document.getElementById("setupApiUrl").value = CONFIG.apiUrl;
+}
+
+async function flushPendingToCloud() {
+  const pending = getLocalPending();
+  const hasPending = (pending.pendingBills || []).length > 0 || (pending.pendingAdvances || []).length > 0;
+  if (!hasPending || !(CONFIG.githubToken || CONFIG.apiUrl)) return;
+  const r = await pushAllToCloud();
+  if (r.ok) {
+    clearLocalPending();
+    toast("✅ Pending bills synced for family");
+  }
 }
 
 function buildPayload() {
@@ -1365,6 +1356,7 @@ function copyPendingBills() {
   const p = getLocalPending();
   const lines = (p.pendingBills || []).map(b => `${b.d} — ${b.who} — ₹${b.amt}${b.note ? " — " + b.note : ""}`);
   (p.pendingAdvances || []).forEach(a => lines.push(`${a.d} — Shivaji advance — ₹${a.amt}`));
+  if (!lines.length) return toast("No pending bills");
   const text = "🏥 New bills to add:\n" + lines.join("\n");
   navigator.clipboard.writeText(text).then(() => toast("Copied! Paste in WhatsApp"))
     .catch(() => prompt("Copy:", text));
@@ -1737,12 +1729,12 @@ async function addBill() {
 
   const r = await pushAllToCloud();
   if (r.ok) {
-    toast("✅ Saved! Family refresh link in ~1 min.");
+    toast("✅ Saved! Family sees it in ~1 min.");
     clearLocalPending();
   } else {
     const p = getLocalPending();
     saveLocalPending({ pendingBills: [...(p.pendingBills || []), bill] });
-    toast(r.error ? "⚠️ " + r.error : "📱 Saved on phone — complete setup below");
+    toast(r.error ? "⚠️ " + r.error : "📱 Saved on this phone — add token in Bills tab to sync");
   }
 }
 async function addAdvance() {
@@ -1937,7 +1929,11 @@ function analyzePrescription(text) {
   return msg;
 }
 
-loadData().then(() => { render(); hideSplash(); });
+loadData().then(() => { render(); hideSplash(); flushPendingToCloud(); });
+setInterval(() => loadData(true), 60000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") loadData(true);
+});
 document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
 
 let deferredInstall;
