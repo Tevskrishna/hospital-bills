@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <title>Updating FamilyCare…</title>
+  <style>
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: #030712; color: #fff; font-family: system-ui, sans-serif; text-align: center; padding: 24px;
+    }
+    .box { max-width: 320px; }
+    h1 { font-size: 1.2rem; margin-bottom: 8px; }
+    p { color: #94a3b8; font-size: 0.9rem; }
+  </style>
+  <script>
+    (async function () {
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.unregister()));
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((k) => caches.delete(k)));
+      }
+      location.replace("./index.html?b=16&t=" + Date.now());
+    })();
+  </script>
+</head>
+<body>
+  <div class="box">
+    <h1>Updating to latest…</h1>
+    <p>Please wait a moment</p>
+  </div>
+</body>
+</html>

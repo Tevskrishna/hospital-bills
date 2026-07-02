@@ -14,6 +14,15 @@
   <meta name="apple-mobile-web-app-title" content="FamilyCare" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
   <title>FamilyCare · Hospital Bills</title>
+  <script>
+    (function () {
+      if (!location.search.includes("b=16")) {
+        var u = new URL(location.href);
+        u.searchParams.set("b", "16");
+        location.replace(u.toString());
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -82,6 +91,14 @@
       color: #fff; font-size: 0.75rem; align-items: center; justify-content: space-between; gap: 10px;
     }
     .install-banner.show { display: flex; }
+
+    .update-banner {
+      display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
+      padding: 14px 16px; background: #dc2626; color: #fff; text-align: center;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .update-banner.show { display: block; }
+    .update-banner a { color: #fff; text-decoration: underline; }
     .install-banner button {
       border: none; background: #fff; color: #0f766e; font-weight: 800;
       padding: 8px 14px; border-radius: 99px; font-size: 0.72rem; cursor: pointer; white-space: nowrap;
@@ -861,7 +878,9 @@
 </head>
 <body>
 
-<div class="splash" id="splash">
+<div class="update-banner no-print" id="updateBanner">
+  New version available — <a href="https://tevskrishna.github.io/hospital-bills/refresh.html">Tap here to update</a>
+</div>
   <div class="splash-logo">👴</div>
   <h2>FamilyCare</h2>
   <p>మూడు కుమారుల సేవ · Three sons united</p>
@@ -1076,7 +1095,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v15";
+const PAGE_VERSION = "2026-07-03-v16";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1854,8 +1873,21 @@ function navShare() {
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) =>
     Promise.all(regs.map((r) => r.unregister()))
-  ).then(() => navigator.serviceWorker.register("./sw.js?v=13")).catch(() => {});
+  );
+  caches?.keys?.().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).catch(() => {});
 }
+
+async function checkLiveVersion() {
+  try {
+    const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return;
+    const v = await res.json();
+    if (v.build && v.build !== PAGE_VERSION) {
+      document.getElementById("updateBanner")?.classList.add("show");
+    }
+  } catch (e) {}
+}
+checkLiveVersion();
 
 /* ── Particle animation ── */
 (function initParticles() {
