@@ -32,11 +32,10 @@
   FC.SETTLEMENT_EPSILON = 0.01;
 
   FC.CHAT_CHIPS = [
-    "ఎప్పుడు డిశ్చార్జ్?",
-    "నాన్నగారి స్థితి ఏమిటి?",
-    "Explain today diet",
-    "How can he recover?",
-    "Why heavy breathing?",
+    "Latest doctor update?",
+    "Today's diet?",
+    "Questions for doctor?",
+    "Family dashboard summary",
   ];
 
   FC.DEFAULT_META = {
@@ -80,4 +79,5 @@
   global.billSearchQuery = FC.state.billSearchQuery;
   global.chatOpen = FC.state.chatOpen;
   global.tesseractReady = FC.state.tesseractReady;
+  global.familyDashboard = {};
 })(typeof window !== "undefined" ? window : global);

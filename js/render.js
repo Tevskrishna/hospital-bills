@@ -254,7 +254,6 @@
     document.getElementById("statusBar").textContent = `Updated till ${fmtDate(last)}`;
 
     renderCareBanner();
-    renderCareGuide?.();
     renderCareTimeline();
     animateValue(document.getElementById("grandTotal"), total);
     animateValue(document.getElementById("todaySpend"), todayExpense(), 800);

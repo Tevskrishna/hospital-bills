@@ -71,6 +71,7 @@
       bills,
       advances,
       careStatus: json.careStatus && typeof json.careStatus === "object" ? json.careStatus : undefined,
+      familyDashboard: json.familyDashboard && typeof json.familyDashboard === "object" ? json.familyDashboard : undefined,
     };
   }
 

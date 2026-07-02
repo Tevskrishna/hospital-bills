@@ -98,7 +98,6 @@
       </div>
 
       <div class="reveal care-banner" id="careBanner"></div>
-      <div id="careGuide"></div>
       <div class="reveal status-chip" id="statusBar">Loading...</div>
 
       <div class="dash-hero reveal">
@@ -125,7 +124,7 @@
         <button class="qa-chip qa-primary" onclick="openAddModal()">➕ Add bill</button>
         <button class="qa-chip" onclick="showPage('bills')">📊 All bills</button>
         <button class="qa-chip" onclick="showPage('share')">💬 Share</button>
-        <button class="qa-chip" onclick="toggleChat(true)">🩺 Care</button>
+        <button class="qa-chip" onclick="showPage('care')">🩺 Care</button>
       </div>
     </div>
 
@@ -181,6 +180,11 @@
           </details>
         </div>
       </div>
+    </div>
+
+    <!-- ═══ CARE — family information dashboard ═══ -->
+    <div id="page-care" class="app-page">
+      <div id="familyDashboard"></div>
     </div>
 
     <!-- ═══ SHARE — family truth ═══ -->
@@ -249,12 +253,39 @@
 </div>
 <div class="toast" id="toast"></div>
 
+<div class="add-modal no-print" id="familyEditModal" role="dialog" aria-modal="true" aria-labelledby="familyEditTitle" aria-hidden="true">
+  <div class="add-sheet family-edit-sheet">
+    <div class="close-row">
+      <div><h3 id="familyEditTitle">✏️ Update family notes</h3><p class="sub">Venky — for family communication only</p></div>
+      <button type="button" class="add-close pressable" onclick="closeFamilyEditModal()" aria-label="Close">✕</button>
+    </div>
+    <p class="fd-disclaimer">This information is for family communication only and does not replace medical advice. Always follow the treating doctor's instructions.</p>
+    <div class="fld"><label>Current status (English)</label><input type="text" id="fdStatus" /></div>
+    <div class="fld"><label>Current status (Telugu)</label><input type="text" id="fdStatusTe" /></div>
+    <div class="fld"><label>Doctor's latest update (English)</label><textarea id="fdDoctorUpdate" rows="2"></textarea></div>
+    <div class="fld"><label>Doctor update (Telugu)</label><textarea id="fdDoctorUpdateTe" rows="2"></textarea></div>
+    <div class="fld"><label>Current concerns</label><textarea id="fdConcerns" rows="2"></textarea></div>
+    <div class="fld"><label>Concerns (Telugu)</label><textarea id="fdConcernsTe" rows="2"></textarea></div>
+    <div class="fld"><label>🌅 Today's tiffin</label><textarea id="fdTiffin" rows="2" placeholder="As nurse/doctor approved"></textarea></div>
+    <div class="fld"><label>☀️ Today's lunch</label><textarea id="fdLunch" rows="2"></textarea></div>
+    <div class="fld"><label>🌙 Today's dinner</label><textarea id="fdDinner" rows="2"></textarea></div>
+    <div class="fld"><label>Diet guidance note</label><input type="text" id="fdDietGuidance" placeholder="e.g. soft diet, small portions" /></div>
+    <div class="fld"><label>Medicines today (notes only)</label><textarea id="fdMeds" rows="2"></textarea></div>
+    <div class="fld"><label>Tests completed today</label><textarea id="fdTestsDone" rows="2"></textarea></div>
+    <div class="fld"><label>Tests pending</label><textarea id="fdTestsPending" rows="2"></textarea></div>
+    <div class="fld"><label>Questions for doctor</label><textarea id="fdQuestions" rows="3"></textarea></div>
+    <div class="fld"><label>Emergency warning signs (from nurse/doctor)</label><textarea id="fdEmergency" rows="2"></textarea></div>
+    <div class="fld"><label>Visitor notes</label><textarea id="fdVisitors" rows="2"></textarea></div>
+    <button class="btn-block ab-bill" onclick="saveFamilyDashboard()">✓ Save for family</button>
+  </div>
+</div>
+
 <nav class="app-nav no-print" id="appNav" role="navigation" aria-label="Main navigation">
   <button type="button" onclick="showPage('home')" class="active pressable" data-nav="home" aria-current="page"><span class="ni" aria-hidden="true">🏠</span>Home</button>
   <button type="button" onclick="showPage('bills')" class="pressable" data-nav="bills"><span class="ni" aria-hidden="true">📊</span>Bills</button>
   <button type="button" class="nav-add pressable" onclick="openAddModal()" aria-label="Add bill"><span aria-hidden="true">+</span></button>
   <button type="button" onclick="showPage('share')" class="pressable" data-nav="share"><span class="ni" aria-hidden="true">💬</span>Share</button>
-  <button type="button" onclick="toggleChat(true)" class="pressable" data-nav="care" aria-label="Care assistant"><span class="ni" aria-hidden="true">🩺</span>Care</button>
+  <button type="button" onclick="showPage('care')" class="pressable" data-nav="care" aria-label="Family care dashboard"><span class="ni" aria-hidden="true">🩺</span>Care</button>
 </nav>
 
 <button class="chat-fab no-print" id="chatFab" onclick="toggleChat()" aria-label="Care assistant">🩺</button>
@@ -262,8 +293,8 @@
 <div class="chat-panel no-print" id="chatPanel">
   <div class="chat-head">
     <div>
-      <h4>🏥 Care Assistant · సంరక్షణ సహాయకుడు</h4>
-      <p>Upload prescription · Ask status · Discharge info</p>
+      <h4>📋 Family notes · కుటుంబ సమాచారం</h4>
+      <p>Family communication only — not medical advice</p>
     </div>
     <button class="chat-close" onclick="toggleChat(false)">✕</button>
   </div>
@@ -293,7 +324,7 @@
 <script src="js/render.js"></script>
 <script src="js/whatsapp.js"></script>
 <script src="js/care.js"></script>
-<script src="js/care-guide.js"></script>
+<script src="js/family-dashboard.js"></script>
 <script src="js/pwa.js"></script>
 <script src="js/protect.js"></script>
 <script src="js/app.js"></script>

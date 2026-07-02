@@ -1,11 +1,12 @@
 /**
- * FamilyCare — care assistant chat & OCR (v24)
+ * FamilyCare — care assistant chat (family info only, NOT medical advice)
  */
 (function (global) {
   const FC = global.FC || (global.FC = {});
   const { esc, fmt, fmtDate } = FC.utils;
   const CHAT_CHIPS = FC.CHAT_CHIPS;
-  const DISCLAIMER_SHORT = "Not medical advice — follow Mallareddy Hospital doctor.";
+  const DISCLAIMER =
+    "This information is for family communication only and does not replace medical advice. Always follow the treating doctor's instructions.";
 
   function loadTesseract() {
     if (window.Tesseract) return Promise.resolve(window.Tesseract);
@@ -34,7 +35,7 @@
   function initChat() {
     const chips = document.getElementById("chatChips");
     chips.innerHTML = CHAT_CHIPS.map((c) => `<button class="chat-chip" onclick="askChip('${c.replace(/'/g, "\\'")}')">${c}</button>`).join("");
-    addBotMsg(`నమస్కారం! 🙏 Family care assistant for *${global.meta.patient}*.\n\n• Scroll Home for *AI Care Guide* + 7-day diet\n• Ask about status, recovery, breathing, discharge\n• Upload prescription 📷\n\n⚠️ Always follow the hospital doctor — this is family education only.`);
+    addBotMsg(`నమస్కారం! 🙏 Family communication assistant for *${global.meta.patient}*.\n\n• Open the *Care* tab for the full Family Information Dashboard\n• I share notes Venky enters — not medical advice\n\n_${DISCLAIMER}_`);
   }
 
   function addBotMsg(text) {
@@ -74,48 +75,54 @@
   function answerQuestion(q) {
     const total = totalBills();
     const fair = total / 3;
-    const disc = global.careStatus.expectedDischarge ? fmtDate(global.careStatus.expectedDischarge) : "not set yet";
+    const d = FC.familyDashboard?.getDashboard?.() || {};
+    const cs = global.careStatus || {};
 
-    if (/discharge|డిశ్చార్జ్|ఎప్పుడు|when.*out|leave hospital/i.test(q)) {
-      if (global.careStatus.riskLevel === "caution") {
-        return `⚠️ *Discharge not confirmed yet*\n\n${global.careStatus.dischargeNoteTe || global.careStatus.dischargeNote || ""}\n\nDoctor is still treating lung fluid & infection. Venky will update when discharge is safe.\n\n_${DISCLAIMER_SHORT}_`;
-      }
-      const daysLeft = global.careStatus.expectedDischarge
-        ? Math.ceil((new Date(global.careStatus.expectedDischarge) - new Date()) / 86400000)
-        : null;
-      let msg = `📅 *Expected discharge:* ${disc}\n\n${global.careStatus.dischargeNoteTe || global.careStatus.dischargeNote || ""}`;
-      if (daysLeft !== null) {
-        if (daysLeft > 0) msg += `\n\n⏳ About *${daysLeft} day(s)* from today — subject to doctor's approval.`;
-        else if (daysLeft === 0) msg += `\n\n✅ Discharge may be *today* — confirm with Venky or the ward nurse.`;
-        else msg += `\n\n📌 Expected date has passed — Venky will update after doctor confirms.`;
-      }
-      return msg + `\n\nLast updated: ${fmtDate(global.careStatus.lastUpdate)}`;
+    if (/dashboard|summary|family info/i.test(q)) {
+      return FC.familyDashboard?.getDashboardSummaryForChat?.() || `Open the Care tab for the Family Information Dashboard.\n\n_${DISCLAIMER}_`;
     }
-    if (/status|స్థితి|health|condition|ఎలా|how is|ayasam|apayam/i.test(q)) {
-      return FC.careGuide?.getSituationText?.() || `💚 *Health status*\n${global.careStatus.condition}\n${global.careStatus.conditionTe || ""}`;
+    if (/doctor|update|counsell|డాక్టర్/i.test(q)) {
+      const u = [d.doctorUpdate, d.doctorUpdateTe].filter(Boolean).join("\n") || "Not entered yet — Venky can update on Care tab.";
+      return `📋 *Doctor's latest update (family notes)*\n\n${u}\n\n_${DISCLAIMER}_`;
     }
-    if (/diet|food|eat|tiffin|lunch|dinner|bhojanam|ఆహార|food plan|meal/i.test(q)) {
-      return FC.careGuide?.getMealPlanText?.() || "Scroll down on Home for the 7-day meal plan.";
+    if (/diet|food|tiffin|lunch|dinner|ఆహార|meal/i.test(q)) {
+      const td = d.todayDiet || {};
+      return `🍽️ *Today's diet guidance (family notes)*\n\n🌅 Tiffin: ${td.tiffin || "—"}\n☀️ Lunch: ${td.lunch || "—"}\n🌙 Dinner: ${td.dinner || "—"}\n${td.guidance ? "\n" + td.guidance : ""}\n\n_${DISCLAIMER}_`;
     }
-    if (/recover|recovery|heal|breathing|swasa|dagg|cough|lung|fluid|infection|gas|bloat|urine/i.test(q)) {
-      if (/breath|swasa|lung|fluid|dagg|cough/i.test(q)) {
-        return `🫁 *Breathing & lung fluid*\n\nFluid around lungs makes breathing heavy and causes cough. Hospital is treating with medicines & sometimes drainage. Sit upright, small meals, less salt.\n\n${FC.careGuide?.getRecoveryText?.() || ""}`;
+    if (/question|ask doctor|ప్రశ్న/i.test(q)) {
+      return `❓ *Questions to ask the doctor*\n\n${d.questionsForDoctor || "Not entered yet — add on Care tab."}\n\n_${DISCLAIMER}_`;
+    }
+    if (/test|report|ల్యాబ/i.test(q)) {
+      return `🧪 *Tests (family notes)*\n\n*Completed:* ${d.testsCompleted || "—"}\n*Pending:* ${d.testsPending || "—"}\n\n_${DISCLAIMER}_`;
+    }
+    if (/medicine|tablet|మందు|rx/i.test(q)) {
+      return `💊 *Medicines today (notes only)*\n\n${d.medicinesToday || "Not entered yet."}\n\n_Do not change medicines yourself._\n\n_${DISCLAIMER}_`;
+    }
+    if (/discharge|డిశ్చార్జ్|ఎప్పుడు/i.test(q)) {
+      if (cs.riskLevel === "caution" || !cs.expectedDischarge) {
+        return `📋 *Discharge (family notes)*\n\n${cs.dischargeNoteTe || cs.dischargeNote || "Not confirmed yet — follow doctor."}\n\n_${DISCLAIMER}_`;
       }
-      return FC.careGuide?.getRecoveryText?.() || global.careStatus.dischargeNote;
+      return `📅 Expected discharge: ${fmtDate(cs.expectedDischarge)}\n\n${cs.dischargeNoteTe || cs.dischargeNote || ""}\n\n_${DISCLAIMER}_`;
+    }
+    if (/status|స్థితి|health|condition|concern/i.test(q)) {
+      return `📋 *Current status (family notes)*\n\n${cs.condition || d.currentStatus || "—"}\n${cs.conditionTe || d.currentStatusTe || ""}\n\n*Concerns noted:* ${d.concerns || "—"}\n\n_${DISCLAIMER}_`;
+    }
+    if (/emergency|visitor|warning/i.test(q)) {
+      return `🚨 *Emergency signs (from nurse/doctor — family notes)*\n${d.emergencySigns || "—"}\n\n*Visitor notes:*\n${d.visitorNotes || "—"}\n\n_${DISCLAIMER}_`;
     }
     if (/bill|spent|ఖర్చు|money|amount|మొత్తం|how much/i.test(q)) {
-      return `💰 *Hospital spend till now:* ${fmt(total)}\n\nFair share (1/3 each): ${fmt(fair)}\n\nVenky: ${fmt(sumWho("Venky"))}\nDeepa: ${fmt(sumWho("Deepa"))}\nKalyan: ${fmt(sumWho("Kalyan"))}\n\nFull details on the main page ↓`;
+      return `💰 *Hospital spend till now:* ${fmt(total)}\n\nFair share (1/3 each): ${fmt(fair)}\n\nVenky: ${fmt(sumWho("Venky"))}\nDeepa: ${fmt(sumWho("Deepa"))}\nKalyan: ${fmt(sumWho("Kalyan"))}`;
     }
     if (/who paid|ఎవరు|venky|deepa|kalyan/i.test(q)) {
-      return `👨‍👩‍👦 *Who paid at hospital:*\n\n🙏 Venky (Shivaji): ${fmt(sumWho("Venky"))}\n💛 Deepa (Rajini): ${fmt(sumWho("Deepa"))}\n💙 Kalyan: ${fmt(sumWho("Kalyan"))}\n\nTotal: ${fmt(total)}`;
+      return `👨‍👩‍👦 *Who paid at hospital:*\n\n🙏 Venky: ${fmt(sumWho("Venky"))}\n💛 Deepa: ${fmt(sumWho("Deepa"))}\n💙 Kalyan: ${fmt(sumWho("Kalyan"))}\n\nTotal: ${fmt(total)}`;
     }
-    if (/prescription|మందు|medicine|tablet|rx/i.test(q)) {
-      return `📷 Tap the *camera button* below and upload a photo of the prescription or hospital slip. I'll read the text and summarize it for you.`;
+    if (/prescription|rx|upload|photo/i.test(q)) {
+      return `📷 Upload a hospital slip with the camera button below. I will read text for family notes only — not medical advice.\n\n_${DISCLAIMER}_`;
     }
     if (/thank|ధన్యవాద|ok|okay/i.test(q)) {
-      return `🙏 Happy to help! Share this page with family on WhatsApp. For urgent updates, contact Venky at the hospital.`;
+      return `🙏 For full details open the *Care* tab. For urgent help, speak to ward staff or Venky at the hospital.`;
     }
-    return `I can help with:\n• Status & doctor update (స్థితి)\n• 7-day soft diet plan 🍽️\n• Recovery & breathing tips\n• Discharge (when doctor clears)\n• Bills & prescription 📷\n\n_${DISCLAIMER_SHORT}_`;
+    return `I share *family notes* from the Care dashboard — not medical advice.\n\nTry:\n• Latest doctor update?\n• Today's diet?\n• Family dashboard summary\n\nOr open the *Care* tab ↑\n\n_${DISCLAIMER}_`;
   }
 
   function sendChat() {
@@ -132,29 +139,8 @@
   }
 
   function analyzePrescription(text) {
-    const lower = text.toLowerCase();
-    const meds = [];
-    const medPatterns = text.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+\d+\s*mg\b/g) || [];
-    medPatterns.slice(0, 6).forEach((m) => meds.push(m));
-
-    let msg = `📋 *Read from your document:*\n\n`;
-    if (meds.length) msg += `💊 Possible medicines:\n${meds.map((m) => "• " + m).join("\n")}\n\n`;
-
-    if (/discharge|discharged|fit for discharge/i.test(lower)) {
-      msg += `✅ Document mentions *discharge* — discuss with doctor for exact timing.\n\n`;
-    }
-    if (/admit|admitted|ip number|uhid/i.test(lower)) {
-      msg += `🏥 Admission/hospital reference found in document.\n\n`;
-    }
-    if (/bp|blood pressure|sugar|glucose|hb|hemoglobin/i.test(lower)) {
-      msg += `📊 Vitals or lab values may be present — show to doctor for interpretation.\n\n`;
-    }
-
     const snippet = text.slice(0, 280) + (text.length > 280 ? "…" : "");
-    msg += `📝 *Extracted text (preview):*\n_${snippet}_\n\n`;
-    msg += `⚠️ OCR may have errors. *Not medical advice* — confirm with Venky or the treating doctor.\n\nCurrent status: ${global.careStatus.condition}`;
-    if (global.careStatus.expectedDischarge) msg += `\nExpected discharge: ${fmtDate(global.careStatus.expectedDischarge)}`;
-    return msg;
+    return `📋 *Document text (family notes only)*\n\n_${snippet}_\n\nVenky can copy relevant lines into the Care dashboard. This is not medical advice.\n\n_${DISCLAIMER}_`;
   }
 
   async function uploadPrescription(input) {
@@ -173,7 +159,7 @@
       ocrBar?.classList.remove("show");
       const cleaned = text.replace(/\s+/g, " ").trim();
       if (!cleaned || cleaned.length < 8) {
-        addBotMsg("Could not read text clearly. Try a brighter photo, closer to the paper. You can still ask me about status or discharge!");
+        addBotMsg("Could not read text clearly. Venky can type notes directly on the Care tab.");
         return;
       }
       addBotMsg(analyzePrescription(cleaned));
@@ -181,7 +167,7 @@
     } catch (e) {
       removeTyping();
       ocrBar?.classList.remove("show");
-      addBotMsg("Photo upload failed on this device. You can still ask: *ఎప్పుడు డిశ్చార్జ్?* or *నాన్నగారి స్థితి?*");
+      addBotMsg("Photo upload failed. Use the Care tab to type family notes.");
     }
   }
 

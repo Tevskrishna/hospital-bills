@@ -116,6 +116,90 @@
     }
   }
 
+  function syncFamilyDashboardFields() {
+    const d = FC.familyDashboard?.getDashboard?.() || {};
+    const td = d.todayDiet || {};
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
+    set("fdDoctorUpdate", d.doctorUpdate);
+    set("fdDoctorUpdateTe", d.doctorUpdateTe);
+    set("fdConcerns", d.concerns);
+    set("fdConcernsTe", d.concernsTe);
+    set("fdTiffin", td.tiffin);
+    set("fdLunch", td.lunch);
+    set("fdDinner", td.dinner);
+    set("fdDietGuidance", td.guidance);
+    set("fdMeds", d.medicinesToday);
+    set("fdTestsDone", d.testsCompleted);
+    set("fdTestsPending", d.testsPending);
+    set("fdQuestions", d.questionsForDoctor);
+    set("fdEmergency", d.emergencySigns);
+    set("fdVisitors", d.visitorNotes);
+    set("fdStatus", d.currentStatus);
+    set("fdStatusTe", d.currentStatusTe);
+  }
+
+  function openFamilyDashboardEdit() {
+    syncFamilyDashboardFields();
+    document.getElementById("familyEditModal").classList.add("open");
+    document.getElementById("familyEditModal").setAttribute("aria-hidden", "false");
+    haptic(6);
+  }
+
+  function closeFamilyEditModal() {
+    document.getElementById("familyEditModal").classList.remove("open");
+    document.getElementById("familyEditModal").setAttribute("aria-hidden", "true");
+  }
+
+  async function saveFamilyDashboard() {
+    const val = (id) => document.getElementById(id)?.value?.trim() || "";
+    const today = new Date().toISOString().slice(0, 10);
+
+    global.familyDashboard = FC.familyDashboard.ensureDashboard({
+      ...(global.familyDashboard || {}),
+      dashboardDate: today,
+      currentStatus: val("fdStatus") || global.careStatus.condition,
+      currentStatusTe: val("fdStatusTe") || global.careStatus.conditionTe,
+      doctorUpdate: val("fdDoctorUpdate"),
+      doctorUpdateTe: val("fdDoctorUpdateTe"),
+      concerns: val("fdConcerns"),
+      concernsTe: val("fdConcernsTe"),
+      todayDiet: {
+        tiffin: val("fdTiffin"),
+        lunch: val("fdLunch"),
+        dinner: val("fdDinner"),
+        guidance: val("fdDietGuidance"),
+      },
+      medicinesToday: val("fdMeds"),
+      testsCompleted: val("fdTestsDone"),
+      testsPending: val("fdTestsPending"),
+      questionsForDoctor: val("fdQuestions"),
+      emergencySigns: val("fdEmergency"),
+      visitorNotes: val("fdVisitors"),
+      lastUpdated: today,
+      lastUpdatedBy: "Venky",
+    });
+
+    if (val("fdStatus")) global.careStatus.condition = val("fdStatus");
+    if (val("fdStatusTe")) global.careStatus.conditionTe = val("fdStatusTe");
+    global.careStatus.lastUpdate = today;
+    global.careStatus.lastUpdateBy = "Venky";
+
+    closeFamilyEditModal();
+    FC.render?.renderCareBanner?.();
+    renderFamilyDashboard?.();
+    toast("Saving family notes...");
+
+    const r = await FC.sync.pushAllToCloud();
+    if (r.ok) toast("Family dashboard updated!", "success");
+    else {
+      FC.storage.saveLocalPending({
+        familyDashboard: global.familyDashboard,
+        careStatus: global.careStatus,
+      });
+      FC.sync.syncToastOnFailure(r);
+    }
+  }
+
   function downloadHistory() {
     const start = global.meta.startDate;
     const today = new Date().toISOString().slice(0, 10);
@@ -150,7 +234,7 @@
     if (fab) fab.classList.toggle("hide", tab === "share");
     window.scrollTo({ top: 0, behavior: "smooth" });
     document.getElementById("main")?.focus({ preventScroll: true });
-    if (tab === "care") global.toggleChat?.(true);
+    if (tab === "care") renderFamilyDashboard?.();
   }
 
   function hideSplash() {
@@ -184,7 +268,7 @@
     }
   }
 
-  FC.ui = { toast, openAddModal, closeAddModal, syncAdminStatusFields, addBill, addAdvance, saveStatus, downloadHistory, showPage, hideSplash, filterBills, setBillFilter, toggleTxn };
+  FC.ui = { toast, openAddModal, closeAddModal, syncAdminStatusFields, addBill, addAdvance, saveStatus, downloadHistory, showPage, hideSplash, filterBills, setBillFilter, toggleTxn, openFamilyDashboardEdit, closeFamilyEditModal, saveFamilyDashboard, syncFamilyDashboardFields };
 
   global.toast = toast;
   global.openAddModal = openAddModal;
@@ -199,4 +283,7 @@
   global.filterBills = filterBills;
   global.setBillFilter = setBillFilter;
   global.toggleTxn = toggleTxn;
+  global.openFamilyDashboardEdit = openFamilyDashboardEdit;
+  global.closeFamilyEditModal = closeFamilyEditModal;
+  global.saveFamilyDashboard = saveFamilyDashboard;
 })(typeof window !== "undefined" ? window : global);

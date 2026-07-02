@@ -32,7 +32,7 @@ const PRECACHE_URLS = [
   "./js/render.js",
   "./js/whatsapp.js",
   "./js/care.js",
-  "./js/care-guide.js",
+  "./js/family-dashboard.js",
   "./js/pwa.js",
   "./js/protect.js",
   "./js/app.js",

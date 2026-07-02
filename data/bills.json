@@ -368,5 +368,28 @@
     "dischargeNoteTe": "డాక్టర్ counselling: inka apayam undi — lung fluid, infection taggaka discharge avvadu",
     "lastUpdate": "2026-07-03",
     "lastUpdateBy": "Venky"
+  },
+  "familyDashboard": {
+    "dashboardDate": "2026-07-03",
+    "currentStatus": "Still under risk — lung fluid & infections",
+    "currentStatusTe": "ఇంకా అపాయం — lung fluid, BP/sugar, blood infection. Doctor: ayasam ga unnaru inka",
+    "doctorUpdate": "Doctor counselling: risk not fully over yet. Lung fluid issue ongoing. BP & sugar monitored.",
+    "doctorUpdateTe": "డాక్టర్ counselling: inka apayam undi. Lung fluid issue ongoing. BP, sugar monitor chestunnaru.",
+    "concerns": "Heavy breathing · cough · bloating/gas · frequent urine · blood infection treatment · lung fluid",
+    "concernsTe": "శ్వాస కష్టం · దగ్గు · gas/bloating · urine ekkuva · blood infection · lung fluid",
+    "todayDiet": {
+      "tiffin": "",
+      "lunch": "",
+      "dinner": "",
+      "guidance": "Enter only what nurse/doctor approved for today"
+    },
+    "medicinesToday": "Notes only — list medicines nurse gave today (do not change doses yourself)",
+    "testsCompleted": "",
+    "testsPending": "",
+    "questionsForDoctor": "• When will lung fluid improve?\n• Discharge criteria?\n• Today's diet limits for BP/sugar?",
+    "emergencySigns": "Note any warning signs the nurse/doctor told the family to watch for. Call ward staff immediately if patient suddenly worsens.",
+    "visitorNotes": "Keep visits short and calm. Confirm visiting hours with ward.",
+    "lastUpdated": "2026-07-03",
+    "lastUpdatedBy": "Venky"
   }
 }

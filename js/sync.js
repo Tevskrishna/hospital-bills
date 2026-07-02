@@ -20,6 +20,9 @@
     if (norm.careStatus) {
       Object.assign(global.careStatus, norm.careStatus);
     }
+    if (norm.familyDashboard && FC.familyDashboard?.ensureDashboard) {
+      global.familyDashboard = FC.familyDashboard.ensureDashboard(norm.familyDashboard);
+    }
     FC.storage.cacheSnapshot(buildPayload());
   }
 
@@ -35,6 +38,12 @@
       if (!global.data.advances.some((x) => x.d === a.d && x.amt === a.amt)) global.data.advances.push(a);
     });
     if (local.careStatus) Object.assign(global.careStatus, local.careStatus);
+    if (local.familyDashboard && FC.familyDashboard?.ensureDashboard) {
+      global.familyDashboard = FC.familyDashboard.ensureDashboard({
+        ...(global.familyDashboard || {}),
+        ...local.familyDashboard,
+      });
+    }
   }
 
   function buildPayload() {
@@ -50,6 +59,7 @@
       bills: global.data.bills,
       advances: global.data.advances,
       careStatus: global.careStatus,
+      familyDashboard: FC.familyDashboard?.getDashboard?.() || global.familyDashboard || {},
     };
   }
 
@@ -182,6 +192,7 @@
         bills: global.data.bills,
         advances: global.data.advances,
         careStatus: global.careStatus,
+        familyDashboard: FC.familyDashboard?.getDashboard?.() || global.familyDashboard || {},
       });
     }
     return { ok: false, offline: true };

@@ -22,7 +22,7 @@ const JS_ORDER = [
   "render.js",
   "whatsapp.js",
   "care.js",
-  "care-guide.js",
+  "family-dashboard.js",
   "pwa.js",
   "protect.js",
   "app.js",
