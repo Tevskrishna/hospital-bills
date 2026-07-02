@@ -853,14 +853,7 @@
 
 <button class="add-fab no-print" id="addFab" onclick="openAddModal()" aria-label="Add bill" style="display:none">➕</button>
 
-<div class="pin-modal no-print" id="pinModal">
-  <div class="pin-sheet">
-    <h3>🔒 Venky PIN</h3>
-    <p class="sub">Enter PIN to add bills · default: 0000</p>
-    <div class="fld"><input type="password" id="pinInput" inputmode="numeric" placeholder="PIN" maxlength="8" onkeydown="if(event.key==='Enter')submitPin()" /></div>
-    <button class="btn-block" onclick="submitPin()">Unlock</button>
-  </div>
-</div>
+<div class="pin-modal no-print" id="pinModal" style="display:none !important"></div>
 
 <div class="add-modal no-print" id="addModal">
   <div class="add-sheet">
@@ -939,7 +932,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-01-v12";
+const PAGE_VERSION = "2026-07-03-v13";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1145,27 +1138,12 @@ function toast(msg) {
   setTimeout(() => el.classList.remove("show"), 3200);
 }
 
-function isPinOk() { return sessionStorage.getItem(PIN_KEY) === "1"; }
 function openAddModal() {
-  if (CONFIG.syncPin === "0000") sessionStorage.setItem(PIN_KEY, "1");
-  if (!isPinOk()) {
-    document.getElementById("pinModal").classList.add("open");
-    setTimeout(() => document.getElementById("pinInput")?.focus(), 300);
-    return;
-  }
   document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
   syncAdminStatusFields();
   document.getElementById("addModal").classList.add("open");
 }
 function closeAddModal() { document.getElementById("addModal").classList.remove("open"); }
-function submitPin() {
-  const entered = document.getElementById("pinInput").value.trim();
-  if (entered === CONFIG.syncPin || entered === "0000") {
-    sessionStorage.setItem(PIN_KEY, "1");
-    document.getElementById("pinModal").classList.remove("open");
-    openAddModal();
-  } else alert("Wrong PIN");
-}
 
 function copyPendingBills() {
   const p = getLocalPending();
@@ -1628,7 +1606,9 @@ function navShare() {
   copyWhatsApp();
 }
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js").catch(() => {});
+  navigator.serviceWorker.getRegistrations().then((regs) =>
+    Promise.all(regs.map((r) => r.unregister()))
+  ).then(() => navigator.serviceWorker.register("./sw.js?v=13")).catch(() => {});
 }
 
 /* ── Particle animation ── */
