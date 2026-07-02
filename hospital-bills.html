@@ -461,6 +461,120 @@
     }
     .settle-note { font-size: 0.68rem; color: var(--muted); margin-top: 10px; }
 
+    /* ── Share hub — bold, fight-proof UI ── */
+  #sec-share {
+      scroll-margin-top: 80px;
+      background: linear-gradient(160deg, rgba(15,23,42,0.9), rgba(30,27,75,0.85)) !important;
+      border: 1px solid rgba(251,191,36,0.35) !important;
+      padding: 0 !important; overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+    .share-hero {
+      padding: 24px 20px; text-align: center;
+      background: linear-gradient(135deg, rgba(251,191,36,0.12), rgba(13,148,136,0.08));
+      border-bottom: 1px solid rgba(251,191,36,0.2);
+    }
+    .share-hero .peace { font-size: 0.72rem; color: #fcd34d; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .share-hero h2 { font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 8px 0 4px; }
+    .share-hero .fair-pill {
+      display: inline-block; margin-top: 10px; padding: 8px 16px; border-radius: 99px;
+      background: rgba(0,0,0,0.35); border: 1px solid var(--glass-border);
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .share-hero .fair-pill strong { color: var(--gold); font-size: 1rem; }
+
+    .person-grid { display: grid; gap: 12px; padding: 20px 16px; }
+    @media (min-width: 600px) { .person-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .person-card {
+      border-radius: 18px; padding: 18px 14px; text-align: center;
+      border: 2px solid var(--card-border); position: relative; overflow: hidden;
+    }
+    .person-card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: var(--pc, var(--teal));
+    }
+    .person-card.receive { border-color: rgba(52,211,153,0.45); background: rgba(16,185,129,0.1); }
+    .person-card.owe { border-color: rgba(251,113,133,0.45); background: rgba(225,29,72,0.08); }
+    .person-card.ok { border-color: rgba(148,163,184,0.3); background: rgba(255,255,255,0.03); }
+    .person-card .emoji { font-size: 2rem; }
+    .person-card .name { font-family: var(--display); font-weight: 800; font-size: 1rem; margin-top: 6px; }
+    .person-card .branch { font-size: 0.68rem; color: var(--muted); }
+    .person-card .paid-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 14px; }
+    .person-card .paid-amt {
+      font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 4px 0;
+      color: #fff;
+    }
+    .person-card .status-badge {
+      display: inline-block; margin-top: 10px; padding: 8px 12px; border-radius: 12px;
+      font-size: 0.72rem; font-weight: 800; line-height: 1.35;
+    }
+    .person-card.receive .status-badge { background: #059669; color: #fff; }
+    .person-card.owe .status-badge { background: #e11d48; color: #fff; }
+    .person-card.ok .status-badge { background: #475569; color: #e2e8f0; }
+
+    .settle-hero {
+      margin: 0 16px 16px; padding: 20px; border-radius: 20px;
+      background: linear-gradient(135deg, #1e1b4b, #0f172a);
+      border: 2px solid rgba(99,102,241,0.4);
+    }
+    .settle-hero h3 {
+      font-family: var(--display); font-size: 1.1rem; font-weight: 800; text-align: center;
+      margin-bottom: 16px; color: #c7d2fe;
+    }
+    .settle-flow { display: flex; flex-direction: column; gap: 14px; }
+    .settle-arrow {
+      display: flex; align-items: center; gap: 12px; padding: 16px;
+      background: rgba(0,0,0,0.35); border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .settle-arrow .from, .settle-arrow .to {
+      flex: 1; text-align: center;
+    }
+    .settle-arrow .from .n, .settle-arrow .to .n { font-weight: 800; font-size: 0.95rem; }
+    .settle-arrow .from .t, .settle-arrow .to .t { font-size: 0.65rem; color: var(--muted); }
+    .settle-arrow .mid {
+      flex-shrink: 0; text-align: center; padding: 0 8px;
+    }
+    .settle-arrow .mid .arr { font-size: 1.5rem; color: var(--gold); }
+    .settle-arrow .mid .val {
+      font-family: var(--display); font-size: 1.25rem; font-weight: 800; color: var(--gold);
+      white-space: nowrap;
+    }
+    .settle-total-box {
+      text-align: center; margin-top: 16px; padding: 16px;
+      background: rgba(225,29,72,0.15); border-radius: 14px;
+      border: 1px dashed rgba(251,113,133,0.5);
+    }
+    .settle-total-box .lbl { font-size: 0.7rem; color: #fda4af; text-transform: uppercase; letter-spacing: 0.05em; }
+    .settle-total-box .val { font-family: var(--display); font-size: 1.8rem; font-weight: 800; color: #fb7185; margin-top: 4px; }
+    .settle-te-big {
+      margin: 0 16px 16px; padding: 18px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(13,148,136,0.2), rgba(13,148,136,0.08));
+      border: 1px solid rgba(45,212,191,0.35);
+      font-size: 1rem; line-height: 1.8; text-align: center;
+    }
+    .settle-te-big strong { color: #5eead4; font-size: 1.05rem; }
+
+    .share-actions { padding: 0 16px 24px; }
+    .btn-wa-big {
+      width: 100%; padding: 18px 20px; border: none; border-radius: 18px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff; font-family: var(--display); font-size: 1.05rem; font-weight: 800;
+      cursor: pointer; box-shadow: 0 8px 32px rgba(34,197,94,0.4);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-wa-big:active { transform: scale(0.98); }
+    .share-ok-hint {
+      text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 12px;
+    }
+    .share-note {
+      margin: 0 16px 20px; padding: 12px; border-radius: 12px;
+      font-size: 0.68rem; color: var(--muted); background: rgba(0,0,0,0.25);
+      border-left: 3px solid var(--gold);
+    }
+    #settlementCard { display: none; }
+
     /* Table */
     .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--card-border); }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; color: var(--text); }
@@ -842,9 +956,19 @@
     <div class="reveal sec-title" style="margin-top:32px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
     <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
 
-    <div class="reveal card verify-card" id="sec-share" style="margin-top:24px">
-      <div class="sec-title"><h2>Please Verify ✓</h2><p>మీ మొత్తం చూసి WhatsApp లో OK అని reply చేయండి</p></div>
-      <ul id="verifyList"></ul>
+    <div class="reveal card verify-card" id="sec-share">
+      <div class="share-hero">
+        <div class="peace">✦ Clear numbers · No confusion ✦</div>
+        <h2>ఎవరు ఎంత చెల్లించారు<br><span style="font-size:0.85rem;font-weight:600;color:var(--muted)">Who Paid What — Family Truth</span></h2>
+        <div class="fair-pill">Each brother's fair share: <strong id="shareFair">—</strong></div>
+      </div>
+      <div class="person-grid" id="personGrid"></div>
+      <div id="settleHero"></div>
+      <div class="share-note" id="shareNote"></div>
+      <div class="share-actions">
+        <button class="btn-wa-big" onclick="copyWhatsApp()">💬 Share on WhatsApp — Ask family OK</button>
+        <p class="share-ok-hint">మీరు చూసి సరైంది అని OK అని reply చేయండి</p>
+      </div>
     </div>
 
     <div class="reveal card" style="margin-top:16px">
@@ -952,7 +1076,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "0000",
 };
-const PAGE_VERSION = "2026-07-03-v14";
+const PAGE_VERSION = "2026-07-03-v15";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1344,57 +1468,79 @@ function render() {
   html += "</tbody></table>";
   document.getElementById("dayTable").innerHTML = html;
 
-  document.getElementById("verifyList").innerHTML = buildVerifyHtml(total, venky, deepa, kalyan);
+  renderShareHub(total, venky, deepa, kalyan);
 
   initReveal();
 }
 
-function renderSettlement(total) {
+function renderShareHub(total, venky, deepa, kalyan) {
   const s = computeSettlement(total);
-  const el = document.getElementById("settlementCard");
-  if (!el) return;
+  document.getElementById("shareFair").textContent = fmt(s.fair);
 
-  if (!s.settlements.length) {
-    el.innerHTML = `<h3>✓ Settlement · తీర్పు</h3><p style="font-size:0.85rem;color:var(--muted)">All three shares are balanced — no one owes anyone.</p>`;
-    return;
+  const people = [
+    { key: "Venky", branch: "Shivaji · శివాజీ", emoji: "🙏", color: "#0d9488", paid: venky, extra: s.extra.Venky },
+    { key: "Deepa", branch: "Rajini · రజినీ", emoji: "💛", color: "#e11d48", paid: deepa, extra: s.extra.Deepa },
+    { key: "Kalyan", branch: "కల్యాణ్", emoji: "💙", color: "#1d4ed8", paid: kalyan, extra: s.extra.Kalyan },
+  ];
+
+  document.getElementById("personGrid").innerHTML = people.map(p => {
+    const owes = p.extra < -0.01;
+    const receives = p.extra > 0.01;
+    const cls = owes ? "owe" : receives ? "receive" : "ok";
+    let badge, badgeTe;
+    if (owes) {
+      badge = `MUST PAY ${fmt(Math.abs(p.extra))}`;
+      badgeTe = `చెల్లించాలి ${fmt(Math.abs(p.extra))}`;
+    } else if (receives) {
+      badge = `TO RECEIVE ${fmt(p.extra)}`;
+      badgeTe = `వచ్చేది ${fmt(p.extra)}`;
+    } else {
+      badge = "SETTLED ✓";
+      badgeTe = "పూర్తి ✓";
+    }
+    return `
+      <div class="person-card ${cls}" style="--pc:${p.color}">
+        <div class="emoji">${p.emoji}</div>
+        <div class="name">${p.key}</div>
+        <div class="branch">${p.branch}</div>
+        <div class="paid-lbl">Paid at hospital · ఆసుపత్రిలో</div>
+        <div class="paid-amt">${fmt(p.paid)}</div>
+        <div class="status-badge">${badge}<br><span style="font-size:0.62rem;opacity:0.9">${badgeTe}</span></div>
+      </div>`;
+  }).join("");
+
+  const hero = document.getElementById("settleHero");
+  if (s.settlements.length) {
+    hero.innerHTML = `
+      <div class="settle-hero">
+        <h3>💸 Who pays whom · ఎవరు ఎవరికి</h3>
+        <div class="settle-flow">
+          ${s.settlements.map(x => `
+            <div class="settle-arrow">
+              <div class="from"><div class="n">${x.from}</div><div class="t">${x.fromTe} pays</div></div>
+              <div class="mid"><div class="arr">→</div><div class="val">${fmt(x.amt)}</div></div>
+              <div class="to"><div class="n">${x.to}</div><div class="t">${x.toTe} receives</div></div>
+            </div>`).join("")}
+        </div>
+        <div class="settle-total-box">
+          <div class="lbl">Kalyan total to pay · కల్యాణ్ మొత్తం</div>
+          <div class="val">${fmt(s.kalyanOwes)}</div>
+        </div>
+      </div>
+      <div class="settle-te-big">
+        <strong>కల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి</strong><br>
+        ${s.settlements.map(x => `${x.toTe}కు <strong>${fmt(x.amt)}</strong>`).join(" · ")}
+      </div>`;
+  } else {
+    hero.innerHTML = `<div class="settle-te-big"><strong>✓ అందరూ సమానం — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు</strong></div>`;
   }
 
-  let rows = s.settlements.map(x => `
-    <tr>
-      <td><strong>${x.from}</strong><br><span style="font-size:0.65rem;color:var(--muted)">${x.fromTe}</span></td>
-      <td>→ ${x.to}<br><span style="font-size:0.65rem;color:var(--muted)">${x.toTe}</span></td>
-      <td class="amt">${fmt(x.amt)}</td>
-      <td style="font-size:0.68rem;color:var(--muted)">${x.why}</td>
-    </tr>`).join("");
-
-  el.innerHTML = `
-    <h3>💸 Who pays whom · ఎవరు ఎవరికి చెల్లించాలి</h3>
-    <p style="font-size:0.78rem;color:var(--muted);margin-bottom:8px">Fair share: <strong>${fmt(s.fair)}</strong> each · Only settlement needed:</p>
-    <table class="settle-table">
-      <thead><tr><th>From</th><th>To</th><th>Amount</th><th>Why</th></tr></thead>
-      <tbody>${rows}
-        <tr style="font-weight:800"><td colspan="2">Kalyan total to pay</td><td class="amt">${fmt(s.kalyanOwes)}</td><td></td></tr>
-      </tbody>
-    </table>
-    <div class="settle-te">
-      <strong>కల్యాణ్ మొత్తం ${fmt(s.kalyanOwes)} చెల్లించాలి:</strong><br>
-      ${s.settlements.map(x => `• ${x.toTe}కు ${fmt(x.amt)}`).join("<br>")}
-    </div>
-    <p class="settle-note">Shivaji → Venky advances (₹${totalAdv().toLocaleString("en-IN")}) are separate — between Shivaji & Venky only, not this 3-way split.</p>`;
+  document.getElementById("shareNote").innerHTML =
+    `<strong>Note:</strong> Venky & Deepa <em>do not pay each other</em>. Only Kalyan settles with them. Shivaji→Venky advances (₹${totalAdv().toLocaleString("en-IN")}) are separate.`;
 }
 
-function buildVerifyHtml(total, venky, deepa, kalyan) {
-  const s = computeSettlement(total);
-  const fair = s.fair;
-  let html = `
-    <li><strong>Venky (Shivaji):</strong> ${fmt(venky)} paid · ${s.extra.Venky > 0.01 ? "extra " + fmt(s.extra.Venky) + " (to receive)" : "settled ✓"}</li>
-    <li><strong>Deepa (Rajini):</strong> ${fmt(deepa)} · ${s.extra.Deepa > 0.01 ? "extra " + fmt(s.extra.Deepa) + " (to receive)" : "owes " + fmt(fair - deepa)}</li>
-    <li><strong>Kalyan:</strong> ${fmt(kalyan)} · owes <strong>${fmt(s.kalyanOwes)}</strong></li>`;
-  if (s.settlements.length) {
-    html += `<li><strong>Settlement:</strong> Kalyan pays Deepa ${fmt(s.settlements.find(x=>x.to==="Deepa")?.amt||0)} + Venky ${fmt(s.settlements.find(x=>x.to==="Venky")?.amt||0)}</li>`;
-  }
-  html += `<li><strong>Total:</strong> ${fmt(total)} — reply <strong>OK</strong> on WhatsApp</li>`;
-  return html;
+function renderSettlement(total) {
+  /* merged into renderShareHub */
 }
 
 function renderCareBanner() {
@@ -1704,7 +1850,6 @@ function navTo(id) {
 }
 function navShare() {
   navTo("sec-share");
-  copyWhatsApp();
 }
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) =>

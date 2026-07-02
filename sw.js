@@ -1,4 +1,4 @@
-const CACHE = "familycare-v14";
+const CACHE = "familycare-v15";
 const STATIC = ["./manifest.json", "./icons/icon.svg"];
 
 self.addEventListener("install", (e) => {
