@@ -90,6 +90,51 @@
 .care-banner .cb-discharge .dv {
   font-family: var(--display); font-size: 1rem; font-weight: 800; color: var(--teal);
 }
+.care-banner--caution {
+  border-left-color: #d97706;
+  background: linear-gradient(135deg, #fffbeb 0%, #fff 60%);
+}
+.care-banner--caution .cb-tag {
+  background: #fef3c7; color: #92400e;
+}
+.care-banner--caution .cb-discharge .dv { color: #b45309; }
+.care-banner--caution .cb-note {
+  font-size: 0.72rem; color: #92400e; margin-top: 8px; line-height: 1.45;
+}
+.care-banner .dv-pending { font-size: 0.85rem; }
+
+/* AI Care Guide */
+.care-guide {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.cg-badge {
+  font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; color: #1d4ed8; background: #eff6ff;
+  padding: 4px 10px; border-radius: 99px; display: inline-block;
+}
+.cg-header h3 { font-size: 1rem; margin: 10px 0 4px; font-family: var(--display); }
+.cg-sub { font-size: 0.78rem; color: var(--muted); }
+.cg-disclaimer {
+  font-size: 0.68rem; color: #b45309; background: #fffbeb;
+  border-radius: 10px; padding: 10px; margin: 12px 0; line-height: 1.45;
+}
+.cg-sec { font-size: 0.82rem; font-weight: 800; margin: 16px 0 8px; color: var(--text); }
+.cg-note { font-size: 0.68rem; color: var(--muted); margin-bottom: 10px; }
+.cg-list { padding-left: 18px; font-size: 0.78rem; line-height: 1.5; }
+.cg-list li { margin-bottom: 10px; }
+.cg-te { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 4px; }
+.cg-ol { list-style: decimal; }
+.cg-meals { display: flex; flex-direction: column; gap: 10px; }
+.cg-day {
+  border: 1px solid var(--card-border); border-radius: 12px; padding: 12px;
+  background: #fafafa;
+}
+.cg-day-head { font-weight: 800; font-size: 0.78rem; margin-bottom: 8px; color: var(--teal); }
+.cg-meal { font-size: 0.72rem; margin-bottom: 6px; line-height: 1.4; }
+.cg-meal span { display: block; font-weight: 700; font-size: 0.65rem; color: var(--muted); margin-bottom: 2px; }
+.cg-avoid li { color: #991b1b; }
 
 /* Chatbot — Care tab in bottom nav; hide floating duplicate */
 .chat-fab { display: none !important; }

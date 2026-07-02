@@ -35,18 +35,28 @@
   }
 
   function renderCareBanner() {
-    const disc = global.careStatus.expectedDischarge ? fmtDate(global.careStatus.expectedDischarge) : "TBD";
-    document.getElementById("careBanner").innerHTML = `
+    const cs = global.careStatus;
+    const caution = cs.riskLevel === "caution";
+    const banner = document.getElementById("careBanner");
+    if (banner) banner.classList.toggle("care-banner--caution", caution);
+
+    const disc = cs.expectedDischarge ? fmtDate(cs.expectedDischarge) : null;
+    const dischargeHtml = disc
+      ? `<div class="dv">${disc.split(" · ")[0]}<br><span style="font-size:0.75rem;opacity:0.85">${disc.split(" · ").slice(1).join(" · ")}</span></div>`
+      : `<div class="dv dv-pending">Under review<br><span style="font-size:0.72rem;opacity:0.85">డాక్టర్ నిర్ణయం</span></div>`;
+
+    banner.innerHTML = `
     <div class="cb-row">
       <div>
-        <span class="cb-tag">● Live · నాన్నగారి స్థితి</span>
-        <h3>${esc(global.careStatus.condition)}</h3>
-        <div class="cb-te">${esc(global.careStatus.conditionTe || "")}</div>
-        <div class="cb-meta">${esc(global.meta.hospital)} · ${esc(global.careStatus.ward || "Ward")} · Updated ${fmtDate(global.careStatus.lastUpdate || global.meta.startDate)} by ${esc(global.careStatus.lastUpdateBy || "Venky")}</div>
+        <span class="cb-tag">${caution ? "● Caution · Still under risk" : "● Live · నాన్నగారి స్థితి"}</span>
+        <h3>${esc(cs.condition)}</h3>
+        <div class="cb-te">${esc(cs.conditionTe || "")}</div>
+        <div class="cb-meta">${esc(global.meta.hospital)} · ${esc(cs.ward || "Ward")} · Updated ${fmtDate(cs.lastUpdate || global.meta.startDate)} by ${esc(cs.lastUpdateBy || "Venky")}</div>
+        ${cs.dischargeNoteTe ? `<div class="cb-note">${esc(cs.dischargeNoteTe)}</div>` : ""}
       </div>
       <div class="cb-discharge">
-        <div class="dl">Expected discharge<br>డిశ్చార్జ్</div>
-        <div class="dv">${disc.split(" · ")[0]}<br><span style="font-size:0.75rem;opacity:0.85">${global.careStatus.expectedDischarge ? disc.split(" · ").slice(1).join(" · ") : ""}</span></div>
+        <div class="dl">${caution ? "Discharge<br>review" : "Expected discharge<br>డిశ్చార్జ్"}</div>
+        ${dischargeHtml}
       </div>
     </div>`;
     FC.ui?.syncAdminStatusFields?.();
@@ -244,6 +254,7 @@
     document.getElementById("statusBar").textContent = `Updated till ${fmtDate(last)}`;
 
     renderCareBanner();
+    renderCareGuide?.();
     renderCareTimeline();
     animateValue(document.getElementById("grandTotal"), total);
     animateValue(document.getElementById("todaySpend"), todayExpense(), 800);

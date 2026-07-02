@@ -34,8 +34,9 @@
   FC.CHAT_CHIPS = [
     "ఎప్పుడు డిశ్చార్జ్?",
     "నాన్నగారి స్థితి ఏమిటి?",
-    "How much spent so far?",
-    "Who paid how much?",
+    "Explain today diet",
+    "How can he recover?",
+    "Why heavy breathing?",
   ];
 
   FC.DEFAULT_META = {
@@ -46,12 +47,13 @@
 
   FC.DEFAULT_CARE_STATUS = {
     ward: "General Ward",
-    condition: "Stable, under observation",
-    conditionTe: "స్థిరంగా ఉన్నారు, పర్యవేక్షణలో",
-    expectedDischarge: "2026-07-03",
-    dischargeNote: "Doctor will confirm after reports",
-    dischargeNoteTe: "రిపోర్ట్స్ వచ్చాక డాక్టర్ నిర్ణయిస్తారు",
-    lastUpdate: "2026-06-30",
+    riskLevel: "caution",
+    condition: "Still under risk — lung fluid & infections",
+    conditionTe: "ఇంకా అపాయం — lung fluid, BP/sugar, blood infection. Doctor: ayasam ga unnaru inka",
+    expectedDischarge: "",
+    dischargeNote: "Doctor counselling: risk not over — discharge only after lung fluid & infection improve",
+    dischargeNoteTe: "డాక్టర్ counselling: inka apayam undi — lung fluid, infection taggaka discharge avvadu",
+    lastUpdate: "2026-07-03",
     lastUpdateBy: "Venky",
   };
 

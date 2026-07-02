@@ -5,6 +5,7 @@
   const FC = global.FC || (global.FC = {});
   const { esc, fmt, fmtDate } = FC.utils;
   const CHAT_CHIPS = FC.CHAT_CHIPS;
+  const DISCLAIMER_SHORT = "Not medical advice — follow Mallareddy Hospital doctor.";
 
   function loadTesseract() {
     if (window.Tesseract) return Promise.resolve(window.Tesseract);
@@ -33,7 +34,7 @@
   function initChat() {
     const chips = document.getElementById("chatChips");
     chips.innerHTML = CHAT_CHIPS.map((c) => `<button class="chat-chip" onclick="askChip('${c.replace(/'/g, "\\'")}')">${c}</button>`).join("");
-    addBotMsg(`నమస్కారం! 🙏 I'm your family care assistant for *${global.meta.patient}*.\n\n• Tap 📷 to upload prescription or hospital slip\n• Ask about discharge, health status, or bills\n\n⚠️ For medical decisions, always follow the doctor.`);
+    addBotMsg(`నమస్కారం! 🙏 Family care assistant for *${global.meta.patient}*.\n\n• Scroll Home for *AI Care Guide* + 7-day diet\n• Ask about status, recovery, breathing, discharge\n• Upload prescription 📷\n\n⚠️ Always follow the hospital doctor — this is family education only.`);
   }
 
   function addBotMsg(text) {
@@ -76,6 +77,9 @@
     const disc = global.careStatus.expectedDischarge ? fmtDate(global.careStatus.expectedDischarge) : "not set yet";
 
     if (/discharge|డిశ్చార్జ్|ఎప్పుడు|when.*out|leave hospital/i.test(q)) {
+      if (global.careStatus.riskLevel === "caution") {
+        return `⚠️ *Discharge not confirmed yet*\n\n${global.careStatus.dischargeNoteTe || global.careStatus.dischargeNote || ""}\n\nDoctor is still treating lung fluid & infection. Venky will update when discharge is safe.\n\n_${DISCLAIMER_SHORT}_`;
+      }
       const daysLeft = global.careStatus.expectedDischarge
         ? Math.ceil((new Date(global.careStatus.expectedDischarge) - new Date()) / 86400000)
         : null;
@@ -87,8 +91,17 @@
       }
       return msg + `\n\nLast updated: ${fmtDate(global.careStatus.lastUpdate)}`;
     }
-    if (/status|స్థితి|health|condition|ఎలా|how is/i.test(q)) {
-      return `💚 *Health status*\n${global.careStatus.condition}\n${global.careStatus.conditionTe || ""}\n\n🏥 ${global.meta.hospital} · ${global.careStatus.ward || "Ward"}\n📅 Admitted since ${fmtDate(global.meta.startDate)}\n\n_${global.careStatus.dischargeNote}_`;
+    if (/status|స్థితి|health|condition|ఎలా|how is|ayasam|apayam/i.test(q)) {
+      return FC.careGuide?.getSituationText?.() || `💚 *Health status*\n${global.careStatus.condition}\n${global.careStatus.conditionTe || ""}`;
+    }
+    if (/diet|food|eat|tiffin|lunch|dinner|bhojanam|ఆహార|food plan|meal/i.test(q)) {
+      return FC.careGuide?.getMealPlanText?.() || "Scroll down on Home for the 7-day meal plan.";
+    }
+    if (/recover|recovery|heal|breathing|swasa|dagg|cough|lung|fluid|infection|gas|bloat|urine/i.test(q)) {
+      if (/breath|swasa|lung|fluid|dagg|cough/i.test(q)) {
+        return `🫁 *Breathing & lung fluid*\n\nFluid around lungs makes breathing heavy and causes cough. Hospital is treating with medicines & sometimes drainage. Sit upright, small meals, less salt.\n\n${FC.careGuide?.getRecoveryText?.() || ""}`;
+      }
+      return FC.careGuide?.getRecoveryText?.() || global.careStatus.dischargeNote;
     }
     if (/bill|spent|ఖర్చు|money|amount|మొత్తం|how much/i.test(q)) {
       return `💰 *Hospital spend till now:* ${fmt(total)}\n\nFair share (1/3 each): ${fmt(fair)}\n\nVenky: ${fmt(sumWho("Venky"))}\nDeepa: ${fmt(sumWho("Deepa"))}\nKalyan: ${fmt(sumWho("Kalyan"))}\n\nFull details on the main page ↓`;
@@ -102,7 +115,7 @@
     if (/thank|ధన్యవాద|ok|okay/i.test(q)) {
       return `🙏 Happy to help! Share this page with family on WhatsApp. For urgent updates, contact Venky at the hospital.`;
     }
-    return `I can help with:\n• Discharge date (డిశ్చార్జ్ ఎప్పుడు?)\n• Health status (స్థితి ఏమిటి?)\n• Bills & who paid\n• Upload prescription 📷\n\nTry a quick button above or ask in Telugu/English!`;
+    return `I can help with:\n• Status & doctor update (స్థితి)\n• 7-day soft diet plan 🍽️\n• Recovery & breathing tips\n• Discharge (when doctor clears)\n• Bills & prescription 📷\n\n_${DISCLAIMER_SHORT}_`;
   }
 
   function sendChat() {
