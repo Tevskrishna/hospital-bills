@@ -1,0 +1,20 @@
+{
+  "name": "FamilyCare — Hospital Bills",
+  "short_name": "FamilyCare",
+  "description": "Track hospital bills, fair share split, and family care status",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050810",
+  "theme_color": "#0d9488",
+  "lang": "te",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

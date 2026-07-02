@@ -7,41 +7,84 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <link rel="canonical" href="https://tevskrishna.github.io/hospital-bills/" />
-  <title>Hospital Bills · Venkateswara Rao Family</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d9488" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FamilyCare" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <title>FamilyCare · Hospital Bills</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #070b14;
-      --surface: rgba(255,255,255,0.04);
-      --glass: rgba(255,255,255,0.08);
-      --glass-border: rgba(255,255,255,0.12);
-      --card: #ffffff;
-      --card-soft: #f8fafc;
-      --gold: #e8c468;
-      --gold-dim: rgba(232,196,104,0.15);
+      --bg: #030712;
+      --surface: rgba(255,255,255,0.06);
+      --glass: rgba(255,255,255,0.1);
+      --glass-border: rgba(255,255,255,0.14);
+      --card: rgba(15,23,42,0.75);
+      --card-soft: rgba(30,41,59,0.6);
+      --card-border: rgba(148,163,184,0.15);
+      --gold: #fbbf24;
+      --gold-dim: rgba(251,191,36,0.15);
       --teal: #2dd4bf;
       --teal-dim: #0d9488;
       --rose: #fb7185;
       --rose-dim: #e11d48;
       --blue: #60a5fa;
       --blue-dim: #1d4ed8;
-      --text: #0f172a;
-      --muted: #64748b;
-      --radius: 20px;
+      --text: #f1f5f9;
+      --text-dark: #0f172a;
+      --muted: #94a3b8;
+      --radius: 22px;
       --font: "Inter", "Noto Sans Telugu", system-ui, sans-serif;
       --display: "Outfit", "Noto Sans Telugu", sans-serif;
+      --nav-h: 72px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
       font-family: var(--font);
-      background: #050810;
+      background: var(--bg);
       color: var(--text);
       line-height: 1.6;
       overflow-x: hidden;
-      padding-bottom: 96px;
+      padding-bottom: calc(var(--nav-h) + 24px + env(safe-area-inset-bottom));
+    }
+
+    /* Splash */
+    .splash {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(160deg, #030712 0%, #0f172a 50%, #134e4a 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+    .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-logo {
+      width: 88px; height: 88px; border-radius: 28px;
+      background: linear-gradient(135deg, #14b8a6, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; box-shadow: 0 0 60px rgba(20,184,166,0.5);
+      animation: splashPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(20,184,166,0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 70px rgba(99,102,241,0.5); }
+    }
+    .splash h2 { font-family: var(--display); font-size: 1.5rem; margin-top: 20px; font-weight: 800; }
+    .splash p { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+
+    /* Install banner */
+    .install-banner {
+      display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 150;
+      padding: 10px 14px; background: linear-gradient(90deg, #0d9488, #6366f1);
+      color: #fff; font-size: 0.75rem; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .install-banner.show { display: flex; }
+    .install-banner button {
+      border: none; background: #fff; color: #0f766e; font-weight: 800;
+      padding: 8px 14px; border-radius: 99px; font-size: 0.72rem; cursor: pointer; white-space: nowrap;
     }
 
     /* ── Animated living background ── */
@@ -182,17 +225,14 @@
       padding: 0 16px 40px;
     }
     .content-light {
-      background: linear-gradient(180deg, rgba(241,245,249,0.97) 0%, #e2e8f0 100%);
+      background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(3,7,18,0.95) 100%);
       border-radius: 32px 32px 0 0;
-      margin-top: -28px;
-      padding: 32px 16px 24px;
+      margin-top: -32px;
+      padding: 28px 16px 24px;
       min-height: 60vh;
       position: relative;
-    }
-    .content-light::before {
-      content: ""; position: absolute; top: -80px; left: 0; right: 0; height: 80px;
-      background: linear-gradient(180deg, transparent, rgba(241,245,249,0.4));
-      pointer-events: none;
+      border-top: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
     }
 
     /* Mobile: stronger visible graphics (WhatsApp / Safari fix) */
@@ -211,8 +251,8 @@
       .orb-4 { width: 180px; height: 180px; opacity: 0.4; }
       .float-icon { opacity: 0.22; font-size: 1.4rem; }
       .content-light {
-        background: linear-gradient(180deg, rgba(241,245,249,0.92) 0%, #e2e8f0 100%);
-        backdrop-filter: blur(8px);
+        background: linear-gradient(180deg, rgba(15,23,42,0.55) 0%, rgba(3,7,18,0.98) 100%);
+        backdrop-filter: blur(12px);
       }
       .father-avatar { width: 72px; height: 72px; font-size: 2rem; }
       .sons-row { gap: 6px; }
@@ -242,7 +282,9 @@
       border-radius: var(--radius);
       padding: 28px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 24px rgba(15,23,42,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
     }
     .father-node {
       text-align: center; margin-bottom: 24px;
@@ -260,7 +302,7 @@
       0%, 100% { box-shadow: 0 0 0 4px #fff, 0 0 30px rgba(232,196,104,0.3); }
       50% { box-shadow: 0 0 0 4px #fff, 0 0 50px rgba(232,196,104,0.5); }
     }
-    .father-node h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 700; }
+    .father-node h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 700; color: var(--text); }
     .father-node p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
     .connector {
       width: 2px; height: 24px; margin: 0 auto 16px;
@@ -274,7 +316,7 @@
       text-align: center; padding: 16px 8px;
       border-radius: 16px;
       background: var(--card-soft);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--card-border);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .son-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
@@ -293,14 +335,17 @@
     .status-chip {
       display: flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 16px; border-radius: 12px; margin-bottom: 16px;
-      background: #ecfdf5; color: #047857; font-size: 0.75rem; font-weight: 600;
+      background: rgba(16,185,129,0.15); color: #6ee7b7; font-size: 0.75rem; font-weight: 600;
+      border: 1px solid rgba(52,211,153,0.25);
     }
     .status-chip::before { content: "✓"; font-weight: 800; }
     .mega-total {
       text-align: center; padding: 32px 24px; margin-bottom: 24px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, rgba(13,148,136,0.25) 0%, rgba(99,102,241,0.2) 100%);
       border-radius: var(--radius); color: #fff;
       position: relative; overflow: hidden;
+      border: 1px solid rgba(45,212,191,0.2);
+      box-shadow: 0 12px 40px rgba(13,148,136,0.15);
     }
     .mega-total::after {
       content: ""; position: absolute; inset: 0;
@@ -319,10 +364,12 @@
 
     /* Cards */
     .card {
-      background: var(--card); border-radius: var(--radius);
+      background: var(--card);
+      border-radius: var(--radius);
       padding: 20px; margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(15,23,42,0.06);
-      border: 1px solid rgba(226,232,240,0.8);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(8px);
       transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(15,23,42,0.1); }
@@ -337,7 +384,7 @@
     .card-head h3 { font-family: var(--display); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
     .card-head .amt { font-family: var(--display); font-size: 1.35rem; font-weight: 800; color: var(--c, var(--text)); }
     .bar-track {
-      height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden;
+      height: 8px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden;
     }
     .bar-fill {
       height: 100%; border-radius: 99px;
@@ -374,8 +421,8 @@
     /* Split cards */
     .split-info {
       padding: 14px 16px; border-radius: 14px; margin-bottom: 16px;
-      background: linear-gradient(135deg, #eff6ff, #f0fdfa);
-      border: 1px solid #bae6fd; font-size: 0.8rem; color: #334155;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(129,140,248,0.25); font-size: 0.8rem; color: #c7d2fe;
     }
     .split-card { --c: var(--teal); }
     .split-metrics {
@@ -384,6 +431,7 @@
     .metric {
       text-align: center; padding: 12px 6px;
       background: var(--card-soft); border-radius: 12px;
+      border: 1px solid var(--card-border);
     }
     .metric .ml { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
     .metric .mv { font-family: var(--display); font-size: 0.85rem; font-weight: 800; margin-top: 6px; }
@@ -396,31 +444,52 @@
     .split-banner strong { color: var(--gold); font-family: var(--display); font-size: 1.1rem; }
 
     /* Table */
-    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th { text-align: left; padding: 10px 12px; background: #f8fafc; color: var(--muted); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-    td { padding: 10px 12px; border-top: 1px solid #f1f5f9; }
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--card-border); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; color: var(--text); }
+    th { text-align: left; padding: 10px 12px; background: var(--card-soft); color: var(--muted); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    td { padding: 10px 12px; border-top: 1px solid var(--card-border); }
     td.amt { text-align: right; font-family: var(--display); font-weight: 700; }
-    tr.day-row td { background: #f0f9ff; font-weight: 700; color: #0c4a6e; }
+    tr.day-row td { background: rgba(13,148,136,0.15); font-weight: 700; color: #5eead4; }
     .badge { font-size: 0.6rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
     .badge.cash { background: #fef3c7; color: #92400e; }
     .badge.card { background: #dbeafe; color: #1e40af; }
 
     .verify-card {
-      background: linear-gradient(135deg, #fffbeb, #fff);
-      border: 1px solid #fde68a;
+      background: rgba(251,191,36,0.08);
+      border: 1px solid rgba(251,191,36,0.25);
     }
     .verify-card li { margin: 10px 0 10px 20px; font-size: 0.85rem; }
 
-    /* Buttons */
-    .dock {
+    /* App bottom nav */
+    .app-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-      background: rgba(15,23,42,0.92);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex; gap: 10px; justify-content: center;
+      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+      background: rgba(3,7,18,0.92);
+      backdrop-filter: blur(24px);
+      border-top: 1px solid var(--glass-border);
+      display: flex; align-items: flex-start; justify-content: space-around;
+      padding-top: 8px;
     }
+    .app-nav button {
+      flex: 1; max-width: 72px; border: none; background: none;
+      color: var(--muted); font-size: 0.58rem; font-weight: 600;
+      cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      padding: 6px 4px; transition: color 0.2s, transform 0.2s;
+    }
+    .app-nav button .ni { font-size: 1.25rem; line-height: 1; }
+    .app-nav button.active { color: var(--teal); }
+    .app-nav button:active { transform: scale(0.92); }
+    .app-nav .nav-add {
+      flex: 0 0 auto; width: 56px; height: 56px; margin-top: -20px;
+      border-radius: 50%; background: linear-gradient(135deg, #22c55e, #14b8a6);
+      color: #fff; font-size: 1.6rem; font-weight: 700;
+      box-shadow: 0 8px 28px rgba(34,197,94,0.45);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .app-nav .nav-add span { font-size: 1.6rem; }
+
+    .dock { display: none; }
     .dock button {
       flex: 1; max-width: 140px; padding: 14px 10px;
       border: none; border-radius: 14px;
@@ -506,7 +575,7 @@
 
     /* Chatbot */
     .chat-fab {
-      position: fixed; bottom: calc(88px + env(safe-area-inset-bottom)); right: 16px;
+      position: fixed; bottom: calc(var(--nav-h) + 16px + env(safe-area-inset-bottom)); right: 16px;
       z-index: 200; width: 58px; height: 58px; border-radius: 50%;
       border: none; cursor: pointer;
       background: linear-gradient(135deg, #0d9488, #0891b2);
@@ -596,16 +665,7 @@
     }
     .chat-overlay.open { opacity: 1; pointer-events: auto; }
 
-    /* Mobile add bill */
-    .add-fab {
-      position: fixed; bottom: calc(88px + env(safe-area-inset-bottom)); left: 16px;
-      z-index: 200; width: 58px; height: 58px; border-radius: 50%;
-      border: none; cursor: pointer;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff; font-size: 1.6rem; font-weight: 700;
-      box-shadow: 0 6px 28px rgba(34,197,94,0.5);
-      display: flex; align-items: center; justify-content: center;
-    }
+    .add-fab { display: none; }
     .sync-banner {
       display: none; padding: 12px 16px; border-radius: 14px; margin-bottom: 16px;
       background: #fff7ed; border: 1px solid #fdba74; font-size: 0.78rem; color: #9a3412;
@@ -617,7 +677,7 @@
     }
     .cloud-ok {
       padding: 10px 14px; border-radius: 12px; margin-bottom: 16px;
-      background: #ecfdf5; border: 1px solid #6ee7b7; font-size: 0.75rem; color: #047857;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(52,211,153,0.3); font-size: 0.75rem; color: #6ee7b7;
       display: none;
     }
     .cloud-ok.show { display: block; }
@@ -654,18 +714,31 @@
     .toast.show { transform: translateX(-50%) translateY(0); }
     .setup-box {
       padding: 14px; border-radius: 14px; margin-top: 12px;
-      background: #eff6ff; border: 1px dashed #93c5fd; font-size: 0.75rem; color: #1e40af;
+      background: rgba(99,102,241,0.1); border: 1px dashed rgba(129,140,248,0.4); font-size: 0.75rem; color: #c7d2fe;
     }
-    .setup-box input { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 0.85rem; }
+    .setup-box input { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid var(--card-border); border-radius: 10px; font-size: 0.85rem; background: var(--card-soft); color: var(--text); }
+
+    #sec-bills, #sec-share { scroll-margin-top: 80px; }
 
     @media print {
-      .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay, .add-fab, .add-modal, .pin-modal, .toast { display: none !important; }
+      .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay, .add-fab, .add-modal, .pin-modal, .toast, .app-nav, .splash, .install-banner { display: none !important; }
       body { background: #fff; padding: 0; }
       .content-light { background: #fff; margin: 0; border-radius: 0; }
     }
   </style>
 </head>
 <body>
+
+<div class="splash" id="splash">
+  <div class="splash-logo">👴</div>
+  <h2>FamilyCare</h2>
+  <p>మూడు కుమారుల సేవ · Three sons united</p>
+</div>
+
+<div class="install-banner no-print" id="installBanner">
+  <span>📲 Install like an app — Add to Home Screen</span>
+  <button onclick="promptInstall()">Install</button>
+</div>
 
 <div class="ambient" aria-hidden="true">
   <div class="mesh-bg"></div>
@@ -682,7 +755,7 @@
 </div>
 
 <header class="hero">
-  <div class="pill">Three Sons United · మూడు కుమారుల సేవ</div>
+  <div class="pill">FamilyCare · మూడు కుమారుల సేవ</div>
   <h1>మల్లారెడ్డి ఆసుపత్రి బిల్లులు</h1>
   <div class="father-name">శ్రీ వెంకటేశ్వర రావు గారు</div>
   <div class="meta">Mallareddy Hospital · 2026 · <span id="todayLabel"></span></div>
@@ -739,7 +812,7 @@
 
     <div class="reveal card glass-dark" id="shivajiCard" style="margin-bottom:24px"></div>
 
-    <div class="reveal sec-title"><h2>మీ వాటా · Fair Share</h2><p>Equal 1/3 split — what's left till date</p><div class="line"></div></div>
+    <div class="reveal sec-title" id="sec-bills"><h2>మీ వాటా · Fair Share</h2><p>Equal 1/3 split — what's left till date</p><div class="line"></div></div>
     <div class="reveal split-info">
       మొత్తం ఖర్చు <strong>3 కుమారులకు సమానం</strong>. మిగిలింది = మీ వాటా − చెల్లించినది.
     </div>
@@ -749,7 +822,7 @@
     <div class="reveal sec-title" style="margin-top:32px"><h2>Day by Day</h2><p>రోజువారీ ఖర్చు</p><div class="line"></div></div>
     <div class="reveal card"><div class="table-wrap" id="dayTable"></div></div>
 
-    <div class="reveal card verify-card" style="margin-top:24px">
+    <div class="reveal card verify-card" id="sec-share" style="margin-top:24px">
       <div class="sec-title"><h2>Please Verify ✓</h2><p>మీ మొత్తం చూసి WhatsApp లో OK అని reply చేయండి</p></div>
       <ul id="verifyList"></ul>
     </div>
@@ -778,7 +851,7 @@
   </div>
 </div>
 
-<button class="add-fab no-print" id="addFab" onclick="openAddModal()" aria-label="Add bill">➕</button>
+<button class="add-fab no-print" id="addFab" onclick="openAddModal()" aria-label="Add bill" style="display:none">➕</button>
 
 <div class="pin-modal no-print" id="pinModal">
   <div class="pin-sheet">
@@ -823,7 +896,15 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<nav class="dock no-print">
+<nav class="app-nav no-print" id="appNav">
+  <button onclick="navTo('top')" class="active" data-nav="home"><span class="ni">🏠</span>Home</button>
+  <button onclick="navTo('sec-bills')" data-nav="bills"><span class="ni">📊</span>Bills</button>
+  <button class="nav-add" onclick="openAddModal()" aria-label="Add bill"><span>+</span></button>
+  <button onclick="toggleChat(true)" data-nav="care"><span class="ni">🩺</span>Care</button>
+  <button onclick="navShare()" data-nav="share"><span class="ni">💬</span>Share</button>
+</nav>
+
+<nav class="dock no-print" style="display:none">
   <button class="b-wa" onclick="copyWhatsApp()"><span class="ic">💬</span>WhatsApp</button>
   <button class="b-dl" onclick="downloadHistory()"><span class="ic">⬇</span>Download</button>
   <button class="b-pr" onclick="window.print()"><span class="ic">🖨</span>Print</button>
@@ -858,7 +939,7 @@ const CONFIG = {
   githubPath: "data/bills.json",
   syncPin: "7582",
 };
-const PAGE_VERSION = "2026-07-01-v10";
+const PAGE_VERSION = "2026-07-01-v11";
 const LS_KEY = "hospitalBillsLocal";
 const PIN_KEY = "hb_pin_ok";
 const SONS = [
@@ -1519,8 +1600,34 @@ function analyzePrescription(text) {
   return msg;
 }
 
-loadData().then(render);
+loadData().then(() => { render(); hideSplash(); });
 document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
+
+let deferredInstall;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstall = e;
+  document.getElementById("installBanner")?.classList.add("show");
+});
+function promptInstall() {
+  if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; document.getElementById("installBanner")?.classList.remove("show"); }
+  else toast("Safari: Share → Add to Home Screen · Chrome: Menu → Install app");
+}
+function hideSplash() {
+  setTimeout(() => document.getElementById("splash")?.classList.add("hide"), 600);
+}
+function navTo(id) {
+  const el = id === "top" ? document.querySelector(".hero") : document.getElementById(id);
+  el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.querySelectorAll(".app-nav button[data-nav]").forEach(b => b.classList.toggle("active", b.dataset.nav === (id === "top" ? "home" : id.replace("sec-",""))));
+}
+function navShare() {
+  navTo("sec-share");
+  copyWhatsApp();
+}
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
 
 /* ── Particle animation ── */
 (function initParticles() {
