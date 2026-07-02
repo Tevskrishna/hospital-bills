@@ -2,996 +2,62 @@
 <html lang="te">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="FamilyCare — track Mallareddy Hospital bills, fair 1/3 split between three sons, WhatsApp family share, and care updates for Sri Venkateswara Rao." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="FamilyCare · Hospital Bills" />
+  <meta property="og:description" content="Family hospital bill tracker — fair share, WhatsApp summary, care assistant." />
+  <meta property="og:image" content="https://tevskrishna.github.io/hospital-bills/assets/og-preview.png" />
+  <meta property="og:url" content="https://tevskrishna.github.io/hospital-bills/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FamilyCare · Hospital Bills" />
+  <meta name="twitter:description" content="Family hospital bill tracker — fair share, WhatsApp summary, care assistant." />
+  <meta name="twitter:image" content="https://tevskrishna.github.io/hospital-bills/assets/og-preview.png" />
   <link rel="canonical" href="https://tevskrishna.github.io/hospital-bills/" />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
   <meta name="theme-color" content="#0c831f" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="FamilyCare" />
-  <link rel="apple-touch-icon" href="icons/icon.svg" />
   <title>FamilyCare · Hospital Bills</title>
   <script>
     (function () {
-      if (!location.search.includes("b=21")) {
+      if (location.hostname === "localhost" || location.hostname === "127.0.0.1") return;
+      if (!location.search.includes("b=25")) {
         var u = new URL(location.href);
-        u.searchParams.set("b", "21");
+        u.searchParams.set("b", "25");
         location.replace(u.toString());
       }
     })();
   </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #f2f3f4;
-      --surface: #ffffff;
-      --glass: rgba(255,255,255,0.98);
-      --glass-border: #e8e8e8;
-      --card: #ffffff;
-      --card-soft: #fafafa;
-      --card-border: #ededed;
-      --gold: #fc8019;
-      --gold-dim: rgba(252,128,25,0.12);
-      --teal: #0c831f;
-      --teal-dim: #0c831f;
-      --rose: #e23744;
-      --rose-dim: #e23744;
-      --blue: #2563eb;
-      --blue-dim: #1d4ed8;
-      --text: #282c3f;
-      --text-dark: #282c3f;
-      --muted: #686b78;
-      --radius: 16px;
-      --font: "Inter", "Noto Sans Telugu", system-ui, sans-serif;
-      --display: "Outfit", "Noto Sans Telugu", sans-serif;
-      --nav-h: 64px;
-      --shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
-      --shadow-lg: 0 8px 28px rgba(0,0,0,0.08);
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-      padding-top: calc(88px + env(safe-area-inset-top));
-      padding-bottom: calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));
-    }
-
-    .ambient { display: none !important; }
-
-    /* Swiggy/Blinkit-style sticky header */
-    .app-topbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 120;
-      padding: calc(10px + env(safe-area-inset-top)) 16px 12px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-    }
-    .topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .topbar-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .topbar-logo {
-      width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
-      background: linear-gradient(135deg, #0c831f, #14a832);
-      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
-    }
-    .topbar-title { font-family: var(--display); font-weight: 800; font-size: 1rem; color: var(--text); }
-    .topbar-sub { font-size: 0.68rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .topbar-patient {
-      margin-top: 8px; font-size: 0.82rem; font-weight: 700; color: var(--text);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .live-pill {
-      flex-shrink: 0; font-size: 0.62rem; font-weight: 700; color: var(--teal);
-      background: rgba(12,131,31,0.1); padding: 5px 10px; border-radius: 99px;
-    }
-
-    /* Splash */
-    .splash {
-      position: fixed; inset: 0; z-index: 9999;
-      background: linear-gradient(160deg, #ffffff 0%, #f0fdf4 50%, #dcfce7 100%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.5s ease, visibility 0.5s;
-    }
-    .splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-logo {
-      width: 88px; height: 88px; border-radius: 28px;
-      background: linear-gradient(135deg, #0c831f, #14a832);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; box-shadow: 0 8px 32px rgba(12,131,31,0.25);
-      animation: splashPulse 1.5s ease-in-out infinite;
-    }
-    @keyframes splashPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(12,131,31,0.2); }
-      50% { transform: scale(1.04); box-shadow: 0 12px 36px rgba(12,131,31,0.35); }
-    }
-    .splash h2 { font-family: var(--display); font-size: 1.5rem; margin-top: 20px; font-weight: 800; color: var(--text); }
-    .splash p { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
-
-    /* Install banner */
-    .install-banner {
-      display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 150;
-      padding: 10px 14px; background: linear-gradient(90deg, #0d9488, #6366f1);
-      color: #fff; font-size: 0.75rem; align-items: center; justify-content: space-between; gap: 10px;
-    }
-    .install-banner.show { display: flex; }
-
-    .update-banner {
-      display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9998;
-      padding: 14px 16px; background: #dc2626; color: #fff; text-align: center;
-      font-size: 0.85rem; font-weight: 700;
-    }
-    .update-banner.show { display: block; }
-    .update-banner a { color: #fff; text-decoration: underline; }
-    .install-banner button {
-      border: none; background: #fff; color: #0f766e; font-weight: 800;
-      padding: 8px 14px; border-radius: 99px; font-size: 0.72rem; cursor: pointer; white-space: nowrap;
-    }
-
-    /* ── Animated living background ── */
-    .ambient {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
-    }
-    .mesh-bg {
-      position: absolute; inset: -50%;
-      background:
-        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(13,148,136,0.35), transparent 50%),
-        radial-gradient(ellipse 60% 40% at 80% 10%, rgba(29,78,216,0.3), transparent 45%),
-        radial-gradient(ellipse 50% 60% at 60% 80%, rgba(180,83,9,0.2), transparent 50%),
-        radial-gradient(ellipse 40% 30% at 10% 70%, rgba(139,92,246,0.15), transparent 40%);
-      animation: meshMove 18s ease-in-out infinite alternate;
-    }
-    @keyframes meshMove {
-      0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-      33% { transform: translate(3%, -2%) rotate(2deg) scale(1.05); }
-      66% { transform: translate(-2%, 3%) rotate(-1deg) scale(1.02); }
-      100% { transform: translate(2%, 1%) rotate(1deg) scale(1.08); }
-    }
-    .grid-lines {
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 48px 48px;
-      animation: gridDrift 24s linear infinite;
-      mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black, transparent);
-    }
-    @keyframes gridDrift {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(48px); }
-    }
-    #particleCanvas {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-    }
-    .orb {
-      position: absolute; border-radius: 50%; filter: blur(90px);
-      animation: float 8s ease-in-out infinite;
-      mix-blend-mode: screen;
-      will-change: transform;
-      transform: translateZ(0);
-    }
-    .orb-1 { width: 500px; height: 500px; background: #0ea5e9; top: -150px; left: -150px; opacity: 0.45; }
-    .orb-2 { width: 450px; height: 450px; background: #14b8a6; top: 15%; right: -150px; animation-delay: -3s; opacity: 0.4; }
-    .orb-3 { width: 380px; height: 380px; background: #f59e0b; bottom: 5%; left: 10%; animation-delay: -6s; opacity: 0.3; }
-    .orb-4 { width: 280px; height: 280px; background: #a78bfa; top: 45%; left: 40%; animation-delay: -9s; opacity: 0.25; }
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      25% { transform: translate(40px, -50px) scale(1.1); }
-      50% { transform: translate(-30px, 30px) scale(0.95); }
-      75% { transform: translate(20px, 40px) scale(1.05); }
-    }
-    .float-icon {
-      position: absolute; font-size: 1.2rem; opacity: 0.12;
-      animation: iconFloat 10s ease-in-out infinite;
-      will-change: transform;
-    }
-    .fi-1 { top: 12%; left: 8%; animation-delay: 0s; }
-    .fi-2 { top: 25%; right: 12%; animation-delay: -2s; font-size: 1.5rem; }
-    .fi-3 { top: 55%; left: 5%; animation-delay: -4s; }
-    .fi-4 { bottom: 30%; right: 8%; animation-delay: -6s; }
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
-      50% { transform: translateY(-20px) rotate(10deg); opacity: 0.2; }
-    }
-
-    /* Hero */
-    .hero {
-      position: relative; z-index: 1;
-      padding: 48px 24px 56px;
-      text-align: center; color: #fff;
-      max-width: 900px; margin: 0 auto;
-    }
-    .pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 16px; border-radius: 999px;
-      background: var(--glass); border: 1px solid var(--glass-border);
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--gold);
-      animation: fadeDown 0.8s ease both;
-    }
-    .pill::before {
-      content: ""; width: 6px; height: 6px; border-radius: 50%;
-      background: var(--teal); box-shadow: 0 0 8px var(--teal);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    .hero h1 {
-      font-family: var(--display); font-size: clamp(1.1rem, 3vw, 1.35rem);
-      font-weight: 600; margin-top: 20px; opacity: 0.85;
-      animation: fadeDown 0.8s 0.1s ease both;
-    }
-    .hero .father-name {
-      font-family: var(--display);
-      font-size: clamp(1.8rem, 5vw, 2.6rem);
-      font-weight: 800; margin: 12px 0;
-      background: linear-gradient(135deg, #fff 0%, var(--gold) 50%, #fff 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: fadeDown 0.8s 0.2s ease both, shimmer 4s linear infinite;
-    }
-    @keyframes shimmer {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
-    }
-    .hero-graphic {
-      width: min(320px, 90vw); margin: 24px auto 0;
-      animation: fadeDown 1s 0.4s ease both;
-    }
-    .hero-graphic svg { width: 100%; height: auto; overflow: visible; }
-    .pulse-line {
-      stroke-dasharray: 200; stroke-dashoffset: 200;
-      animation: drawLine 2s ease forwards, pulseGlow 3s ease-in-out 2s infinite;
-    }
-    @keyframes drawLine { to { stroke-dashoffset: 0; } }
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 4px rgba(45,212,191,0.4)); }
-      50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(45,212,191,0.8)); }
-    }
-    .node-father { animation: nodePulse 3s ease-in-out infinite; transform-origin: center; }
-    .node-son { animation: nodePulse 3s ease-in-out infinite; }
-    .node-son:nth-child(2) { animation-delay: -1s; }
-    .node-son:nth-child(3) { animation-delay: -2s; }
-    @keyframes nodePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
-    }
-    .hero .meta { font-size: 0.8rem; opacity: 0.55; animation: fadeDown 0.8s 0.3s ease both; }
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
-
-    /* Main layout */
-    .main {
-      position: relative; z-index: 1;
-      max-width: 1100px; margin: 0 auto;
-      padding: 0 16px 40px;
-    }
-    .content-light {
-      background: transparent;
-      border-radius: 0;
-      margin-top: 0;
-      padding: 12px 16px 24px;
-      min-height: 60vh;
-      position: relative;
-      border: none;
-      backdrop-filter: none;
-    }
-
-    /* Mobile: stronger visible graphics (WhatsApp / Safari fix) */
-    @media (max-width: 767px) {
-      .hero { padding: 36px 16px 48px; min-height: 42vh; }
-      .hero-graphic { width: min(280px, 88vw); margin-top: 20px; }
-      .mesh-bg { animation-duration: 12s; opacity: 1; }
-      .grid-lines { opacity: 0.7; }
-      .orb {
-        mix-blend-mode: normal;
-        filter: blur(50px);
-      }
-      .orb-1 { width: 280px; height: 280px; opacity: 0.55; }
-      .orb-2 { width: 240px; height: 240px; opacity: 0.5; }
-      .orb-3 { width: 220px; height: 220px; opacity: 0.45; }
-      .orb-4 { width: 180px; height: 180px; opacity: 0.4; }
-      .float-icon { opacity: 0.22; font-size: 1.4rem; }
-      .content-light {
-        background: linear-gradient(180deg, rgba(15,23,42,0.55) 0%, rgba(3,7,18,0.98) 100%);
-        backdrop-filter: blur(12px);
-      }
-      .father-avatar { width: 72px; height: 72px; font-size: 2rem; }
-      .sons-row { gap: 6px; }
-      .son-pill { padding: 12px 4px; }
-      .son-pill .sa { font-size: 0.78rem; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .mesh-bg, .grid-lines, .orb, .float-icon, .pulse-line, .node-father, .node-son { animation: none !important; }
-      .pulse-line { stroke-dashoffset: 0; }
-    }
-    @media (min-width: 768px) {
-      .content-light { padding: 40px 32px 32px; }
-      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    }
-
-    /* Reveal on scroll */
-    .reveal {
-      opacity: 0; transform: translateY(28px);
-      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* Family hub */
-    .family-hub {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px 16px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--card-border);
-    }
-    .father-node {
-      text-align: center; margin-bottom: 24px;
-    }
-    .father-avatar {
-      width: 72px; height: 72px; margin: 0 auto 12px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #fef3c7, #fc8019);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem;
-      box-shadow: 0 4px 16px rgba(252,128,25,0.2);
-    }
-    .father-node h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 700; color: var(--text); }
-    .father-node p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
-    .connector {
-      width: 2px; height: 24px; margin: 0 auto 16px;
-      background: linear-gradient(180deg, var(--gold), transparent);
-    }
-    .sons-row {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-    }
-    @media (min-width: 768px) { .sons-row { gap: 16px; } }
-    .son-pill {
-      text-align: center; padding: 16px 8px;
-      border-radius: 16px;
-      background: var(--card-soft);
-      border: 1px solid var(--card-border);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .son-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
-    .son-pill .dot {
-      width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 8px;
-      background: var(--c);
-    }
-    .son-pill .sn { font-size: 0.72rem; font-weight: 700; color: var(--text); }
-    .son-pill .sp { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
-    .son-pill .sa {
-      font-family: var(--display); font-size: 0.9rem; font-weight: 800;
-      color: var(--c); margin-top: 8px;
-    }
-
-    /* Status + total */
-    .status-chip {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 12px; border-radius: 99px; margin-bottom: 12px;
-      background: rgba(12,131,31,0.08); color: var(--teal); font-size: 0.68rem; font-weight: 600;
-      border: 1px solid rgba(12,131,31,0.15);
-    }
-    .status-chip::before { content: "●"; font-size: 0.5rem; }
-    .mega-total {
-      text-align: left; padding: 20px; margin-bottom: 16px;
-      background: var(--card); border-radius: var(--radius); color: var(--text);
-      position: relative; overflow: hidden;
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-      border-left: 4px solid var(--teal);
-    }
-    .mega-total::after { display: none; }
-    .mega-total .lbl {
-      font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase;
-      color: var(--muted); position: relative; font-weight: 600;
-    }
-    .mega-total .num {
-      font-family: var(--display); font-size: clamp(2rem, 5.5vw, 2.6rem);
-      font-weight: 800; color: var(--teal); margin: 6px 0;
-      position: relative;
-    }
-    .mega-total .sub { font-size: 0.75rem; color: var(--muted); position: relative; }
-
-    /* Cards */
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 16px; margin-bottom: 12px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--card-border);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .card:hover { transform: none; box-shadow: var(--shadow-lg); }
-    .card-head {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: 16px;
-    }
-    .card-head .tag-sm {
-      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 0.06em; color: var(--muted);
-    }
-    .card-head h3 { font-family: var(--display); font-size: 1.05rem; font-weight: 700; margin-top: 4px; }
-    .card-head .amt { font-family: var(--display); font-size: 1.35rem; font-weight: 800; color: var(--c, var(--text)); }
-    .bar-track {
-      height: 6px; background: #f0f0f0; border-radius: 99px; overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 60%, white));
-      width: 0; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .bar-fill.animated { /* width set inline */ }
-    .bar-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.68rem; color: var(--muted); }
-
-    .glass-dark {
-      background: linear-gradient(135deg, #1a3a2a, #0c831f);
-      color: #fff; border: none;
-    }
-    .glass-dark .row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.85rem;
-    }
-    .glass-dark .row:last-child { border: none; }
-    .glass-dark .hi { font-family: var(--display); font-weight: 800; color: var(--gold); }
-
-    /* Section titles */
-    .sec-title { margin-bottom: 16px; }
-    .sec-title h2 {
-      font-family: var(--display); font-size: 1.15rem; font-weight: 700; color: var(--text);
-    }
-    .sec-title p { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
-    .sec-title .line {
-      width: 40px; height: 3px; border-radius: 2px;
-      background: linear-gradient(90deg, var(--teal), var(--blue));
-      margin-top: 10px;
-    }
-
-    /* Split cards */
-    .split-info {
-      padding: 12px 14px; border-radius: 12px; margin-bottom: 12px;
-      background: #fff8f0; border: 1px solid #ffe4c4; font-size: 0.78rem; color: #7c4a1a;
-    }
-    .split-card { --c: var(--teal); }
-    .split-metrics {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0;
-    }
-    .metric {
-      text-align: center; padding: 12px 6px;
-      background: var(--card-soft); border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-    .metric .ml { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
-    .metric .mv { font-family: var(--display); font-size: 0.85rem; font-weight: 800; margin-top: 6px; }
-    .metric .mv.owe { color: var(--rose-dim); }
-    .metric .mv.credit { color: #059669; }
-    .split-banner {
-      text-align: center; padding: 14px; border-radius: 12px; margin-top: 12px;
-      background: var(--card); color: var(--text); font-size: 0.85rem;
-      border: 1px solid var(--card-border); box-shadow: var(--shadow);
-    }
-    .split-banner strong { color: var(--teal); font-family: var(--display); font-size: 1.05rem; }
-
-    .settle-card {
-      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(13,148,136,0.12));
-      border: 1px solid rgba(129,140,248,0.3);
-      border-radius: var(--radius);
-      padding: 20px; margin-bottom: 20px;
-    }
-    .settle-card h3 { font-family: var(--display); font-size: 1.05rem; margin-bottom: 12px; }
-    .settle-table { width: 100%; font-size: 0.78rem; border-collapse: collapse; margin: 12px 0; }
-    .settle-table th, .settle-table td { padding: 10px 8px; border-bottom: 1px solid var(--card-border); text-align: left; }
-    .settle-table th { color: var(--muted); font-size: 0.65rem; text-transform: uppercase; }
-    .settle-table td.amt { text-align: right; font-weight: 800; color: var(--gold); }
-    .settle-te {
-      padding: 14px; border-radius: 12px; margin-top: 12px;
-      background: rgba(13,148,136,0.15); border: 1px solid rgba(45,212,191,0.25);
-      font-size: 0.85rem; line-height: 1.7;
-    }
-    .settle-note { font-size: 0.68rem; color: var(--muted); margin-top: 10px; }
-
-    /* ── Share hub — bold, fight-proof UI ── */
-  #sec-share {
-      scroll-margin-top: 80px;
-      background: transparent !important;
-      border: none !important;
-      padding: 0 !important; overflow: hidden;
-      box-shadow: none;
-    }
-    .share-hero {
-      padding: 20px 16px; text-align: center;
-      background: var(--card);
-      border-bottom: 1px solid var(--card-border);
-      border-radius: var(--radius) var(--radius) 0 0;
-      box-shadow: var(--shadow);
-    }
-    .share-hero .peace { font-size: 0.68rem; color: var(--teal); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-    .share-hero h2 { font-family: var(--display); font-size: 1.2rem; font-weight: 800; margin: 8px 0 4px; color: var(--text); }
-    .share-hero .fair-pill {
-      display: inline-block; margin-top: 10px; padding: 8px 16px; border-radius: 99px;
-      background: #f5f5f5; border: 1px solid var(--card-border);
-      font-size: 0.78rem; color: var(--muted);
-    }
-    .share-hero .fair-pill strong { color: var(--teal); font-size: 0.95rem; }
-
-    .person-grid { display: grid; gap: 12px; padding: 20px 16px; }
-    @media (min-width: 600px) { .person-grid { grid-template-columns: repeat(3, 1fr); } }
-
-    .person-card {
-      border-radius: 18px; padding: 18px 14px; text-align: center;
-      border: 2px solid var(--card-border); position: relative; overflow: hidden;
-    }
-    .person-card::before {
-      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-      background: var(--pc, var(--teal));
-    }
-    .person-card.receive { border-color: rgba(12,131,31,0.35); background: #f0fdf4; }
-    .person-card.owe { border-color: rgba(226,55,68,0.35); background: #fff5f5; }
-    .person-card.ok { border-color: var(--card-border); background: var(--card); }
-    .person-card .emoji { font-size: 2rem; }
-    .person-card .name { font-family: var(--display); font-weight: 800; font-size: 1rem; margin-top: 6px; }
-    .person-card .branch { font-size: 0.68rem; color: var(--muted); }
-    .person-card .paid-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 14px; }
-    .person-card .paid-amt {
-      font-family: var(--display); font-size: 1.35rem; font-weight: 800; margin: 4px 0;
-      color: var(--text);
-    }
-    .person-card .status-badge {
-      display: inline-block; margin-top: 10px; padding: 8px 12px; border-radius: 12px;
-      font-size: 0.72rem; font-weight: 800; line-height: 1.35;
-    }
-    .person-card.receive .status-badge { background: #059669; color: #fff; }
-    .person-card.owe .status-badge { background: #e11d48; color: #fff; }
-    .person-card.ok .status-badge { background: #475569; color: #e2e8f0; }
-
-    .person-card.receive .status-badge { background: var(--teal); color: #fff; }
-    .person-card.owe .status-badge { background: var(--rose); color: #fff; }
-    .person-card.ok .status-badge { background: #e2e8f0; color: var(--text); }
-
-    .settle-hero {
-      margin: 0 0 12px; padding: 16px; border-radius: var(--radius);
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-    }
-    .settle-hero h3 {
-      font-family: var(--display); font-size: 1rem; font-weight: 800; text-align: left;
-      margin-bottom: 14px; color: var(--text);
-    }
-    .settle-flow { display: flex; flex-direction: column; gap: 10px; }
-    .settle-arrow {
-      display: flex; align-items: center; gap: 12px; padding: 14px;
-      background: #fafafa; border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-    .settle-arrow .from, .settle-arrow .to {
-      flex: 1; text-align: center;
-    }
-    .settle-arrow .from .n, .settle-arrow .to .n { font-weight: 800; font-size: 0.95rem; }
-    .settle-arrow .from .t, .settle-arrow .to .t { font-size: 0.65rem; color: var(--muted); }
-    .settle-arrow .mid {
-      flex-shrink: 0; text-align: center; padding: 0 8px;
-    }
-    .settle-arrow .mid .arr { font-size: 1.25rem; color: var(--teal); }
-    .settle-arrow .mid .val {
-      font-family: var(--display); font-size: 1.1rem; font-weight: 800; color: var(--teal);
-      white-space: nowrap;
-    }
-    .settle-total-box {
-      text-align: center; margin-top: 12px; padding: 14px;
-      background: #fff5f5; border-radius: 12px;
-      border: 1px dashed rgba(226,55,68,0.35);
-    }
-    .settle-total-box .lbl { font-size: 0.68rem; color: var(--rose); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-    .settle-total-box .val { font-family: var(--display); font-size: 1.5rem; font-weight: 800; color: var(--rose); margin-top: 4px; }
-    .settle-te-big {
-      margin: 0 0 12px; padding: 16px; border-radius: var(--radius);
-      background: #f0fdf4;
-      border: 1px solid rgba(12,131,31,0.2);
-      font-size: 0.95rem; line-height: 1.7; text-align: center;
-      color: var(--text);
-    }
-    .settle-te-big strong { color: var(--teal); font-size: 1rem; }
-
-    .share-actions { padding: 0 16px 24px; }
-    .btn-wa-big {
-      width: 100%; padding: 18px 20px; border: none; border-radius: 18px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff; font-family: var(--display); font-size: 1.05rem; font-weight: 800;
-      cursor: pointer; box-shadow: 0 8px 32px rgba(34,197,94,0.4);
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-    }
-    .btn-wa-big:active { transform: scale(0.98); }
-    .share-ok-hint {
-      text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 12px;
-    }
-    .share-note {
-      margin: 0 0 16px; padding: 12px; border-radius: 12px;
-      font-size: 0.68rem; color: var(--muted); background: #fafafa;
-      border-left: 3px solid var(--teal);
-    }
-    #settlementCard { display: none; }
-
-    /* Table */
-    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--card-border); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; color: var(--text); }
-    th { text-align: left; padding: 10px 12px; background: var(--card-soft); color: var(--muted); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-    td { padding: 10px 12px; border-top: 1px solid var(--card-border); }
-    td.amt { text-align: right; font-family: var(--display); font-weight: 700; }
-    tr.day-row td { background: #f0fdf4; font-weight: 700; color: var(--teal); }
-    .badge { font-size: 0.6rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
-    .badge.cash { background: #fef3c7; color: #92400e; }
-    .badge.card { background: #dbeafe; color: #1e40af; }
-
-    .verify-card {
-      background: rgba(251,191,36,0.08);
-      border: 1px solid rgba(251,191,36,0.25);
-    }
-    .verify-card li { margin: 10px 0 10px 20px; font-size: 0.85rem; }
-
-    /* App bottom nav */
-    .app-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-      padding-bottom: env(safe-area-inset-bottom);
-      background: var(--surface);
-      border-top: 1px solid var(--card-border);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-      display: flex; align-items: flex-start; justify-content: space-around;
-      padding-top: 6px;
-    }
-    .app-nav button {
-      flex: 1; max-width: 72px; border: none; background: none;
-      color: var(--muted); font-size: 0.58rem; font-weight: 600;
-      cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
-      padding: 6px 4px; transition: color 0.2s, transform 0.2s;
-    }
-    .app-nav button .ni { font-size: 1.2rem; line-height: 1; }
-    .app-nav button.active { color: var(--teal); }
-    .app-nav button:active { transform: scale(0.92); }
-    .app-nav .nav-add {
-      flex: 0 0 auto; width: 52px; height: 52px; margin-top: -18px;
-      border-radius: 50%; background: linear-gradient(135deg, #0c831f, #14a832);
-      color: #fff; font-size: 1.5rem; font-weight: 700;
-      box-shadow: 0 6px 20px rgba(12,131,31,0.35);
-      display: flex; align-items: center; justify-content: center;
-    }
-    .app-nav .nav-add span { font-size: 1.6rem; }
-
-    .powered-by-tevs {
-      text-align: center; padding: 24px 16px 8px; margin-top: 8px;
-      font-size: 0.68rem; font-weight: 500; color: var(--muted);
-      letter-spacing: 0.04em;
-    }
-    .powered-by-tevs a {
-      color: inherit; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: color 0.2s, transform 0.2s;
-    }
-    .powered-by-tevs a:active { transform: scale(0.97); }
-    .powered-by-tevs .brand {
-      font-family: var(--display); font-weight: 800; font-size: 0.78rem;
-      letter-spacing: 0.06em;
-      color: var(--teal);
-      background: none; -webkit-text-fill-color: var(--teal);
-    }
-
-    .dock { display: none; }
-    .dock button {
-      flex: 1; max-width: 140px; padding: 14px 10px;
-      border: none; border-radius: 14px;
-      font-family: var(--display); font-size: 0.78rem; font-weight: 700;
-      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-    }
-    .dock button:active { transform: scale(0.96); }
-    .dock .ic { font-size: 1.1rem; }
-    .b-wa { background: #22c55e; color: #fff; box-shadow: 0 4px 20px rgba(34,197,94,0.35); }
-    .b-dl { background: #8b5cf6; color: #fff; box-shadow: 0 4px 20px rgba(139,92,246,0.35); }
-    .b-pr { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
-    .btn-block {
-      width: 100%; padding: 16px; border: none; border-radius: 12px;
-      font-family: var(--display); font-weight: 700; font-size: 0.9rem;
-      cursor: pointer; background: var(--teal);
-      color: #fff; transition: transform 0.2s;
-    }
-    .btn-block:active { transform: scale(0.98); }
-
-    /* Admin */
-    .admin-fab {
-      text-align: center; padding: 14px; margin-top: 8px;
-      font-size: 0.75rem; color: var(--muted); cursor: pointer;
-      border: 1px dashed #cbd5e1; border-radius: 14px;
-      transition: background 0.2s;
-    }
-    .admin-fab:hover { background: #f1f5f9; }
-    .admin-box {
-      display: none; padding: 20px; margin-top: 12px;
-      background: #fff; border-radius: var(--radius);
-      border: 2px solid #e2e8f0;
-    }
-    .admin-box.open { display: block; animation: fadeDown 0.4s ease; }
-    .fld { margin-bottom: 12px; }
-    .fld label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
-    .fld input, .fld select {
-      width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0;
-      border-radius: 12px; font-size: 1rem; font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .fld input:focus, .fld select:focus {
-      outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(45,212,191,0.2);
-    }
-    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    .admin-actions button {
-      flex: 1; min-width: 100px; padding: 12px; border: none; border-radius: 12px;
-      font-weight: 700; font-size: 0.78rem; cursor: pointer; color: #fff;
-    }
-    .ab-add { background: var(--teal-dim); }
-    .ab-adv { background: var(--rose-dim); }
-    .ab-save { background: #0f172a; }
-
-    /* Care status banner */
-    .care-banner {
-      background: var(--card); color: var(--text); border-radius: var(--radius);
-      padding: 16px; margin-bottom: 12px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--card-border);
-      position: relative; overflow: hidden;
-      border-left: 4px solid var(--teal);
-    }
-    .care-banner::after { display: none; }
-    .care-banner .cb-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; position: relative; }
-    .care-banner .cb-tag {
-      font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.06em; background: rgba(12,131,31,0.1); color: var(--teal);
-      padding: 4px 10px; border-radius: 99px;
-    }
-    .care-banner h3 { font-family: var(--display); font-size: 1rem; margin: 8px 0 4px; color: var(--text); }
-    .care-banner .cb-te { font-size: 0.8rem; color: var(--muted); }
-    .care-banner .cb-meta { font-size: 0.68rem; color: var(--muted); margin-top: 10px; }
-    .care-banner .cb-discharge {
-      text-align: right; flex-shrink: 0;
-    }
-    .care-banner .cb-discharge .dl { font-size: 0.6rem; text-transform: uppercase; opacity: 0.7; }
-    .care-banner .cb-discharge .dv {
-      font-family: var(--display); font-size: 1rem; font-weight: 800; color: var(--teal);
-    }
-
-    /* Chatbot — Care tab in bottom nav; hide floating duplicate */
-    .chat-fab { display: none !important; }
-    .chat-fab.open { background: #334155; animation: none; }
-    .chat-panel {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      z-index: 300; max-height: 85vh;
-      background: #fff; border-radius: 24px 24px 0 0;
-      box-shadow: 0 -12px 48px rgba(0,0,0,0.2);
-      display: flex; flex-direction: column;
-      transform: translateY(110%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-    }
-    .chat-panel.open { transform: translateY(0); }
-    @media (min-width: 768px) {
-      .chat-panel {
-        left: auto; right: 20px; bottom: 100px; width: 380px; max-height: 520px;
-        border-radius: 20px; transform: translateY(20px); opacity: 0; pointer-events: none;
-      }
-      .chat-panel.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
-    }
-    .chat-head {
-      padding: 16px 20px; border-bottom: 1px solid #e2e8f0;
-      display: flex; justify-content: space-between; align-items: center;
-      background: linear-gradient(135deg, #0f766e, #0d9488); color: #fff;
-      border-radius: 24px 24px 0 0;
-    }
-    .chat-head h4 { font-family: var(--display); font-size: 0.95rem; }
-    .chat-head p { font-size: 0.68rem; opacity: 0.8; margin-top: 2px; }
-    .chat-close {
-      background: rgba(255,255,255,0.2); border: none; color: #fff;
-      width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem;
-    }
-    .chat-msgs {
-      flex: 1; overflow-y: auto; padding: 16px; min-height: 200px; max-height: 340px;
-      background: #f8fafc;
-    }
-    .chat-msg {
-      max-width: 88%; margin-bottom: 12px; padding: 10px 14px;
-      border-radius: 16px; font-size: 0.82rem; line-height: 1.5;
-      animation: fadeDown 0.3s ease;
-    }
-    .chat-msg.bot {
-      background: #fff; border: 1px solid #e2e8f0;
-      border-bottom-left-radius: 4px; color: #334155;
-    }
-    .chat-msg.user {
-      background: #0d9488; color: #fff; margin-left: auto;
-      border-bottom-right-radius: 4px;
-    }
-    .chat-msg .typing { display: inline-block; animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:.3} 50%{opacity:1} }
-    .chat-chips {
-      display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 8px;
-    }
-    .chat-chip {
-      padding: 6px 12px; border-radius: 99px; font-size: 0.68rem; font-weight: 600;
-      background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;
-      cursor: pointer; white-space: nowrap;
-    }
-    .chat-input-row {
-      display: flex; gap: 8px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-      border-top: 1px solid #e2e8f0; background: #fff;
-    }
-    .chat-input-row input {
-      flex: 1; padding: 12px 14px; border: 1px solid #e2e8f0;
-      border-radius: 12px; font-size: 0.9rem; font-family: inherit;
-    }
-    .chat-input-row button, .chat-upload-btn {
-      padding: 0 14px; border: none; border-radius: 12px;
-      background: #0d9488; color: #fff; font-weight: 700; cursor: pointer; font-size: 0.85rem;
-    }
-    .chat-upload-btn { background: #6366f1; position: relative; overflow: hidden; }
-    .chat-upload-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .chat-overlay {
-      position: fixed; inset: 0; z-index: 250;
-      background: rgba(0,0,0,0.4); opacity: 0; pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    .chat-overlay.open { opacity: 1; pointer-events: auto; }
-
-    .add-fab { display: none; }
-
-    .add-modal, .pin-modal {
-      position: fixed; inset: 0; z-index: 400;
-      background: rgba(0,0,0,0.55); display: none;
-      align-items: flex-end; justify-content: center;
-      padding: 0 0 env(safe-area-inset-bottom);
-    }
-    .add-modal.open, .pin-modal.open { display: flex; }
-    .add-sheet, .pin-sheet {
-      width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
-      background: #fff; border-radius: 24px 24px 0 0;
-      padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
-      animation: slideUp 0.35s cubic-bezier(0.22,1,0.36,1);
-    }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
-    .add-sheet h3, .pin-sheet h3 { font-family: var(--display); font-size: 1.1rem; margin-bottom: 4px; }
-    .add-sheet .sub, .pin-sheet .sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 16px; }
-    .add-sheet .close-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .add-close { border: none; background: #f1f5f9; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; }
-    .add-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-    .add-actions button { padding: 16px; border: none; border-radius: 14px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
-    .ab-bill { background: var(--teal-dim); color: #fff; grid-column: 1 / -1; }
-    .ab-adv-btn { background: var(--rose-dim); color: #fff; }
-    .ab-status-btn { background: #6366f1; color: #fff; }
-    .toast {
-      position: fixed; top: calc(88px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateY(-120%);
-      z-index: 500; padding: 12px 20px; border-radius: 12px;
-      background: var(--text); color: #fff; font-size: 0.82rem; font-weight: 600;
-      box-shadow: var(--shadow-lg); transition: transform 0.35s ease;
-      max-width: 90vw; text-align: center;
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); }
-    .setup-box {
-      padding: 14px; border-radius: 12px; margin-top: 12px;
-      background: #fff8f0; border: 1px dashed #fc8019; font-size: 0.75rem; color: #7c4a1a;
-    }
-    .setup-box input { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid var(--card-border); border-radius: 10px; font-size: 0.85rem; background: #fff; color: var(--text); }
-
-    #sec-bills, #sec-share { scroll-margin-top: 80px; }
-
-    /* ── Tab pages ── */
-    .app-page { display: none; animation: fadePage 0.3s ease; }
-    .app-page.active { display: block; }
-    @keyframes fadePage { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-    .hero-compact { display: none; }
-
-    .section-label {
-      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.06em; color: var(--muted); margin: 16px 0 10px;
-    }
-
-    .quick-scroll {
-      display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 14px;
-      -webkit-overflow-scrolling: touch; scrollbar-width: none;
-    }
-    .quick-scroll::-webkit-scrollbar { display: none; }
-    .qa-chip {
-      flex-shrink: 0; padding: 10px 16px; border-radius: 99px;
-      border: 1px solid var(--card-border); background: var(--card);
-      font-size: 0.78rem; font-weight: 700; color: var(--text);
-      cursor: pointer; box-shadow: var(--shadow); white-space: nowrap;
-    }
-    .qa-chip.qa-primary {
-      background: var(--teal); color: #fff; border-color: var(--teal);
-    }
-    .qa-chip:active { transform: scale(0.96); }
-
-    .home-paid-row {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;
-    }
-    .home-paid-box {
-      text-align: left; padding: 14px 12px; border-radius: var(--radius);
-      background: var(--card); border: 1px solid var(--card-border);
-      box-shadow: var(--shadow);
-    }
-    .home-paid-box .ic { font-size: 1.25rem; }
-    .home-paid-box .nm { font-size: 0.65rem; font-weight: 600; margin-top: 6px; color: var(--muted); }
-    .home-paid-box .am {
-      font-family: var(--display); font-size: 0.9rem; font-weight: 800; margin-top: 4px;
-    }
-
-    .btn-add-home {
-      width: 100%; padding: 16px; margin: 12px 0 8px; border: none; border-radius: 12px;
-      background: var(--teal);
-      color: #fff; font-family: var(--display); font-size: 1rem; font-weight: 800;
-      cursor: pointer; box-shadow: 0 4px 16px rgba(12,131,31,0.25);
-    }
-    .home-link {
-      display: block; text-align: center; padding: 10px; font-size: 0.78rem;
-      color: var(--teal); font-weight: 600; cursor: pointer; border: none; background: none; width: 100%;
-    }
-    .home-settle-mini { margin-bottom: 8px; }
-    .home-settle-mini .settle-hero { margin: 0 0 12px; padding: 16px; }
-    .home-settle-mini .settle-total-box .val { font-size: 1.4rem; }
-
-    .page-head {
-      padding: 4px 0 14px; border-bottom: 1px solid var(--card-border); margin-bottom: 16px;
-    }
-    .page-head h2 { font-family: var(--display); font-size: 1.15rem; font-weight: 800; color: var(--text); }
-    .page-head p { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-
-    /* Order-history style bill list (Swiggy/Zomato) */
-    .order-day { margin-bottom: 12px; }
-    .order-day-head {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 14px; background: #f0fdf4; border-radius: 12px 12px 0 0;
-      border: 1px solid var(--card-border); border-bottom: none;
-      font-size: 0.78rem; font-weight: 700; color: var(--teal);
-    }
-    .order-day-head .day-amt { font-family: var(--display); }
-    .order-item {
-      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-      background: var(--card); border-left: 1px solid var(--card-border);
-      border-right: 1px solid var(--card-border);
-    }
-    .order-item:last-child { border-radius: 0 0 12px 12px; border-bottom: 1px solid var(--card-border); }
-    .order-item .oi-avatar {
-      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 1rem;
-      background: #f5f5f5;
-    }
-    .order-item .oi-body { flex: 1; min-width: 0; }
-    .order-item .oi-who { font-weight: 700; font-size: 0.85rem; }
-    .order-item .oi-note { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
-    .order-item .oi-amt {
-      font-family: var(--display); font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
-    }
-
-    @media print {
-      .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay, .add-fab, .add-modal, .pin-modal, .toast, .app-nav, .app-topbar, .splash, .install-banner { display: none !important; }
-      body { background: #fff; padding: 0; }
-      .content-light { background: #fff; margin: 0; border-radius: 0; }
-    }
-  </style>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"FamilyCare","description":"Family hospital bill tracker with fair share settlement and WhatsApp sharing","applicationCategory":"FinanceApplication","operatingSystem":"Any","url":"https://tevskrishna.github.io/hospital-bills/","inLanguage":["te","en"]}
+  </script>
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/utilities.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body>
+<a class="skip-link no-print" href="#main">Skip to content</a>
 
 <div class="update-banner no-print" id="updateBanner">
   New version available — <a href="https://tevskrishna.github.io/hospital-bills/refresh.html">Tap here to update</a>
 </div>
 
-<div class="splash" id="splash">
+<div class="ptr-indicator no-print" id="ptrIndicator" aria-live="polite">↓ Pull to refresh</div>
+
+<div class="splash" id="splash" role="status" aria-live="polite" aria-label="Loading FamilyCare">
   <div class="splash-logo">👴</div>
   <h2>FamilyCare</h2>
   <p>మూడు కుమారుల సేవ · Three sons united</p>
+  <div class="splash-progress" aria-hidden="true"><span></span></div>
 </div>
 
 <div class="install-banner no-print" id="installBanner">
@@ -999,7 +65,7 @@
   <button onclick="promptInstall()">Install</button>
 </div>
 
-<header class="app-topbar no-print">
+<header class="app-topbar no-print" role="banner">
   <div class="topbar-row">
     <div class="topbar-brand">
       <div class="topbar-logo">🏥</div>
@@ -1013,51 +79,53 @@
   <div class="topbar-patient" id="topbarPatient">శ్రీ వెంకటేశ్వర రావు గారు</div>
 </header>
 
-<div class="ambient" aria-hidden="true">
-  <div class="mesh-bg"></div>
-  <div class="grid-lines"></div>
-  <canvas id="particleCanvas"></canvas>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="orb orb-4"></div>
-  <span class="float-icon fi-1">🙏</span>
-  <span class="float-icon fi-2">❤️</span>
-  <span class="float-icon fi-3">🏥</span>
-  <span class="float-icon fi-4">✨</span>
-</div>
-
-<header class="hero" style="display:none"></header>
 
 <div class="main">
-  <div class="content-light">
+  <main id="main" class="content-light" tabindex="-1">
+    <h1 class="sr-only">FamilyCare — Hospital Bills</h1>
 
-    <!-- ═══ HOME — simple dashboard ═══ -->
+    <!-- ═══ HOME — premium dashboard ═══ -->
     <div id="page-home" class="app-page active">
+      <h2 class="greeting reveal" id="greeting">Welcome</h2>
+      <div class="greeting-sub reveal" id="greetingSub">Family care dashboard</div>
+
+      <div class="patient-card reveal">
+        <div class="pc-av" aria-hidden="true">👴</div>
+        <div>
+          <div class="pc-name" id="homePatientName">—</div>
+          <div class="pc-sub" id="homeHospitalSub">—</div>
+        </div>
+      </div>
+
+      <div class="reveal care-banner" id="careBanner"></div>
+      <div class="reveal status-chip" id="statusBar">Loading...</div>
+
+      <div class="dash-hero reveal">
+        <div class="dh-label">Total spend · మొత్తం ఖర్చు</div>
+        <div class="dh-total" id="grandTotal">—</div>
+        <div class="dh-row">
+          <div class="dh-stat"><div class="l">Today</div><div class="v" id="todaySpend">₹0.00</div></div>
+          <div class="dh-stat"><div class="l">Fair share</div><div class="v" id="fairShareHome">—</div></div>
+          <div class="dh-stat"><div class="l">Bills</div><div class="v" id="billCount">0</div></div>
+        </div>
+      </div>
+      <div class="sub skel-hide" id="todayLabel" style="font-size:0.72rem;color:var(--muted);margin:-8px 0 16px"></div>
+
+      <div class="section-label">Contributions · ఎవరు చెల్లించారు</div>
+      <div class="reveal ring-row" id="homeRings"></div>
+
+      <div class="section-label">Settlement · సమన్యయం</div>
+      <div class="reveal home-settle-mini" id="homeSettle"></div>
+
+      <div class="section-label">Recent activity</div>
+      <div class="reveal activity-list" id="homeActivity"></div>
+
       <div class="quick-scroll no-print">
         <button class="qa-chip qa-primary" onclick="openAddModal()">➕ Add bill</button>
         <button class="qa-chip" onclick="showPage('bills')">📊 All bills</button>
         <button class="qa-chip" onclick="showPage('share')">💬 Share</button>
         <button class="qa-chip" onclick="toggleChat(true)">🩺 Care</button>
       </div>
-
-      <div class="reveal care-banner" id="careBanner"></div>
-      <div class="reveal status-chip" id="statusBar">Loading...</div>
-
-      <div class="reveal mega-total">
-        <div class="lbl">Total spend · మొత్తం ఖర్చు</div>
-        <div class="num" id="grandTotal">—</div>
-        <div class="sub" id="todayLabel">Till date · 3 sons</div>
-      </div>
-
-      <div class="section-label">Who paid · ఎవరు చెల్లించారు</div>
-      <div class="reveal home-paid-row" id="homePaid"></div>
-
-      <div class="section-label">Settlement · తీర్పు</div>
-      <div class="reveal home-settle-mini" id="homeSettle"></div>
-
-      <button class="btn-add-home no-print" onclick="openAddModal()">➕ Add today's bill</button>
-      <button class="home-link no-print" onclick="showPage('bills')">View full bill history →</button>
     </div>
 
     <!-- ═══ BILLS — full details ═══ -->
@@ -1081,7 +149,19 @@
       <div class="reveal grid-3" id="splitCards"></div>
       <div class="reveal split-banner" id="splitTotal"></div>
 
-      <div class="reveal sec-title" style="margin-top:24px"><h2>Bill history</h2><p>రోజువారీ ఖర్చు · like order history</p><div class="line"></div></div>
+      <div class="reveal sec-title" style="margin-top:24px"><h2>Bill history</h2><p>రోజువారీ ఖర్చు · transaction history</p><div class="line"></div></div>
+      <div class="bills-toolbar no-print reveal">
+        <div class="search-box">
+          <span aria-hidden="true">🔍</span>
+          <input type="search" id="billSearch" placeholder="Search by name, note, amount…" oninput="filterBills()" aria-label="Search bills" autocomplete="off" />
+        </div>
+        <div class="filter-chips" role="tablist" aria-label="Filter bills">
+          <button class="filter-chip active" data-filter="all" onclick="setBillFilter('all', this)">All</button>
+          <button class="filter-chip" data-filter="Venky" onclick="setBillFilter('Venky', this)">🙏 Venky</button>
+          <button class="filter-chip" data-filter="Deepa" onclick="setBillFilter('Deepa', this)">💛 Deepa</button>
+          <button class="filter-chip" data-filter="Kalyan" onclick="setBillFilter('Kalyan', this)">💙 Kalyan</button>
+        </div>
+      </div>
       <div class="reveal" id="dayTable"></div>
 
       <div class="reveal card" style="margin-top:16px">
@@ -1114,13 +194,14 @@
         <div id="settleHero"></div>
         <div class="share-note" id="shareNote"></div>
         <div class="share-actions">
+          <div class="wa-preview-lbl">WhatsApp preview</div>
+          <div class="wa-preview" id="waPreview" aria-label="WhatsApp message preview"></div>
+          <div class="copy-success" id="copySuccess" role="status">✓ Copied — paste in WhatsApp</div>
           <button class="btn-wa-big" onclick="copyWhatsApp()">💬 WhatsApp లో పంపండి — కుటుంబంతో షేర్</button>
           <p class="share-ok-hint">చూసి సరిగా ఉంటే OK అని reply చేయండి 🙏</p>
         </div>
       </div>
     </div>
-
-    <div class="reveal settle-card" id="settlementCard" style="display:none"></div>
 
     <footer class="powered-by-tevs no-print" aria-label="Built by Tevs">
       <a href="https://github.com/Tevskrishna" target="_blank" rel="noopener noreferrer">
@@ -1128,18 +209,16 @@
       </a>
     </footer>
 
-  </div>
+  </main>
 </div>
 
-<button class="add-fab no-print" id="addFab" onclick="openAddModal()" aria-label="Add bill" style="display:none">➕</button>
+<button class="add-fab-premium no-print" id="addFabPremium" onclick="openAddModal()" aria-label="Add bill">+</button>
 
-<div class="pin-modal no-print" id="pinModal" style="display:none !important"></div>
-
-<div class="add-modal no-print" id="addModal">
+<div class="add-modal no-print" id="addModal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle" aria-hidden="true">
   <div class="add-sheet">
     <div class="close-row">
-      <div><h3>➕ Add payment</h3><p class="sub">బిల్లు జోడించండి · saves to family link</p></div>
-      <button class="add-close" onclick="closeAddModal()">✕</button>
+      <div><h3 id="addModalTitle">➕ Add payment</h3><p class="sub">బిల్లు జోడించండి · saves to family link</p></div>
+      <button type="button" class="add-close pressable" onclick="closeAddModal()" aria-label="Close">✕</button>
     </div>
     <div class="fld"><label>Date</label><input type="date" id="aDate" /></div>
     <div class="fld"><label>Who paid</label>
@@ -1169,18 +248,12 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<nav class="app-nav no-print" id="appNav">
-  <button onclick="showPage('home')" class="active" data-nav="home"><span class="ni">🏠</span>Home</button>
-  <button onclick="showPage('bills')" data-nav="bills"><span class="ni">📊</span>Bills</button>
-  <button class="nav-add" onclick="openAddModal()" aria-label="Add bill"><span>+</span></button>
-  <button onclick="showPage('share')" data-nav="share"><span class="ni">💬</span>Share</button>
-  <button onclick="toggleChat(true)" data-nav="care"><span class="ni">🩺</span>Care</button>
-</nav>
-
-<nav class="dock no-print" style="display:none">
-  <button class="b-wa" onclick="copyWhatsApp()"><span class="ic">💬</span>WhatsApp</button>
-  <button class="b-dl" onclick="downloadHistory()"><span class="ic">⬇</span>Download</button>
-  <button class="b-pr" onclick="window.print()"><span class="ic">🖨</span>Print</button>
+<nav class="app-nav no-print" id="appNav" role="navigation" aria-label="Main navigation">
+  <button type="button" onclick="showPage('home')" class="active pressable" data-nav="home" aria-current="page"><span class="ni" aria-hidden="true">🏠</span>Home</button>
+  <button type="button" onclick="showPage('bills')" class="pressable" data-nav="bills"><span class="ni" aria-hidden="true">📊</span>Bills</button>
+  <button type="button" class="nav-add pressable" onclick="openAddModal()" aria-label="Add bill"><span aria-hidden="true">+</span></button>
+  <button type="button" onclick="showPage('share')" class="pressable" data-nav="share"><span class="ni" aria-hidden="true">💬</span>Share</button>
+  <button type="button" onclick="toggleChat(true)" class="pressable" data-nav="care" aria-label="Care assistant"><span class="ni" aria-hidden="true">🩺</span>Care</button>
 </nav>
 
 <button class="chat-fab no-print" id="chatFab" onclick="toggleChat()" aria-label="Care assistant">🩺</button>
@@ -1193,7 +266,13 @@
     </div>
     <button class="chat-close" onclick="toggleChat(false)">✕</button>
   </div>
-  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="emergency-card no-print">
+    <strong>🚨 Emergency</strong> — For urgent medical decisions, contact ward staff or Venky at the hospital. This assistant is for family updates only.
+  </div>
+  <div class="care-timeline no-print" id="careTimeline"></div>
+  <div class="rx-upload-card no-print">📷 Tap camera below to upload prescription or hospital slip</div>
+  <div class="ocr-progress no-print" id="ocrProgress" aria-hidden="true"><span></span></div>
+  <div class="chat-msgs" id="chatMsgs" role="log" aria-live="polite" aria-label="Care assistant conversation"></div>
   <div class="chat-chips" id="chatChips"></div>
   <div class="chat-input-row">
     <label class="chat-upload-btn">📷<input type="file" accept="image/*" capture="environment" onchange="uploadPrescription(this)" /></label>
@@ -1202,958 +281,19 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script>
-/* ── Mobile sync: GitHub token (recommended) or Google Web App URL ── */
-const CONFIG = {
-  apiUrl: localStorage.getItem("hb_apiUrl") || "",
-  githubToken: localStorage.getItem("hb_github_token") || "",
-  githubRepo: "Tevskrishna/hospital-bills",
-  githubPath: "data/bills.json",
-  syncPin: "0000",
-};
-const PAGE_VERSION = "2026-07-03-v21";
-const LS_KEY = "hospitalBillsLocal";
-const PIN_KEY = "hb_pin_ok";
-const SONS = [
-  { branch: "Shivaji", payer: "Venky", te: "శివాజీ", color: "#0d9488", icon: "🙏" },
-  { branch: "Rajini", payer: "Deepa", te: "రజినీ · దీప", color: "#e11d48", icon: "💛" },
-  { branch: "Kalyan", payer: "Kalyan", te: "కల్యాణ్", color: "#1d4ed8", icon: "💙" },
-];
-let meta = { patient: "Sri Venkateswara Rao", hospital: "Mallareddy Hospital", startDate: "2026-06-28" };
-let data = { bills: [], advances: [] };
-let careStatus = {
-  ward: "General Ward",
-  condition: "Stable, under observation",
-  conditionTe: "స్థిరంగా ఉన్నారు, పర్యవేక్షణలో",
-  expectedDischarge: "2026-07-03",
-  dischargeNote: "Doctor will confirm after reports",
-  dischargeNoteTe: "రిపోర్ట్స్ వచ్చాక డాక్టర్ నిర్ణయిస్తారు",
-  lastUpdate: "2026-06-30",
-  lastUpdateBy: "Venky"
-};
-
-async function loadData(silent) {
-  const before = JSON.stringify({ b: data.bills, a: data.advances, c: careStatus });
-  if (CONFIG.apiUrl) {
-    try {
-      const res = await fetch(CONFIG.apiUrl + (CONFIG.apiUrl.includes("?") ? "&" : "?") + "t=" + Date.now());
-      if (res.ok) {
-        applyJson(await res.json());
-        updateSyncUI();
-        if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
-        return;
-      }
-    } catch (e) {}
-  }
-  try {
-    const res = await fetch("data/bills.json?v=" + Date.now());
-    if (res.ok) {
-      applyJson(await res.json());
-      mergeLocalStorage();
-      updateSyncUI();
-      if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
-      return;
-    }
-  } catch (e) {}
-  mergeLocalStorage();
-  updateSyncUI();
-  if (silent && JSON.stringify({ b: data.bills, a: data.advances, c: careStatus }) !== before) render();
-}
-
-function applyJson(json) {
-  meta = { patient: json.patient, hospital: json.hospital, startDate: json.startDate };
-  data.bills = json.bills || [];
-  data.advances = json.advances || [];
-  if (json.careStatus) careStatus = { ...careStatus, ...json.careStatus };
-}
-
-function mergeLocalStorage() {
-  try {
-    const local = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-    if (!local) return;
-    (local.pendingBills || []).forEach(b => {
-      if (!data.bills.some(x => x.d === b.d && x.who === b.who && x.amt === b.amt && x.note === b.note)) {
-        data.bills.push(b);
-      }
-    });
-    (local.pendingAdvances || []).forEach(a => {
-      if (!data.advances.some(x => x.d === a.d && x.amt === a.amt)) data.advances.push(a);
-    });
-    if (local.careStatus) careStatus = { ...careStatus, ...local.careStatus };
-  } catch (e) {}
-}
-
-function getLocalPending() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch (e) { return {}; }
-}
-function saveLocalPending(patch) {
-  const cur = getLocalPending();
-  localStorage.setItem(LS_KEY, JSON.stringify({ ...cur, ...patch }));
-  updateSyncUI();
-}
-function clearLocalPending() {
-  localStorage.removeItem(LS_KEY);
-  updateSyncUI();
-}
-
-function updateSyncUI() {
-  const synced = !!(CONFIG.githubToken || CONFIG.apiUrl);
-  document.getElementById("setupBox")?.style.setProperty("display", synced ? "none" : "block");
-  if (CONFIG.apiUrl) document.getElementById("setupApiUrl").value = CONFIG.apiUrl;
-}
-
-async function flushPendingToCloud() {
-  const pending = getLocalPending();
-  const hasPending = (pending.pendingBills || []).length > 0 || (pending.pendingAdvances || []).length > 0;
-  if (!hasPending || !(CONFIG.githubToken || CONFIG.apiUrl)) return;
-  const r = await pushAllToCloud();
-  if (r.ok) {
-    clearLocalPending();
-    toast("✅ Pending bills synced for family");
-  }
-}
-
-function buildPayload() {
-  return {
-    patient: meta.patient,
-    hospital: meta.hospital,
-    startDate: meta.startDate,
-    sons: [
-      { name: "Shivaji", payer: "Venky", label: "శివాజీ కుమారుడు · Venky", color: "#2a9d8f" },
-      { name: "Rajini", payer: "Deepa", label: "రజినీ కుమారుడు · Deepa", color: "#e76f51" },
-      { name: "Kalyan", payer: "Kalyan", label: "కల్యాణ్ కుమారుడు", color: "#1b4965" },
-    ],
-    bills: data.bills,
-    advances: data.advances,
-    careStatus,
-  };
-}
-
-function jsonToBase64(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = "";
-  bytes.forEach(b => { bin += String.fromCharCode(b); });
-  return btoa(bin);
-}
-
-async function saveToGitHub() {
-  const token = CONFIG.githubToken || localStorage.getItem("hb_github_token");
-  if (!token) return { ok: false, offline: true };
-  const headers = {
-    Authorization: "Bearer " + token,
-    Accept: "application/vnd.github+json",
-    "X-GitHub-Api-Version": "2022-11-28",
-  };
-  const jsonStr = JSON.stringify(buildPayload(), null, 2);
-  const content = jsonToBase64(jsonStr);
-  const url = `https://api.github.com/repos/${CONFIG.githubRepo}/contents/${CONFIG.githubPath}`;
-
-  let sha = null;
-  const getRes = await fetch(url, { headers });
-  if (getRes.ok) sha = (await getRes.json()).sha;
-  else if (getRes.status !== 404) {
-    const err = await getRes.json().catch(() => ({}));
-    return { ok: false, error: err.message || "GitHub read failed" };
-  }
-
-  const putRes = await fetch(url, {
-    method: "PUT",
-    headers: { ...headers, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message: "Mobile bill update " + new Date().toISOString().slice(0, 16),
-      content,
-      ...(sha ? { sha } : {}),
-    }),
-  });
-  const result = await putRes.json().catch(() => ({}));
-  if (!putRes.ok) return { ok: false, error: result.message || "GitHub save failed" };
-  return { ok: true };
-}
-
-async function pushAllToCloud() {
-  if (CONFIG.githubToken) {
-    const gh = await saveToGitHub();
-    if (gh.ok) return gh;
-    if (!CONFIG.apiUrl) return gh;
-  }
-  if (CONFIG.apiUrl) {
-    return cloudPost("importAll", {
-      bills: data.bills,
-      advances: data.advances,
-      careStatus,
-    });
-  }
-  return { ok: false, offline: true };
-}
-
-function saveGithubToken() {
-  const token = document.getElementById("setupGithubToken").value.trim();
-  if (!token.startsWith("ghp_") && !token.startsWith("github_pat_")) {
-    return alert("Paste the full token from GitHub (starts with ghp_ or github_pat_)");
-  }
-  localStorage.setItem("hb_github_token", token);
-  CONFIG.githubToken = token;
-  document.getElementById("setupGithubToken").value = "";
-  toast("Token saved! You can add bills from phone now.");
-  updateSyncUI();
-}
-
-function saveApiUrl() {
-  const url = document.getElementById("setupApiUrl").value.trim();
-  if (!url.startsWith("http")) return alert("Paste the full Google Web App URL");
-  localStorage.setItem("hb_apiUrl", url);
-  CONFIG.apiUrl = url;
-  toast("Cloud URL saved! Reloading...");
-  setTimeout(() => location.reload(), 800);
-}
-
-async function cloudPost(action, payload) {
-  if (!CONFIG.apiUrl) return { ok: false, offline: true };
-  try {
-    const res = await fetch(CONFIG.apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({ action, pin: CONFIG.syncPin, ...payload }),
-    });
-    return await res.json();
-  } catch (e) {
-    return { ok: false, error: String(e) };
-  }
-}
-
-function toast(msg) {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.classList.add("show");
-  setTimeout(() => el.classList.remove("show"), 3200);
-}
-
-function openAddModal() {
-  document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
-  syncAdminStatusFields();
-  document.getElementById("addModal").classList.add("open");
-}
-function closeAddModal() { document.getElementById("addModal").classList.remove("open"); }
-
-function copyPendingBills() {
-  const p = getLocalPending();
-  const lines = (p.pendingBills || []).map(b => `${b.d} — ${b.who} — ₹${b.amt}${b.note ? " — " + b.note : ""}`);
-  (p.pendingAdvances || []).forEach(a => lines.push(`${a.d} — Shivaji advance — ₹${a.amt}`));
-  if (!lines.length) return toast("No pending bills");
-  const text = "🏥 New bills to add:\n" + lines.join("\n");
-  navigator.clipboard.writeText(text).then(() => toast("Copied! Paste in WhatsApp"))
-    .catch(() => prompt("Copy:", text));
-}
-
-function fmt(n) { return "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function fmtDate(iso) {
-  const [y, m, d] = iso.split("-");
-  const en = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const te = ["జన","ఫిబ్ర","మార్చి","ఏప్రి","మే","జూన్","జులై","ఆగ","సెప్టె","అక్టో","నవ","డిసె"];
-  return `${d} ${te[+m-1]} · ${d} ${en[+m-1]} ${y}`;
-}
-function sumWho(w) { return data.bills.filter(b => b.who === w).reduce((s, b) => s + b.amt, 0); }
-function totalBills() { return data.bills.reduce((s, b) => s + b.amt, 0); }
-function totalAdv() { return data.advances.reduce((s, a) => s + a.amt, 0); }
-
-function animateValue(el, end, duration = 1200) {
-  const start = 0, t0 = performance.now();
-  function step(now) {
-    const p = Math.min((now - t0) / duration, 1);
-    const ease = 1 - Math.pow(1 - p, 3);
-    el.textContent = fmt(start + (end - start) * ease);
-    if (p < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-function computeSplit(total) {
-  const fair = total / 3;
-  const paid = { Venky: sumWho("Venky"), Deepa: sumWho("Deepa"), Kalyan: sumWho("Kalyan") };
-  return SONS.map(s => {
-    const p = paid[s.payer];
-    const remaining = fair - p;
-    const fulfillPct = fair > 0 ? Math.min(100, Math.round(p / fair * 100)) : 0;
-    return { ...s, fair, paid: p, remaining, fulfillPct };
-  });
-}
-
-function computeSettlement(total) {
-  const fair = total / 3;
-  const paid = { Venky: sumWho("Venky"), Deepa: sumWho("Deepa"), Kalyan: sumWho("Kalyan") };
-  const extra = {
-    Venky: paid.Venky - fair,
-    Deepa: paid.Deepa - fair,
-    Kalyan: paid.Kalyan - fair,
-  };
-  const settlements = [];
-  const kalyanOwes = Math.max(0, fair - paid.Kalyan);
-  if (kalyanOwes > 0.01) {
-    const creditors = [
-      { who: "Deepa", te: "దీప", amt: extra.Deepa },
-      { who: "Venky", te: "వెంకీ", amt: extra.Venky },
-    ].filter(c => c.amt > 0.01).sort((a, b) => b.amt - a.amt);
-    let left = kalyanOwes;
-    creditors.forEach(c => {
-      const pay = Math.min(left, c.amt);
-      if (pay > 0.01) {
-        settlements.push({
-          from: "Kalyan", fromTe: "కల్యాణ్", to: c.who, toTe: c.te, amt: pay,
-          why: c.who === "Deepa" ? "Deepa paid the most extra" : "Venky paid a little extra",
-        });
-        left -= pay;
-      }
-    });
-  }
-  return { fair, paid, extra, settlements, kalyanOwes };
-}
-
-function render() {
-  const total = totalBills();
-  const venky = sumWho("Venky"), deepa = sumWho("Deepa"), kalyan = sumWho("Kalyan");
-  const adv = totalAdv();
-  const amounts = { Venky: venky, Deepa: deepa, Kalyan: kalyan };
-  const last = data.bills.map(b => b.d).sort().pop() || meta.startDate;
-
-  document.getElementById("topbarPatient").textContent = meta.patient;
-  document.getElementById("topbarSub").textContent = meta.hospital + " · " + (careStatus.ward || "Ward");
-  document.getElementById("todayLabel").textContent =
-    "Till " + fmtDate(last).split(" · ")[0] + " · Fair 1/3 split · v" + PAGE_VERSION;
-
-  document.getElementById("statusBar").textContent =
-    `Updated till ${fmtDate(last)}`;
-
-  renderCareBanner();
-  animateValue(document.getElementById("grandTotal"), total);
-
-  document.getElementById("familyHub").innerHTML = `
-    <div class="father-node">
-      <div class="father-avatar">👴</div>
-      <h3>${meta.patient}</h3>
-      <p>Our Father · మా నాన్నగారు · Mallareddy Hospital</p>
-    </div>
-    <div class="connector"></div>
-    <div class="sons-row">
-      ${SONS.map(s => `
-        <div class="son-pill" style="--c:${s.color}">
-          <div class="dot" style="background:${s.color}"></div>
-          <div class="sn">${s.te}</div>
-          <div class="sp">${s.payer}</div>
-          <div class="sa" style="color:${s.color}">${fmt(amounts[s.payer])}</div>
-        </div>`).join("")}
-    </div>`;
-
-  document.getElementById("sonCards").innerHTML = SONS.map(s => {
-    const amt = amounts[s.payer];
-    const pct = total ? Math.round(amt / total * 100) : 0;
-    return `
-      <div class="card" style="--c:${s.color}">
-        <div class="card-head">
-          <div><div class="tag-sm">${s.branch}'s son</div><h3>${s.payer}</h3></div>
-          <div class="amt" style="color:${s.color}">${fmt(amt)}</div>
-        </div>
-        <div class="bar-track"><div class="bar-fill" data-w="${pct}" style="width:0;background:linear-gradient(90deg,${s.color},${s.color}88)"></div></div>
-        <div class="bar-meta"><span>Hospital paid</span><span>${pct}% of total</span></div>
-      </div>`;
-  }).join("");
-
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      document.querySelectorAll(".bar-fill").forEach(b => { b.style.width = b.dataset.w + "%"; });
-    }, 200);
-  });
-
-  document.getElementById("shivajiCard").innerHTML = `
-    <div class="sec-title" style="margin-bottom:12px"><h2 style="color:#fff">Shivaji → Venky</h2><p style="color:rgba(255,255,255,0.5)">Bill management advances</p></div>
-    <div class="row"><span>Total advances</span><span class="hi">${fmt(adv)}</span></div>
-    <div class="row"><span>Venky paid at hospital</span><span>${fmt(venky)}</span></div>
-    <div class="row"><span>Balance with Venky</span><span class="hi" style="color:${adv-venky>=0?'#86efac':'#fca5a5'}">${fmt(adv-venky)}</span></div>`;
-
-  const splits = computeSplit(total);
-  document.getElementById("splitCards").innerHTML = splits.map(s => {
-    const owe = s.remaining > 0.01, credit = s.remaining < -0.01;
-    const remL = owe ? "మిగిలింది" : credit ? "ఎక్కువ" : "పూర్తి";
-    const remV = owe ? fmt(s.remaining) : credit ? fmt(Math.abs(s.remaining)) : "✓";
-    const remC = owe ? "owe" : credit ? "credit" : "";
-    const extra = s.payer === "Venky" ? `<p style="font-size:0.68rem;color:var(--muted);margin-top:10px">Advance ${fmt(adv)} · Balance ${fmt(adv-venky)}</p>` : "";
-    return `
-      <div class="card split-card" style="--c:${s.color}">
-        <div class="card-head">
-          <div><div class="tag-sm">Paid by ${s.payer}</div><h3>${s.te}</h3></div>
-        </div>
-        <div class="split-metrics">
-          <div class="metric"><div class="ml">వాటా 1/3</div><div class="mv">${fmt(s.fair)}</div></div>
-          <div class="metric"><div class="ml">చెల్లించారు</div><div class="mv">${fmt(s.paid)}</div></div>
-          <div class="metric"><div class="ml">${remL}</div><div class="mv ${remC}">${remV}</div></div>
-        </div>
-        <div class="bar-track"><div class="bar-fill" data-w="${s.fulfillPct}" style="background:${s.color}"></div></div>
-        <div class="bar-meta"><span>${s.fulfillPct}% fulfilled</span></div>
-        ${extra}
-      </div>`;
-  }).join("");
-
-  setTimeout(() => {
-    document.querySelectorAll("#splitCards .bar-fill").forEach(b => { b.style.width = b.dataset.w + "%"; });
-  }, 300);
-
-  const totalOwe = splits.filter(s => s.remaining > 0.01).reduce((a, s) => a + s.remaining, 0);
-  document.getElementById("splitTotal").innerHTML = totalOwe > 0.01
-    ? `మొత్తం ఇంకా చెల్లించాల్సినది: <strong>${fmt(totalOwe)}</strong>`
-    : `వాటా పూర్తి · All shares met ✓`;
-
-  renderSettlement(total);
-
-  const byDate = {};
-  data.bills.forEach(b => { (byDate[b.d] = byDate[b.d] || []).push(b); });
-  const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
-  let html = "";
-  Object.keys(byDate).sort().reverse().forEach(d => {
-    const dayT = byDate[d].reduce((s, b) => s + b.amt, 0);
-    html += `<div class="order-day"><div class="order-day-head"><span>${fmtDate(d)}</span><span class="day-amt">${fmt(dayT)}</span></div>`;
-    byDate[d].forEach(b => {
-      const tag = b.mode ? ` · ${b.mode}` : "";
-      html += `<div class="order-item">
-        <div class="oi-avatar">${whoIcon[b.who] || "💰"}</div>
-        <div class="oi-body"><div class="oi-who">${b.who}</div><div class="oi-note">${b.note || "Hospital payment"}${tag}</div></div>
-        <div class="oi-amt">${fmt(b.amt)}</div>
-      </div>`;
-    });
-    html += "</div>";
-  });
-  document.getElementById("dayTable").innerHTML = html || `<div class="card" style="text-align:center;color:var(--muted);padding:24px">No bills yet — tap + to add</div>`;
-
-  renderHomeSummary(total, venky, deepa, kalyan);
-  renderShareHub(total, venky, deepa, kalyan);
-
-  initReveal();
-}
-
-function renderHomeSummary(total, venky, deepa, kalyan) {
-  const s = computeSettlement(total);
-  document.getElementById("homePaid").innerHTML = [
-    { ic: "🙏", nm: "Venky", am: venky, c: "#0c831f" },
-    { ic: "💛", nm: "Deepa", am: deepa, c: "#e23744" },
-    { ic: "💙", nm: "Kalyan", am: kalyan, c: "#2563eb" },
-  ].map(p => `
-    <div class="home-paid-box">
-      <div class="ic">${p.ic}</div>
-      <div class="nm">${p.nm}</div>
-      <div class="am" style="color:${p.c}">${fmt(p.am)}</div>
-    </div>`).join("");
-
-  const el = document.getElementById("homeSettle");
-  if (!s.settlements.length) {
-    el.innerHTML = `<div class="settle-te-big"><strong>✓ అందరూ సమానం</strong></div>`;
-    return;
-  }
-  el.innerHTML = `
-    <div class="settle-hero">
-      <h3>🤝 Fair adjustment · సమన్యయం</h3>
-      <div class="settle-flow">
-        ${s.settlements.map(x => `
-          <div class="settle-arrow">
-            <div class="from"><div class="n">${x.from}</div></div>
-            <div class="mid"><div class="arr">→</div><div class="val">${fmt(x.amt)}</div></div>
-            <div class="to"><div class="n">${x.to}</div></div>
-          </div>`).join("")}
-      </div>
-      <div class="settle-total-box">
-        <div class="lbl">Balance to settle</div>
-        <div class="val">${fmt(s.kalyanOwes)}</div>
-      </div>
-    </div>
-    <button class="home-link" onclick="showPage('share')">Full share card for family →</button>`;
-}
-
-function renderShareHub(total, venky, deepa, kalyan) {
-  const s = computeSettlement(total);
-  document.getElementById("shareFair").textContent = fmt(s.fair);
-
-  const people = [
-    { key: "Venky", branch: "Shivaji · శివాజీ", emoji: "🙏", color: "#0d9488", paid: venky, extra: s.extra.Venky },
-    { key: "Deepa", branch: "Rajini · రజినీ", emoji: "💛", color: "#e11d48", paid: deepa, extra: s.extra.Deepa },
-    { key: "Kalyan", branch: "కల్యాణ్", emoji: "💙", color: "#1d4ed8", paid: kalyan, extra: s.extra.Kalyan },
-  ];
-
-  document.getElementById("personGrid").innerHTML = people.map(p => {
-    const owes = p.extra < -0.01;
-    const receives = p.extra > 0.01;
-    const cls = owes ? "owe" : receives ? "receive" : "ok";
-    let badge, badgeTe;
-    if (owes) {
-      badge = `Balance ${fmt(Math.abs(p.extra))}`;
-      badgeTe = `సమన్యయం ${fmt(Math.abs(p.extra))}`;
-    } else if (receives) {
-      badge = `Credit ${fmt(p.extra)}`;
-      badgeTe = `తిరిగి వస్తుంది ${fmt(p.extra)}`;
-    } else {
-      badge = "SETTLED ✓";
-      badgeTe = "పూర్తి ✓";
-    }
-    return `
-      <div class="person-card ${cls}" style="--pc:${p.color}">
-        <div class="emoji">${p.emoji}</div>
-        <div class="name">${p.key}</div>
-        <div class="branch">${p.branch}</div>
-        <div class="paid-lbl">Paid at hospital · ఆసుపత్రిలో</div>
-        <div class="paid-amt">${fmt(p.paid)}</div>
-        <div class="status-badge">${badge}<br><span style="font-size:0.62rem;opacity:0.9">${badgeTe}</span></div>
-      </div>`;
-  }).join("");
-
-  const hero = document.getElementById("settleHero");
-  if (s.settlements.length) {
-    hero.innerHTML = `
-      <div class="settle-hero">
-        <h3>🤝 Fair adjustment · సమన్యయం</h3>
-        <div class="settle-flow">
-          ${s.settlements.map(x => `
-            <div class="settle-arrow">
-              <div class="from"><div class="n">${x.from}</div><div class="t">${x.fromTe} → ${x.toTe}</div></div>
-              <div class="mid"><div class="arr">→</div><div class="val">${fmt(x.amt)}</div></div>
-              <div class="to"><div class="n">${x.to}</div><div class="t">తిరిగి వస్తుంది</div></div>
-            </div>`).join("")}
-        </div>
-        <div class="settle-total-box">
-          <div class="lbl">Balance to settle · సమన్యయం</div>
-          <div class="val">${fmt(s.kalyanOwes)}</div>
-        </div>
-      </div>
-      <div class="settle-te-big">
-        <strong>కల్యాణ్ గారు ఈ మొత్తం పంపితే అందరికి సమానం అవుతుంది — ${fmt(s.kalyanOwes)}</strong><br>
-        ${s.settlements.map(x => `${x.toTe}కు <strong>${fmt(x.amt)}</strong>`).join(" · ")}
-      </div>`;
-  } else {
-    hero.innerHTML = `<div class="settle-te-big"><strong>✓ అందరూ సమానం — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు</strong></div>`;
-  }
-
-  document.getElementById("shareNote").innerHTML =
-    `<strong>గమనిక:</strong> వెంకీ & దీప ఒకరికొకరు డబ్బు ఇవ్వరు — ఎవరు ఎక్కువ చెల్లించారో వారికి మాత్రమే తిరిగి ఇవ్వడం. శివాజీ→వెంకీ అడ్వాన్స్ (₹${totalAdv().toLocaleString("en-IN")}) వేరు.`;
-}
-
-function renderSettlement(total) {
-  /* merged into renderShareHub */
-}
-
-function renderCareBanner() {
-  const disc = careStatus.expectedDischarge ? fmtDate(careStatus.expectedDischarge) : "TBD";
-  document.getElementById("careBanner").innerHTML = `
-    <div class="cb-row">
-      <div>
-        <span class="cb-tag">● Live · నాన్నగారి స్థితి</span>
-        <h3>${careStatus.condition}</h3>
-        <div class="cb-te">${careStatus.conditionTe || ""}</div>
-        <div class="cb-meta">${meta.hospital} · ${careStatus.ward || "Ward"} · Updated ${fmtDate(careStatus.lastUpdate || meta.startDate)} by ${careStatus.lastUpdateBy || "Venky"}</div>
-      </div>
-      <div class="cb-discharge">
-        <div class="dl">Expected discharge<br>డిశ్చార్జ్</div>
-        <div class="dv">${disc.split(" · ")[0]}<br><span style="font-size:0.75rem;opacity:0.85">${careStatus.expectedDischarge ? disc.split(" · ").slice(1).join(" · ") : ""}</span></div>
-      </div>
-    </div>`;
-  syncAdminStatusFields();
-}
-
-function initReveal() {
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
-  }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
-  document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
-}
-
-function copyWhatsApp() {
-  const t = totalBills(), v = sumWho("Venky"), d = sumWho("Deepa"), k = sumWho("Kalyan"), fair = t / 3;
-  const s = computeSettlement(t);
-  const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-
-  const paidLine = (name, te, amt, extra) => {
-    if (extra > 0.01) return `${te} — ${fmt(amt)} (ఎక్కువ చెల్లించారు 🙏)`;
-    if (extra < -0.01) return `${te} — ${fmt(amt)}`;
-    return `${te} — ${fmt(amt)} ✓`;
-  };
-
-  let settle = "";
-  if (s.settlements.length) {
-    const credits = [];
-    if (s.extra.Venky > 0.01) credits.push(`వెంకీకి తిరిగి: ${fmt(s.extra.Venky)}`);
-    if (s.extra.Deepa > 0.01) credits.push(`దీపకు తిరిగి: ${fmt(s.extra.Deepa)}`);
-    settle = `\n*సమన్యయం — అందరికి సమానం చేయడానికి* 🙏\n`;
-    settle += `(ఎవరు ఎక్కువ చెల్లించారో వారికి తిరిగి ఇవ్వడం మాత్రమే)\n\n`;
-    if (credits.length) settle += credits.join("\n") + "\n\n";
-    settle += `కల్యాణ్ గారు ఈ విధంగా పంపితే అందరికి సరిపోతుంది:\n`;
-    s.settlements.forEach(x => { settle += `→ ${x.toTe} గారికి: ${fmt(x.amt)}\n`; });
-    settle += `(మొత్తం: ${fmt(s.kalyanOwes)})\n`;
-  } else {
-    settle = `\n✓ అందరూ సమాన వాటా పూర్తి — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు 🙏\n`;
-  }
-
-  const text = `🙏 నమస్కారం అందరికీ,
-
-నాన్నగారు *శ్రీ వెంకటేశ్వర రావు* — మల్లారెడ్డి ఆసుపత్రి ఖర్చుల సారాంశం.
-మూడు కుమారులు కలిసి సమానంగా భాగస్వామ్యం చేస్తున్నాం 🙏
-
-📅 ${date}
-💚 మొత్తం ఖర్చు: *${fmt(t)}*
-📊 ప్రతి ఒక్కరి వాటా (1/3): ${fmt(fair)}
-
-*ఆసుపత్రిలో ఎవరు ఎంత చెల్లించారు:*
-${paidLine("Venky", "🙏 వెంకీ", v, s.extra.Venky)}
-${paidLine("Deepa", "💛 దీప", d, s.extra.Deepa)}
-${paidLine("Kalyan", "💙 కల్యాణ్", k, s.extra.Kalyan)}
-${settle}
-పూర్తి వివరాలు:
-https://tevskrishna.github.io/hospital-bills/
-
-దయచేసి చూసి సరిగా అనిపిస్తే *OK* అని reply చేయండి 🙏
-ఏ సందేహం ఉంటే కాల్ చేయండి.
-
-— వెంకీ (శివాజీ)`;
-
-  navigator.clipboard.writeText(text).then(() => toast("Copied — warm message ready for WhatsApp!"))
-    .catch(() => prompt("Copy:", text));
-}
-
-function csvEsc(s) { const t = String(s??""); return t.includes(",") ? '"'+t.replace(/"/g,'""')+'"' : t; }
-
-function downloadHistory() {
-  const start = meta.startDate, today = new Date().toISOString().slice(0,10);
-  const fair = totalBills()/3;
-  let csv = `Hospital Bills - ${meta.patient}\nPeriod,${start} to ${today}\n\nDate,Paid By,Amount,Mode,Notes\n`;
-  [...data.bills].sort((a,b)=>a.d.localeCompare(b.d)).forEach(b => {
-    csv += [b.d,b.who,b.amt,csvEsc(b.mode),csvEsc(b.note)].join(",")+"\n";
-  });
-  csv += `\nTOTAL,${totalBills()}\n\nFAIR SHARE\nSon,Fair,Paid,Remaining\n`;
-  [["Shivaji/Venky",sumWho("Venky")],["Rajini/Deepa",sumWho("Deepa")],["Kalyan",sumWho("Kalyan")]].forEach(([n,p])=>{
-    csv += `${n},${fair.toFixed(2)},${p.toFixed(2)},${(fair-p).toFixed(2)}\n`;
-  });
-  csv += `\nShivaji Advances\nDate,Amount\n`;
-  data.advances.forEach(a => { csv += `${a.d},${a.amt}\n`; });
-  const el = document.createElement("a");
-  el.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  el.download = `hospital-bills-${start}-to-${today}.csv`;
-  el.click();
-}
-
-let adminOpen = false;
-async function addBill() {
-  const d = document.getElementById("aDate").value, who = document.getElementById("aWho").value;
-  const amt = parseFloat(document.getElementById("aAmt").value);
-  const mode = document.getElementById("aMode").value, note = document.getElementById("aNote").value.trim();
-  if (!d || !amt) return alert("Date and amount required");
-  const bill = { d, who, amt, mode, note };
-  data.bills.push(bill);
-  document.getElementById("aAmt").value = ""; document.getElementById("aNote").value = "";
-  render();
-  closeAddModal();
-  toast("Saving...");
-
-  const r = await pushAllToCloud();
-  if (r.ok) {
-    toast("✅ Saved! Family sees it in ~1 min.");
-    clearLocalPending();
-  } else {
-    const p = getLocalPending();
-    saveLocalPending({ pendingBills: [...(p.pendingBills || []), bill] });
-    toast(r.error ? "⚠️ " + r.error : "📱 Saved on this phone — add token in Bills tab to sync");
-  }
-}
-async function addAdvance() {
-  const d = document.getElementById("aDate").value;
-  const amt = parseFloat(prompt("Shivaji → Venky amount (₹)"));
-  if (!d || !amt) return;
-  const advance = { d, amt };
-  data.advances.push(advance);
-  render();
-  closeAddModal();
-  toast("Saving...");
-
-  const r = await pushAllToCloud();
-  if (r.ok) toast("✅ Advance saved for family!");
-  else {
-    const p = getLocalPending();
-    saveLocalPending({ pendingAdvances: [...(p.pendingAdvances || []), advance] });
-    toast("📱 Advance saved on phone — complete setup");
-  }
-}
-function saveJson() {
-  const blob = new Blob([JSON.stringify({...meta, bills:data.bills, advances:data.advances, careStatus},null,2)],{type:"application/json"});
-  const el = document.createElement("a");
-  el.href = URL.createObjectURL(blob); el.download = "bills.json"; el.click();
-  alert("Downloaded bills.json — push to GitHub or tell Cursor.");
-}
-function syncAdminStatusFields() {
-  const d = document.getElementById("aDischarge");
-  if (!d) return;
-  d.value = careStatus.expectedDischarge || "";
-  document.getElementById("aCondition").value = careStatus.condition || "";
-  document.getElementById("aConditionTe").value = careStatus.conditionTe || "";
-  document.getElementById("aDischargeNote").value = careStatus.dischargeNote || "";
-}
-async function saveStatus() {
-  careStatus.expectedDischarge = document.getElementById("aDischarge").value || careStatus.expectedDischarge;
-  careStatus.condition = document.getElementById("aCondition").value.trim() || careStatus.condition;
-  careStatus.conditionTe = document.getElementById("aConditionTe").value.trim() || careStatus.conditionTe;
-  careStatus.dischargeNote = document.getElementById("aDischargeNote").value.trim() || careStatus.dischargeNote;
-  careStatus.lastUpdate = new Date().toISOString().slice(0,10);
-  careStatus.lastUpdateBy = "Venky";
-  renderCareBanner();
-  closeAddModal();
-
-  const r = await pushAllToCloud();
-  if (r.ok) toast("✅ Status updated for family!");
-  else {
-    saveLocalPending({ careStatus });
-    toast("📱 Status saved on phone — complete setup");
-  }
-}
-
-/* ── Care Assistant Chatbot ── */
-const CHAT_CHIPS = [
-  "ఎప్పుడు డిశ్చార్జ్?",
-  "నాన్నగారి స్థితి ఏమిటి?",
-  "How much spent so far?",
-  "Who paid how much?"
-];
-let chatOpen = false;
-
-function toggleChat(force) {
-  chatOpen = typeof force === "boolean" ? force : !chatOpen;
-  document.getElementById("chatPanel").classList.toggle("open", chatOpen);
-  document.getElementById("chatOverlay").classList.toggle("open", chatOpen);
-  document.getElementById("chatFab").classList.toggle("open", chatOpen);
-  if (chatOpen && !document.getElementById("chatMsgs").children.length) initChat();
-}
-
-function initChat() {
-  const chips = document.getElementById("chatChips");
-  chips.innerHTML = CHAT_CHIPS.map(c => `<button class="chat-chip" onclick="askChip('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("");
-  addBotMsg(`నమస్కారం! 🙏 I'm your family care assistant for *${meta.patient}*.\n\n• Tap 📷 to upload prescription or hospital slip\n• Ask about discharge, health status, or bills\n\n⚠️ For medical decisions, always follow the doctor.`);
-}
-
-function addBotMsg(text) {
-  const el = document.createElement("div");
-  el.className = "chat-msg bot";
-  el.innerHTML = text.replace(/\n/g, "<br>").replace(/\*(.*?)\*/g, "<strong>$1</strong>");
-  document.getElementById("chatMsgs").appendChild(el);
-  el.parentElement.scrollTop = el.parentElement.scrollHeight;
-}
-function addUserMsg(text) {
-  const el = document.createElement("div");
-  el.className = "chat-msg user";
-  el.textContent = text;
-  document.getElementById("chatMsgs").appendChild(el);
-  el.parentElement.scrollTop = el.parentElement.scrollHeight;
-}
-function addTyping() {
-  const el = document.createElement("div");
-  el.className = "chat-msg bot"; el.id = "chatTyping";
-  el.innerHTML = '<span class="typing">Reading</span>...';
-  document.getElementById("chatMsgs").appendChild(el);
-  el.parentElement.scrollTop = el.parentElement.scrollHeight;
-}
-function removeTyping() { document.getElementById("chatTyping")?.remove(); }
-
-function askChip(q) { document.getElementById("chatInput").value = q; sendChat(); }
-
-function sendChat() {
-  const input = document.getElementById("chatInput");
-  const q = input.value.trim();
-  if (!q) return;
-  input.value = "";
-  addUserMsg(q);
-  setTimeout(() => addBotMsg(answerQuestion(q)), 400);
-}
-
-function answerQuestion(q) {
-  const lower = q.toLowerCase();
-  const total = totalBills();
-  const fair = total / 3;
-  const disc = careStatus.expectedDischarge ? fmtDate(careStatus.expectedDischarge) : "not set yet";
-
-  if (/discharge|డిశ్చార్జ్|ఎప్పుడు|when.*out|leave hospital/i.test(q)) {
-    const daysLeft = careStatus.expectedDischarge
-      ? Math.ceil((new Date(careStatus.expectedDischarge) - new Date()) / 86400000)
-      : null;
-    let msg = `📅 *Expected discharge:* ${disc}\n\n${careStatus.dischargeNoteTe || careStatus.dischargeNote || ""}`;
-    if (daysLeft !== null) {
-      if (daysLeft > 0) msg += `\n\n⏳ About *${daysLeft} day(s)* from today — subject to doctor's approval.`;
-      else if (daysLeft === 0) msg += `\n\n✅ Discharge may be *today* — confirm with Venky or the ward nurse.`;
-      else msg += `\n\n📌 Expected date has passed — Venky will update after doctor confirms.`;
-    }
-    return msg + `\n\nLast updated: ${fmtDate(careStatus.lastUpdate)}`;
-  }
-  if (/status|స్థితి|health|condition|ఎలా|how is/i.test(q)) {
-    return `💚 *Health status*\n${careStatus.condition}\n${careStatus.conditionTe || ""}\n\n🏥 ${meta.hospital} · ${careStatus.ward || "Ward"}\n📅 Admitted since ${fmtDate(meta.startDate)}\n\n_${careStatus.dischargeNote}_`;
-  }
-  if (/bill|spent|ఖర్చు|money|amount|మొత్తం|how much/i.test(q)) {
-    return `💰 *Hospital spend till now:* ${fmt(total)}\n\nFair share (1/3 each): ${fmt(fair)}\n\nVenky: ${fmt(sumWho("Venky"))}\nDeepa: ${fmt(sumWho("Deepa"))}\nKalyan: ${fmt(sumWho("Kalyan"))}\n\nFull details on the main page ↓`;
-  }
-  if (/who paid|ఎవరు|venky|deepa|kalyan/i.test(q)) {
-    return `👨‍👩‍👦 *Who paid at hospital:*\n\n🙏 Venky (Shivaji): ${fmt(sumWho("Venky"))}\n💛 Deepa (Rajini): ${fmt(sumWho("Deepa"))}\n💙 Kalyan: ${fmt(sumWho("Kalyan"))}\n\nTotal: ${fmt(total)}`;
-  }
-  if (/prescription|మందు|medicine|tablet|rx/i.test(q)) {
-    return `📷 Tap the *camera button* below and upload a photo of the prescription or hospital slip. I'll read the text and summarize it for you.`;
-  }
-  if (/thank|ధన్యవాద|ok|okay/i.test(q)) {
-    return `🙏 Happy to help! Share this page with family on WhatsApp. For urgent updates, contact Venky at the hospital.`;
-  }
-  return `I can help with:\n• Discharge date (డిశ్చార్జ్ ఎప్పుడు?)\n• Health status (స్థితి ఏమిటి?)\n• Bills & who paid\n• Upload prescription 📷\n\nTry a quick button above or ask in Telugu/English!`;
-}
-
-async function uploadPrescription(input) {
-  const file = input.files?.[0];
-  input.value = "";
-  if (!file) return;
-  if (!chatOpen) toggleChat(true);
-  addUserMsg("📷 Uploaded: " + file.name);
-  addTyping();
-  try {
-    const { data: { text } } = await Tesseract.recognize(file, "eng+tel", { logger: () => {} });
-    removeTyping();
-    const cleaned = text.replace(/\s+/g, " ").trim();
-    if (!cleaned || cleaned.length < 8) {
-      addBotMsg("Could not read text clearly. Try a brighter photo, closer to the paper. You can still ask me about status or discharge!");
-      return;
-    }
-    const summary = analyzePrescription(cleaned);
-    addBotMsg(summary);
-  } catch (e) {
-    removeTyping();
-    addBotMsg("Photo upload failed on this device. You can still ask: *ఎప్పుడు డిశ్చార్జ్?* or *నాన్నగారి స్థితి?*");
-  }
-}
-
-function analyzePrescription(text) {
-  const lower = text.toLowerCase();
-  const meds = [];
-  const medPatterns = text.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)\s+\d+\s*mg\b/g) || [];
-  medPatterns.slice(0, 6).forEach(m => meds.push(m));
-
-  let msg = `📋 *Read from your document:*\n\n`;
-  if (meds.length) msg += `💊 Possible medicines:\n${meds.map(m => "• " + m).join("\n")}\n\n`;
-
-  if (/discharge|discharged|fit for discharge/i.test(lower)) {
-    msg += `✅ Document mentions *discharge* — discuss with doctor for exact timing.\n\n`;
-  }
-  if (/admit|admitted|ip number|uhid/i.test(lower)) {
-    msg += `🏥 Admission/hospital reference found in document.\n\n`;
-  }
-  if (/bp|blood pressure|sugar|glucose|hb|hemoglobin/i.test(lower)) {
-    msg += `📊 Vitals or lab values may be present — show to doctor for interpretation.\n\n`;
-  }
-
-  const snippet = text.slice(0, 280) + (text.length > 280 ? "…" : "");
-  msg += `📝 *Extracted text (preview):*\n_${snippet}_\n\n`;
-  msg += `⚠️ OCR may have errors. *Not medical advice* — confirm with Venky or the treating doctor.\n\nCurrent status: ${careStatus.condition}`;
-  if (careStatus.expectedDischarge) msg += `\nExpected discharge: ${fmtDate(careStatus.expectedDischarge)}`;
-  return msg;
-}
-
-loadData().then(() => { render(); hideSplash(); flushPendingToCloud(); });
-setInterval(() => loadData(true), 60000);
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible") loadData(true);
-});
-document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
-
-let deferredInstall;
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredInstall = e;
-  document.getElementById("installBanner")?.classList.add("show");
-});
-function promptInstall() {
-  if (deferredInstall) { deferredInstall.prompt(); deferredInstall = null; document.getElementById("installBanner")?.classList.remove("show"); }
-  else toast("Safari: Share → Add to Home Screen · Chrome: Menu → Install app");
-}
-function hideSplash() {
-  setTimeout(() => document.getElementById("splash")?.classList.add("hide"), 600);
-}
-function showPage(tab) {
-  document.querySelectorAll(".app-page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page-" + tab)?.classList.add("active");
-  document.querySelectorAll(".app-nav button[data-nav]").forEach(b => {
-    b.classList.toggle("active", b.dataset.nav === tab);
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  if (tab === "care") toggleChat(true);
-}
-function navShare() { showPage("share"); }
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((regs) =>
-    Promise.all(regs.map((r) => r.unregister()))
-  );
-  caches?.keys?.().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))).catch(() => {});
-}
-
-async function checkLiveVersion() {
-  try {
-    const res = await fetch("version.json?t=" + Date.now(), { cache: "no-store" });
-    if (!res.ok) return;
-    const v = await res.json();
-    if (v.build && v.build !== PAGE_VERSION) {
-      document.getElementById("updateBanner")?.classList.add("show");
-    }
-  } catch (e) {}
-}
-checkLiveVersion();
-
-/* ── Particle animation ── */
-(function initParticles() {
-  const canvas = document.getElementById("particleCanvas");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  let W, H, particles = [];
-  const COLORS = ["#2dd4bf","#60a5fa","#e8c468","#fb7185","#a78bfa"];
-
-  function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth; H = window.innerHeight;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    canvas.style.width = W + "px"; canvas.style.height = H + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-  function mkParticle() {
-    return {
-      x: Math.random() * W, y: Math.random() * H,
-      r: Math.random() * 2.5 + 0.8,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5 - 0.12,
-      c: COLORS[Math.floor(Math.random() * COLORS.length)],
-      a: Math.random() * 0.55 + 0.2,
-    };
-  }
-  function init() {
-    resize();
-    const isMobile = W < 768;
-    const count = isMobile ? Math.min(45, Math.floor(W * H / 8000)) : Math.min(80, Math.floor(W * H / 12000));
-    particles = Array.from({ length: Math.max(count, 25) }, mkParticle);
-  }
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    particles.forEach((p, i) => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.c; ctx.globalAlpha = p.a;
-      ctx.fill();
-      particles.slice(i + 1).forEach(p2 => {
-        const dx = p.x - p2.x, dy = p.y - p2.y, d = Math.sqrt(dx*dx + dy*dy);
-        if (d < 100) {
-          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y);
-          ctx.strokeStyle = p.c; ctx.globalAlpha = (1 - d/100) * 0.12;
-          ctx.lineWidth = 0.6; ctx.stroke();
-        }
-      });
-    });
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener("resize", init);
-  init(); draw();
-})();
-</script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/validation.js"></script>
+<script src="js/calculations.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/render.js"></script>
+<script src="js/whatsapp.js"></script>
+<script src="js/care.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/protect.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

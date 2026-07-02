@@ -5,6 +5,94 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-07-03-v25-lts] — Final LTS release 🧊
+
+### Added
+- External CSS (`css/` × 6 files) — identical appearance, maintainable
+- 39 automated tests; LTS release guides (deploy, rollback, maintenance, checklist, audit)
+- Production `dist/` deploy with obfuscated bundle + CSS
+
+### Changed
+- Version `2026-07-03-v25-lts`, cache `b=25`, SW `familycare-v25-lts`
+- Removed unused CSS variables and dead imports
+
+### Frozen
+- UI, settlement, fair share, WhatsApp, GitHub sync — **no changes**
+
+### Policy
+Maintenance-only until 2031. No new features.
+
+---
+
+## [2026-07-03-v24.1] — Code protection
+
+- Obfuscated production build, proprietary LICENSE, `dist/`-only deploy
+
+---
+
+## [2026-07-03-v24] — Enterprise Hardening
+
+### Added
+- Modular JavaScript (`js/`): config, utils, validation, calculations, storage, sync, ui, render, whatsapp, care, pwa, app
+- Automated test suite (`tests/`) — 19 regression tests, coverage report via `npm test`
+- Input validation: dates, amounts, duplicates, corrupt JSON sanitization
+- User-friendly sync error messages (no raw GitHub API text)
+- Cached snapshot fallback when offline; fetch timeouts on all network calls
+- Service worker precaches all `js/` modules (cache `familycare-v24`)
+
+### Fixed
+- Removed ~1,150 lines duplicate inline JavaScript from `index.html`
+- IntersectionObserver memory leak in `initReveal()` (reuses single observer)
+- Duplicate `.app-nav` CSS and duplicate `focus-visible` rules
+- Stray `</script>` tag; debounced bill search filter
+- Replaced `alert()` validation with accessible toast messages
+
+### Business logic
+Unchanged — settlement, fair share, GitHub sync, WhatsApp message content frozen
+
+---
+
+## [2026-07-03-v23] — Production QA & PWA
+
+### Added
+- Full PWA: service worker, offline page, manifest shortcuts, install flow
+- `TEST_PLAN.md` (100 manual test cases), `RELEASE_NOTES_v23.md`
+- Local analytics (`fc_metrics_v1`) — no personal data
+- App icons, OG preview, favicon, robots.txt
+- Skip link, main landmark, aria-current nav, system fonts for performance
+
+### Fixed
+- Lighthouse: SEO 100, Best Practices 100, a11y contrast, tablist ARIA
+- Removed ~200 lines dead CSS (ambient, hero, particles, tables, admin)
+- Service worker no longer self-destructs
+
+### Business logic
+Unchanged
+
+---
+
+## [2026-07-03-v22] — Premium consumer-grade redesign
+
+### Added
+- Home dashboard: greeting, patient card, gradient hero, progress rings, recent activity
+- Bills: search, filter chips, monthly grouping, premium transaction cards with expandable notes
+- Share: live WhatsApp preview + animated copy confirmation
+- Care: health timeline, emergency card, OCR progress, typing animation
+- Floating add FAB, pull-to-refresh, splash progress tied to `loadData()`
+- `esc()` XSS helper; lazy-loaded Tesseract.js
+
+### Changed
+- Glassmorphism bottom nav, premium toast with success state
+- Removed particle animation (`initParticles`) for battery/performance
+
+### Files
+- `index.html`, `hospital-bills.html`, `version.json`, `refresh.html`
+
+### Breaking changes
+None — business logic and settlement rules unchanged
+
+---
+
 ## [2026-07-03-v21] — Warm WhatsApp tone
 
 ### Changed

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0c831f" />
+  <title>Offline · FamilyCare</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: system-ui, sans-serif; background: #f2f3f4; color: #282c3f;
+      padding: 24px; text-align: center;
+    }
+    .card {
+      max-width: 360px; background: #fff; border-radius: 24px; padding: 32px 24px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    }
+    .ic { font-size: 3rem; margin-bottom: 16px; }
+    h1 { font-size: 1.25rem; margin-bottom: 8px; }
+    p { font-size: 0.9rem; color: #686b78; line-height: 1.6; margin-bottom: 20px; }
+    button {
+      width: 100%; padding: 14px; border: none; border-radius: 14px;
+      background: #0c831f; color: #fff; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    }
+    button:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="ic" aria-hidden="true">📡</div>
+    <h1>You're offline</h1>
+    <p>FamilyCare needs internet to load the latest bills. Your saved data on this device is still available when you reopen the app.</p>
+    <button type="button" onclick="location.reload()">Try again</button>
+  </div>
+</body>
+</html>
