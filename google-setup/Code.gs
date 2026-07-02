@@ -283,6 +283,7 @@ function exportJson_(ss) {
     startDate: '2026-06-28',
     bills: bills,
     advances: advances,
+    careStatus: getCareStatus_(),
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -319,4 +320,105 @@ function formatDate_(v) {
     return Utilities.formatDate(v, Session.getScriptTimeZone(), 'yyyy-MM-dd');
   }
   return String(v).slice(0, 10);
+}
+
+/** PIN for mobile add-bill from the website. Change SYNC_PIN below. */
+var SYNC_PIN = '7582';
+
+function doPost(e) {
+  try {
+    var body = JSON.parse(e.postData.contents);
+    if (body.pin !== SYNC_PIN) {
+      return jsonOut_({ ok: false, error: 'Wrong PIN' });
+    }
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var action = body.action;
+
+    if (action === 'addBill') {
+      var b = body.bill;
+      if (!b || !b.d || !b.who || !b.amt) {
+        return jsonOut_({ ok: false, error: 'Missing bill fields' });
+      }
+      var bills = ss.getSheetByName('Bills');
+      bills.appendRow([b.d, b.who, Number(b.amt), b.mode || '', b.note || '', 'Mobile']);
+      rebuildHistorySheet_(ss);
+      return jsonOut_({ ok: true });
+    }
+
+    if (action === 'addAdvance') {
+      var a = body.advance;
+      if (!a || !a.d || !a.amt) {
+        return jsonOut_({ ok: false, error: 'Missing advance fields' });
+      }
+      var adv = ss.getSheetByName('Advances');
+      adv.appendRow([a.d, 'Shivaji', 'Venky', Number(a.amt)]);
+      rebuildHistorySheet_(ss);
+      return jsonOut_({ ok: true });
+    }
+
+    if (action === 'updateCareStatus') {
+      if (!body.careStatus) {
+        return jsonOut_({ ok: false, error: 'Missing careStatus' });
+      }
+      PropertiesService.getScriptProperties().setProperty('careStatus', JSON.stringify(body.careStatus));
+      return jsonOut_({ ok: true });
+    }
+
+    if (action === 'importAll') {
+      importAllFromJson_(ss, body);
+      return jsonOut_({ ok: true });
+    }
+
+    return jsonOut_({ ok: false, error: 'Unknown action' });
+  } catch (err) {
+    return jsonOut_({ ok: false, error: String(err) });
+  }
+}
+
+function jsonOut_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getCareStatus_() {
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty('careStatus');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {
+    ward: 'General Ward',
+    condition: 'Stable, under observation',
+    conditionTe: 'స్థిరంగా ఉన్నారు, పర్యవేక్షణలో',
+    expectedDischarge: '2026-07-03',
+    dischargeNote: 'Doctor will confirm after reports',
+    dischargeNoteTe: 'రిపోర్ట్స్ వచ్చాక డాక్టర్ నిర్ణయిస్తారు',
+    lastUpdate: '2026-07-02',
+    lastUpdateBy: 'Venky'
+  };
+}
+
+function importAllFromJson_(ss, body) {
+  var billsSh = ss.getSheetByName('Bills');
+  var advSh = ss.getSheetByName('Advances');
+  billsSh.getRange(2, 1, billsSh.getMaxRows(), 6).clearContent();
+  advSh.getRange(2, 1, advSh.getMaxRows(), 4).clearContent();
+
+  var billRows = (body.bills || []).map(function (b) {
+    return [b.d, b.who, b.amt, b.mode || '', b.note || '', 'Import'];
+  });
+  if (billRows.length) {
+    billsSh.getRange(2, 1, 1 + billRows.length, 6).setValues(billRows);
+  }
+
+  var advRows = (body.advances || []).map(function (a) {
+    return [a.d, 'Shivaji', 'Venky', a.amt];
+  });
+  if (advRows.length) {
+    advSh.getRange(2, 1, 1 + advRows.length, 4).setValues(advRows);
+  }
+
+  if (body.careStatus) {
+    PropertiesService.getScriptProperties().setProperty('careStatus', JSON.stringify(body.careStatus));
+  }
+  rebuildHistorySheet_(ss);
 }

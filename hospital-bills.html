@@ -596,8 +596,70 @@
     }
     .chat-overlay.open { opacity: 1; pointer-events: auto; }
 
+    /* Mobile add bill */
+    .add-fab {
+      position: fixed; bottom: calc(88px + env(safe-area-inset-bottom)); left: 16px;
+      z-index: 200; width: 58px; height: 58px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff; font-size: 1.6rem; font-weight: 700;
+      box-shadow: 0 6px 28px rgba(34,197,94,0.5);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sync-banner {
+      display: none; padding: 12px 16px; border-radius: 14px; margin-bottom: 16px;
+      background: #fff7ed; border: 1px solid #fdba74; font-size: 0.78rem; color: #9a3412;
+    }
+    .sync-banner.show { display: block; }
+    .sync-banner button {
+      margin-top: 8px; padding: 10px 14px; border: none; border-radius: 10px;
+      background: #ea580c; color: #fff; font-weight: 700; font-size: 0.75rem; cursor: pointer; width: 100%;
+    }
+    .cloud-ok {
+      padding: 10px 14px; border-radius: 12px; margin-bottom: 16px;
+      background: #ecfdf5; border: 1px solid #6ee7b7; font-size: 0.75rem; color: #047857;
+      display: none;
+    }
+    .cloud-ok.show { display: block; }
+    .add-modal, .pin-modal {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(0,0,0,0.55); display: none;
+      align-items: flex-end; justify-content: center;
+      padding: 0 0 env(safe-area-inset-bottom);
+    }
+    .add-modal.open, .pin-modal.open { display: flex; }
+    .add-sheet, .pin-sheet {
+      width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto;
+      background: #fff; border-radius: 24px 24px 0 0;
+      padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
+      animation: slideUp 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+    .add-sheet h3, .pin-sheet h3 { font-family: var(--display); font-size: 1.1rem; margin-bottom: 4px; }
+    .add-sheet .sub, .pin-sheet .sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 16px; }
+    .add-sheet .close-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .add-close { border: none; background: #f1f5f9; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1rem; }
+    .add-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .add-actions button { padding: 16px; border: none; border-radius: 14px; font-weight: 800; font-size: 0.9rem; cursor: pointer; }
+    .ab-bill { background: var(--teal-dim); color: #fff; grid-column: 1 / -1; }
+    .ab-adv-btn { background: var(--rose-dim); color: #fff; }
+    .ab-status-btn { background: #6366f1; color: #fff; }
+    .toast {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-120%);
+      z-index: 500; padding: 12px 20px; border-radius: 12px;
+      background: #0f172a; color: #fff; font-size: 0.82rem; font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25); transition: transform 0.35s ease;
+      max-width: 90vw; text-align: center;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .setup-box {
+      padding: 14px; border-radius: 14px; margin-top: 12px;
+      background: #eff6ff; border: 1px dashed #93c5fd; font-size: 0.75rem; color: #1e40af;
+    }
+    .setup-box input { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 0.85rem; }
+
     @media print {
-      .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay { display: none !important; }
+      .dock, .no-print, .ambient, .chat-fab, .chat-panel, .chat-overlay, .add-fab, .add-modal, .pin-modal, .toast { display: none !important; }
       body { background: #fff; padding: 0; }
       .content-light { background: #fff; margin: 0; border-radius: 0; }
     }
@@ -654,6 +716,12 @@
 <div class="main">
   <div class="content-light">
 
+    <div class="reveal cloud-ok" id="cloudOk">☁️ Cloud sync ON — bills you add update for everyone instantly</div>
+    <div class="reveal sync-banner" id="syncBanner">
+      📱 Bills saved on <strong>this phone only</strong>. Family won't see them until cloud sync is on.
+      <button onclick="copyPendingBills()">📤 Copy new bills → paste in WhatsApp to Venky</button>
+    </div>
+
     <div class="reveal care-banner" id="careBanner"></div>
 
     <div class="reveal family-hub" id="familyHub"></div>
@@ -692,37 +760,65 @@
     </div>
 
     <div class="reveal no-print">
-      <div class="admin-fab" onclick="toggleAdmin()">🔒 Venky — Add today's bills</div>
-      <div class="admin-box" id="adminPanel">
-        <div class="sec-title"><h3>Add Payment</h3></div>
-        <div class="fld"><label>Date</label><input type="date" id="aDate" /></div>
-        <div class="fld"><label>Who paid</label>
-          <select id="aWho">
-            <option value="Venky">Venky (Shivaji)</option>
-            <option value="Deepa">Deepa (Rajini)</option>
-            <option value="Kalyan">Kalyan</option>
-          </select>
-        </div>
-        <div class="fld"><label>Amount ₹</label><input type="number" id="aAmt" step="0.01" /></div>
-        <div class="fld"><label>Type</label>
-          <select id="aMode"><option value="">—</option><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Credit Card">Credit Card</option></select>
-        </div>
-        <div class="fld"><label>Note</label><input type="text" id="aNote" placeholder="pharmacy, room..." /></div>
-        <div class="fld"><label>Expected discharge</label><input type="date" id="aDischarge" /></div>
-        <div class="fld"><label>Health status (English)</label><input type="text" id="aCondition" placeholder="Stable, under observation..." /></div>
-        <div class="fld"><label>Health status (Telugu)</label><input type="text" id="aConditionTe" placeholder="స్థిరంగా ఉన్నారు..." /></div>
-        <div class="fld"><label>Discharge note</label><input type="text" id="aDischargeNote" placeholder="Doctor will confirm after reports" /></div>
-        <div class="admin-actions">
-          <button class="ab-add" onclick="addBill()">+ Bill</button>
-          <button class="ab-adv" onclick="addAdvance()">+ Advance</button>
-          <button class="ab-save" onclick="saveStatus()">💚 Update Status</button>
-          <button class="ab-save" onclick="saveJson()">💾 Save JSON</button>
-        </div>
+      <div class="admin-fab" onclick="openAddModal()">➕ Venky — Add bill from phone (tap here)</div>
+      <div class="setup-box" id="setupBox">
+        <strong>One-time setup (15 min)</strong> so bills save from phone for whole family:<br>
+        1. Google Sheet → Apps Script → paste <code>google-setup/Code.gs</code> → Run setup<br>
+        2. Deploy → Web app → Anyone → copy URL<br>
+        3. Paste URL below → Save
+        <input type="url" id="setupApiUrl" placeholder="https://script.google.com/macros/s/.../exec" />
+        <button class="btn-block" style="margin-top:8px;font-size:0.8rem;padding:12px" onclick="saveApiUrl()">Save cloud URL on this phone</button>
+        <button class="btn-block" style="margin-top:8px;font-size:0.75rem;padding:10px;background:#64748b" onclick="saveJson()">💾 Backup JSON (laptop)</button>
       </div>
     </div>
 
   </div>
 </div>
+
+<button class="add-fab no-print" id="addFab" onclick="openAddModal()" aria-label="Add bill">➕</button>
+
+<div class="pin-modal no-print" id="pinModal">
+  <div class="pin-sheet">
+    <h3>🔒 Venky PIN</h3>
+    <p class="sub">Enter PIN to add bills · default: 7582</p>
+    <div class="fld"><input type="password" id="pinInput" inputmode="numeric" placeholder="PIN" maxlength="8" onkeydown="if(event.key==='Enter')submitPin()" /></div>
+    <button class="btn-block" onclick="submitPin()">Unlock</button>
+  </div>
+</div>
+
+<div class="add-modal no-print" id="addModal">
+  <div class="add-sheet">
+    <div class="close-row">
+      <div><h3>➕ Add payment</h3><p class="sub">బిల్లు జోడించండి · saves to family link</p></div>
+      <button class="add-close" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="fld"><label>Date</label><input type="date" id="aDate" /></div>
+    <div class="fld"><label>Who paid</label>
+      <select id="aWho">
+        <option value="Venky">Venky (Shivaji)</option>
+        <option value="Deepa">Deepa (Rajini)</option>
+        <option value="Kalyan">Kalyan</option>
+      </select>
+    </div>
+    <div class="fld"><label>Amount ₹</label><input type="number" id="aAmt" step="0.01" inputmode="decimal" placeholder="e.g. 500" /></div>
+    <div class="fld"><label>Type</label>
+      <select id="aMode"><option value="">—</option><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Credit Card">Credit Card</option></select>
+    </div>
+    <div class="fld"><label>Note</label><input type="text" id="aNote" placeholder="pharmacy, room..." /></div>
+    <details style="margin-top:8px"><summary style="font-size:0.78rem;color:var(--muted);cursor:pointer">Health status & discharge (optional)</summary>
+      <div class="fld" style="margin-top:12px"><label>Expected discharge</label><input type="date" id="aDischarge" /></div>
+      <div class="fld"><label>Health status (English)</label><input type="text" id="aCondition" placeholder="Stable..." /></div>
+      <div class="fld"><label>Health status (Telugu)</label><input type="text" id="aConditionTe" placeholder="స్థిరంగా..." /></div>
+      <div class="fld"><label>Discharge note</label><input type="text" id="aDischargeNote" /></div>
+    </details>
+    <div class="add-actions">
+      <button class="ab-bill" onclick="addBill()">✓ Save bill</button>
+      <button class="ab-adv-btn" onclick="addAdvance()">+ Shivaji advance</button>
+      <button class="ab-status-btn" onclick="saveStatus()">💚 Update status</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
 <nav class="dock no-print">
   <button class="b-wa" onclick="copyWhatsApp()"><span class="ic">💬</span>WhatsApp</button>
@@ -751,7 +847,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-const PAGE_VERSION = "2026-07-01-v8";
+/* ── Cloud sync: paste your Google Web App URL after one-time setup (see MOBILE-VENKY.md) ── */
+const CONFIG = {
+  apiUrl: localStorage.getItem("hb_apiUrl") || "",
+  syncPin: "7582",
+};
+const PAGE_VERSION = "2026-07-01-v9";
+const LS_KEY = "hospitalBillsLocal";
+const PIN_KEY = "hb_pin_ok";
 const SONS = [
   { branch: "Shivaji", payer: "Venky", te: "శివాజీ", color: "#0d9488", icon: "🙏" },
   { branch: "Rajini", payer: "Deepa", te: "రజినీ · దీప", color: "#e11d48", icon: "💛" },
@@ -771,18 +874,132 @@ let careStatus = {
 };
 
 async function loadData() {
+  if (CONFIG.apiUrl) {
+    try {
+      const res = await fetch(CONFIG.apiUrl + (CONFIG.apiUrl.includes("?") ? "&" : "?") + "t=" + Date.now());
+      if (res.ok) {
+        applyJson(await res.json());
+        updateSyncUI();
+        return;
+      }
+    } catch (e) {}
+  }
   try {
     const res = await fetch("data/bills.json?v=" + Date.now());
     if (res.ok) {
-      const json = await res.json();
-      meta = { patient: json.patient, hospital: json.hospital, startDate: json.startDate };
-      data.bills = json.bills || [];
-      data.advances = json.advances || [];
-      if (json.careStatus) careStatus = { ...careStatus, ...json.careStatus };
+      applyJson(await res.json());
+      mergeLocalStorage();
+      updateSyncUI();
       return;
     }
   } catch (e) {}
-  data = { bills: [], advances: [] };
+  mergeLocalStorage();
+  updateSyncUI();
+}
+
+function applyJson(json) {
+  meta = { patient: json.patient, hospital: json.hospital, startDate: json.startDate };
+  data.bills = json.bills || [];
+  data.advances = json.advances || [];
+  if (json.careStatus) careStatus = { ...careStatus, ...json.careStatus };
+}
+
+function mergeLocalStorage() {
+  try {
+    const local = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (!local) return;
+    (local.pendingBills || []).forEach(b => {
+      if (!data.bills.some(x => x.d === b.d && x.who === b.who && x.amt === b.amt && x.note === b.note)) {
+        data.bills.push(b);
+      }
+    });
+    (local.pendingAdvances || []).forEach(a => {
+      if (!data.advances.some(x => x.d === a.d && x.amt === a.amt)) data.advances.push(a);
+    });
+    if (local.careStatus) careStatus = { ...careStatus, ...local.careStatus };
+  } catch (e) {}
+}
+
+function getLocalPending() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch (e) { return {}; }
+}
+function saveLocalPending(patch) {
+  const cur = getLocalPending();
+  localStorage.setItem(LS_KEY, JSON.stringify({ ...cur, ...patch }));
+  updateSyncUI();
+}
+function clearLocalPending() {
+  localStorage.removeItem(LS_KEY);
+  updateSyncUI();
+}
+
+function updateSyncUI() {
+  const pending = getLocalPending();
+  const hasPending = (pending.pendingBills || []).length > 0 || (pending.pendingAdvances || []).length > 0;
+  document.getElementById("syncBanner")?.classList.toggle("show", !CONFIG.apiUrl && hasPending);
+  document.getElementById("cloudOk")?.classList.toggle("show", !!CONFIG.apiUrl);
+  document.getElementById("setupBox")?.style.setProperty("display", CONFIG.apiUrl ? "none" : "block");
+  const urlInput = document.getElementById("setupApiUrl");
+  if (urlInput && CONFIG.apiUrl) urlInput.value = CONFIG.apiUrl;
+}
+
+function saveApiUrl() {
+  const url = document.getElementById("setupApiUrl").value.trim();
+  if (!url.startsWith("http")) return alert("Paste the full Google Web App URL");
+  localStorage.setItem("hb_apiUrl", url);
+  CONFIG.apiUrl = url;
+  toast("Cloud URL saved! Reloading...");
+  setTimeout(() => location.reload(), 800);
+}
+
+async function cloudPost(action, payload) {
+  if (!CONFIG.apiUrl) return { ok: false, offline: true };
+  try {
+    const res = await fetch(CONFIG.apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ action, pin: CONFIG.syncPin, ...payload }),
+    });
+    return await res.json();
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}
+
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function isPinOk() { return sessionStorage.getItem(PIN_KEY) === "1"; }
+function openAddModal() {
+  if (!isPinOk()) {
+    document.getElementById("pinModal").classList.add("open");
+    setTimeout(() => document.getElementById("pinInput")?.focus(), 300);
+    return;
+  }
+  document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
+  syncAdminStatusFields();
+  document.getElementById("addModal").classList.add("open");
+}
+function closeAddModal() { document.getElementById("addModal").classList.remove("open"); }
+function submitPin() {
+  if (document.getElementById("pinInput").value === CONFIG.syncPin) {
+    sessionStorage.setItem(PIN_KEY, "1");
+    document.getElementById("pinModal").classList.remove("open");
+    openAddModal();
+  } else alert("Wrong PIN");
+}
+
+function copyPendingBills() {
+  const p = getLocalPending();
+  const lines = (p.pendingBills || []).map(b => `${b.d} — ${b.who} — ₹${b.amt}${b.note ? " — " + b.note : ""}`);
+  (p.pendingAdvances || []).forEach(a => lines.push(`${a.d} — Shivaji advance — ₹${a.amt}`));
+  const text = "🏥 New bills to add:\n" + lines.join("\n");
+  navigator.clipboard.writeText(text).then(() => toast("Copied! Paste in WhatsApp"))
+    .catch(() => prompt("Copy:", text));
 }
 
 function fmt(n) { return "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -997,24 +1214,43 @@ function downloadHistory() {
 }
 
 let adminOpen = false;
-function toggleAdmin() {
-  adminOpen = !adminOpen;
-  document.getElementById("adminPanel").classList.toggle("open", adminOpen);
-  if (adminOpen) document.getElementById("aDate").value = new Date().toISOString().slice(0,10);
-}
-function addBill() {
+async function addBill() {
   const d = document.getElementById("aDate").value, who = document.getElementById("aWho").value;
   const amt = parseFloat(document.getElementById("aAmt").value);
   const mode = document.getElementById("aMode").value, note = document.getElementById("aNote").value.trim();
   if (!d || !amt) return alert("Date and amount required");
-  data.bills.push({d,who,amt,mode,note});
+  const bill = { d, who, amt, mode, note };
+  data.bills.push(bill);
   document.getElementById("aAmt").value = ""; document.getElementById("aNote").value = "";
   render();
+  closeAddModal();
+
+  const r = await cloudPost("addBill", { bill });
+  if (r.ok) {
+    toast("✅ Saved! Family can refresh the link.");
+    clearLocalPending();
+  } else {
+    const p = getLocalPending();
+    saveLocalPending({ pendingBills: [...(p.pendingBills || []), bill] });
+    toast(CONFIG.apiUrl ? "⚠️ Cloud failed — saved on this phone" : "📱 Saved on phone — set up cloud sync");
+  }
 }
-function addAdvance() {
+async function addAdvance() {
   const d = document.getElementById("aDate").value;
   const amt = parseFloat(prompt("Shivaji → Venky amount (₹)"));
-  if (d && amt) { data.advances.push({d,amt}); render(); }
+  if (!d || !amt) return;
+  const advance = { d, amt };
+  data.advances.push(advance);
+  render();
+  closeAddModal();
+
+  const r = await cloudPost("addAdvance", { advance });
+  if (r.ok) toast("✅ Advance saved for family!");
+  else {
+    const p = getLocalPending();
+    saveLocalPending({ pendingAdvances: [...(p.pendingAdvances || []), advance] });
+    toast("📱 Advance saved on this phone");
+  }
 }
 function saveJson() {
   const blob = new Blob([JSON.stringify({...meta, bills:data.bills, advances:data.advances, careStatus},null,2)],{type:"application/json"});
@@ -1030,7 +1266,7 @@ function syncAdminStatusFields() {
   document.getElementById("aConditionTe").value = careStatus.conditionTe || "";
   document.getElementById("aDischargeNote").value = careStatus.dischargeNote || "";
 }
-function saveStatus() {
+async function saveStatus() {
   careStatus.expectedDischarge = document.getElementById("aDischarge").value || careStatus.expectedDischarge;
   careStatus.condition = document.getElementById("aCondition").value.trim() || careStatus.condition;
   careStatus.conditionTe = document.getElementById("aConditionTe").value.trim() || careStatus.conditionTe;
@@ -1038,7 +1274,14 @@ function saveStatus() {
   careStatus.lastUpdate = new Date().toISOString().slice(0,10);
   careStatus.lastUpdateBy = "Venky";
   renderCareBanner();
-  alert("Status updated! Click Save JSON and push to GitHub so family sees it.");
+  closeAddModal();
+
+  const r = await cloudPost("updateCareStatus", { careStatus });
+  if (r.ok) toast("✅ Status updated for family!");
+  else {
+    saveLocalPending({ careStatus });
+    toast("📱 Status saved on this phone");
+  }
 }
 
 /* ── Care Assistant Chatbot ── */
