@@ -1,0 +1,42 @@
+---
+description: UI/UX standards — Blinkit/Swiggy-style mobile-first family app
+globs: "**/*.html"
+alwaysApply: false
+---
+
+# UI/UX Standards
+
+## Design language (v20+)
+- Light theme: `#f2f3f4` bg, white cards, `#0c831f` primary green
+- Sticky topbar: patient + hospital + live pill
+- Bottom nav: Home | Bills | + | Share | Care
+- Quick action chips on Home (horizontal scroll)
+- Order-style bill history (newest first)
+
+## Mobile-first checklist
+- Touch targets ≥ 44px
+- Bottom nav + safe-area insets (`env(safe-area-inset-bottom)`)
+- Test 320px–414px widths
+- One-thumb reach for primary actions (+ add bill)
+
+## Product questions (ask before building)
+- Can this screen be simpler?
+- Can one tap be removed?
+- Would Blinkit/Apple build it this way?
+- Can loading feel smoother (skeleton > spinner > blank)?
+
+## Loading & states
+- Above-fold Home content: **visible immediately** (no `.reveal` delay on critical data)
+- Skeleton shimmer for `grandTotal`, `homePaid`, `careBanner` when loading
+- Splash tied to `loadData()` completion, not fixed timeout
+- Empty states: friendly copy + CTA ("tap + to add")
+
+## Tone
+- WhatsApp/share: respectful Telugu, family-safe
+- Settlement UI: "Fair adjustment · సమన్యయం" — never accusatory
+- Badges: "Balance" / "Credit" not "MUST PAY"
+
+## Do not regress
+- Tab navigation (v17+)
+- Warm WhatsApp message (v21)
+- "Powered by Tevs" footer unless user removes

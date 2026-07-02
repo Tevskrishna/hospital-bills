@@ -1,0 +1,33 @@
+---
+description: Performance rules for mobile-first static SPA
+globs: "**/*.{html,js}"
+alwaysApply: false
+---
+
+# Performance
+
+## Known issues (fix when touching related code)
+- Tesseract.js eager-loaded (~1–2 MB) — lazy-load on Care tab open only
+- `initParticles()` runs while `.ambient` is hidden — remove or gate
+- Full `render()` rebuilds all tabs — prefer partial render when safe
+- 60s `loadData` poll — compare JSON hash before `render()`
+- Three Google Font families — use `font-display: swap`
+
+## Rules
+1. Don't add new `requestAnimationFrame` loops without gating
+2. Don't add new CDN scripts without lazy loading
+3. Keep `index.html` diff minimal — currently ~98 KB
+4. Cache-bust fetches: always `?v=` or `?t=` timestamp on JSON
+
+## Mobile targets
+- First meaningful paint: show skeleton within 100ms
+- Interactive after `loadData()` + first `render()`
+- Test slow 3G throttling mentally for every UI change
+
+## Offline
+- Pending bills → `localStorage` key `hospitalBillsLocal`
+- `flushPendingToCloud()` on load when token present
+- Don't break merge logic on silent refresh
+
+## Measure impact in self-review
+Score Performance /10. Below 8 → explain in session report.

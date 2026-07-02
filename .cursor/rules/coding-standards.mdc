@@ -1,0 +1,43 @@
+---
+description: Vanilla JS coding standards for FamilyCare monolith
+globs: "**/*.{html,js,gs}"
+alwaysApply: false
+---
+
+# Coding Standards
+
+## Principles
+- **Smallest safe change** — extend, don't rewrite working modules
+- **Reuse** — search for existing `fmt`, `toast`, `render*` before adding helpers
+- **No unnecessary abstraction** — no frameworks, no build step unless approved
+- **Backward compatible** — family URL and `bills.json` schema must keep working
+
+## Patterns
+```javascript
+// ✅ Currency
+fmt(amount)
+
+// ✅ DOM updates — escape user content
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ❌ Never inject user note/raw input via innerHTML unescaped
+el.innerHTML = `<td>${b.note}</td>`  // XSS risk
+
+// ✅ Errors — prefer toast over alert
+toast("✅ Saved!");
+
+// ❌ Silent failures
+catch (e) {}
+```
+
+## File sync
+After editing `index.html`:
+1. Copy → `hospital-bills.html`
+2. Bump `PAGE_VERSION`, `version.json`, `refresh.html` `?b=`, `<head>` cache script
+
+## Naming
+- Match existing: `fmt`, `fmtDate`, `sumWho`, `computeSettlement`
+- Telugu UI strings OK in templates; logic comments in English
+
+## Dead code
+Do not add new dead code. Flag existing dead code in `TECH_DEBT.md`; don't remove without approval.

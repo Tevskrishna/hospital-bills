@@ -1,0 +1,35 @@
+---
+description: Documentation update requirements for every session
+alwaysApply: true
+---
+
+# Documentation
+
+## Read first
+`PROJECT_CONTEXT.md` — permanent project memory
+
+## Update when applicable (same session)
+| File | When |
+|------|------|
+| `CHANGELOG.md` | Any user-visible or behavioral change |
+| `HEALTH.md` | Dimension scores shift ≥ 1 point |
+| `TECH_DEBT.md` | New debt found or item resolved |
+| `IDEAS.md` | New ideas only — never implement without approval |
+| `PROJECT_CONTEXT.md` | Schema, API, business rules, or architecture change |
+
+## Changelog entry format
+```
+## [version] — Title
+### Changed / Added / Fixed / Removed
+### Files
+### Breaking changes
+### Migration
+### Testing performed
+### Known limitations
+```
+
+## Do not create unsolicited docs
+No new README sections or guides unless user asks or release requires it.
+
+## Session end (mandatory)
+Exactly **5 ranked improvements** with: priority, effort, business value, technical value, risk, files affected. **Do not implement without approval.**

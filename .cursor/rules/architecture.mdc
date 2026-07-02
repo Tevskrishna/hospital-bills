@@ -1,0 +1,41 @@
+---
+description: FamilyCare architecture, data flow, and Technical Owner pre-coding workflow
+alwaysApply: true
+---
+
+# Architecture & Technical Owner Workflow
+
+**Read `PROJECT_CONTEXT.md` first** before any change.
+
+## Stack
+- Single-file SPA: `index.html` (~2,160 lines) — HTML + CSS + vanilla JS
+- Data: `data/bills.json` on GitHub Pages (source of truth)
+- Writes: GitHub Contents API via PAT in `localStorage` (Venky's phone)
+- Optional: `google-setup/Code.gs` if `CONFIG.apiUrl` is set
+- No backend server, no SQL, no user accounts
+
+## Before ANY implementation (automatic)
+1. **Requirement validation** — restate in one sentence; business/user/technical impact
+2. **Impact analysis** — table of affected files, risks, regressions
+3. **Implementation plan** — phases + smallest safe change
+4. **Code review before coding** — search for existing helpers, no duplication
+5. If request conflicts with architecture — **explain and wait for decision**
+
+## Core modules (do not rewrite)
+| Module | Functions |
+|--------|-----------|
+| Data | `loadData`, `applyJson`, `buildPayload`, `pushAllToCloud` |
+| Render | `render`, `renderHomeSummary`, `renderShareHub`, `renderCareBanner` |
+| Math | `computeSplit`, `computeSettlement`, `sumWho`, `totalBills` |
+| Sync | `saveToGitHub`, `mergeLocalStorage`, `flushPendingToCloud` |
+| Nav | `showPage('home'\|'bills'\|'share')`, `toggleChat` |
+
+## Business rules (never break)
+- Fair share = `totalBills() / 3`
+- Settlement: Kalyan → Deepa + Venky only; **Venky never pays Deepa**
+- Shivaji advances separate from 3-way split
+- Same URL always: `https://tevskrishna.github.io/hospital-bills/`
+- WhatsApp tone: warm Telugu, no "owes" / "MUST PAY"
+
+## Architecture changes require explicit approval
+Never silently replace user requests. Present: requested vs recommended approach, pros/cons, risks.

@@ -1,0 +1,41 @@
+---
+description: Version bump and GitHub Pages release process
+globs: "**/{index.html,version.json,refresh.html,manifest.json}"
+alwaysApply: false
+---
+
+# Release Process
+
+## Version bump (all together)
+1. `PAGE_VERSION` in `index.html` → e.g. `2026-07-03-v22`
+2. `version.json` → `{ "build": "...", "label": "v22" }`
+3. `refresh.html` → `?b=22` in redirect
+4. `<head>` cache script → `b=22` check
+5. `Copy-Item index.html hospital-bills.html -Force`
+
+## Deploy
+```powershell
+git add index.html hospital-bills.html version.json refresh.html [others]
+git commit -m "Description (v22)."
+git push origin main
+```
+GitHub Actions (`.github/workflows/pages.yml`) deploys automatically.
+
+## Live URL (never change for family)
+https://tevskrishna.github.io/hospital-bills/
+
+## Cache stuck
+Direct family to: `/refresh.html`
+
+## Commits
+Only when user explicitly requests.
+
+## Pre-release checklist
+- [ ] Version numbers aligned (4 places)
+- [ ] `hospital-bills.html` synced
+- [ ] `CHANGELOG.md` updated
+- [ ] No secrets in diff
+- [ ] Regression checklist passed (see testing.mdc)
+
+## PWA
+Update `manifest.json` `theme_color` / `background_color` only when brand colors change.

@@ -1,0 +1,42 @@
+---
+description: Security rules for public family bill tracker
+globs: "**/*.{html,js,json,gs}"
+alwaysApply: false
+---
+
+# Security
+
+## Known risks (see TECH_DEBT.md)
+| ID | Issue | Priority |
+|----|-------|----------|
+| TD-001 | GitHub PAT in `localStorage` | P0 |
+| TD-002 | `innerHTML` with user `note` fields | P0 |
+| TD-003 | All bills public on GitHub Pages | By design |
+
+## Rules for every change
+1. **Escape all user-generated content** before DOM insertion (`note`, chat input, bill fields)
+2. **Never commit** tokens, PATs, or secrets to repo
+3. **Never log** `CONFIG.githubToken` or `hb_github_token`
+4. Google sync PIN `0000` is weak — don't expand PIN reliance without server
+
+## GitHub token
+- Stored: `localStorage.hb_github_token` only
+- Scope: repo Contents read/write
+- Advise user to revoke if exposed
+- Serverless proxy (IDEA-050) requires architecture approval
+
+## XSS prevention
+```javascript
+// ✅ Use textContent for user strings
+el.textContent = userNote;
+
+// ✅ Or escape helper before innerHTML templates
+${esc(b.note || "")}
+```
+
+## Privacy
+- Financial data is public to anyone with the URL
+- Do not add analytics that leak amounts without approval
+
+## Principal engineer rule
+If a feature increases attack surface, document in impact analysis and wait for approval.

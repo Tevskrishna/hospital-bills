@@ -1,0 +1,37 @@
+---
+description: Testing standards and regression checklist
+globs: "**/*.{html,js,json}"
+alwaysApply: false
+---
+
+# Testing
+
+## Current state
+- **No automated tests** (score 1/10)
+- Critical logic: `computeSettlement`, `computeSplit`, `fmt`, `mergeLocalStorage`
+
+## Regression checklist (manual, every change)
+- [ ] Desktop Chrome
+- [ ] Mobile viewport / WhatsApp in-app browser
+- [ ] Home tab: total, paid cards, settlement
+- [ ] Bills tab: history, fair share, download CSV
+- [ ] Share tab: WhatsApp copy tone + amounts
+- [ ] Care tab: chatbot chips, optional OCR
+- [ ] Add bill → immediate local render → cloud save toast
+- [ ] Offline / no token → localStorage pending
+- [ ] Empty bills state
+- [ ] Slow network (loading/skeleton behavior)
+- [ ] Version banner when `version.json` stale
+
+## Priority test targets (when adding tests)
+1. `computeSettlement(total)` — Kalyan→Deepa/Venky, no Venky→Deepa
+2. Fair share = total/3
+3. `mergeLocalStorage` deduplication
+4. `fmt` INR formatting
+
+## New tests require approval for
+- New test framework / npm dependencies
+- Extracting JS to separate modules (architecture change)
+
+## Self-review scores
+Correctness, Performance, Readability, Security, Accessibility, Maintainability — each /10. Below 8 → explain why.
