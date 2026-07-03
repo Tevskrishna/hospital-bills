@@ -379,6 +379,13 @@
       "amt": 40,
       "mode": "UPI",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Deepa",
+      "amt": 650,
+      "mode": "",
+      "note": "Discharge bill"
     }
   ],
   "advances": [
