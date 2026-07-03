@@ -372,6 +372,13 @@
       "amt": 145,
       "mode": "UPI",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Venky",
+      "amt": 40,
+      "mode": "UPI",
+      "note": "Medicine"
     }
   ],
   "advances": [
