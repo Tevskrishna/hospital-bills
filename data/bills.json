@@ -386,6 +386,13 @@
       "amt": 650,
       "mode": "",
       "note": "Discharge bill"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Kalyan",
+      "amt": 15170,
+      "mode": "Credit Card",
+      "note": "Pranadhara"
     }
   ],
   "advances": [
