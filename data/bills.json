@@ -358,6 +358,13 @@
       "amt": 162,
       "mode": "UPI",
       "note": "Daipers 2"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Venky",
+      "amt": 1,
+      "mode": "UPI",
+      "note": "Test"
     }
   ],
   "advances": [
