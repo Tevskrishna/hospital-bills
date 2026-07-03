@@ -393,6 +393,13 @@
       "amt": 15170,
       "mode": "Credit Card",
       "note": "Pranadhara"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Kalyan",
+      "amt": 973,
+      "mode": "Credit Card",
+      "note": "Medicine"
     }
   ],
   "advances": [
