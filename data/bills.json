@@ -330,6 +330,13 @@
       "amt": 1044.86,
       "mode": "UPI",
       "note": ""
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Deepa",
+      "amt": 900,
+      "mode": "UPI",
+      "note": ""
     }
   ],
   "advances": [
