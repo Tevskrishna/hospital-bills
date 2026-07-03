@@ -351,6 +351,13 @@
       "amt": 2,
       "mode": "UPI",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-03",
+      "who": "Venky",
+      "amt": 162,
+      "mode": "UPI",
+      "note": "Daipers 2"
     }
   ],
   "advances": [
