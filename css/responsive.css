@@ -80,8 +80,18 @@
   background: #f3f4f6; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
   letter-spacing: 0.04em; color: var(--muted); white-space: nowrap;
 }
-.txn-table tbody tr:nth-child(even) { background: #fafafa; }
-.txn-table tbody tr:active { background: #f0fdf4; }
+.txn-table tbody tr:nth-child(even):not(.txn-subtotal) { background: #fafafa; }
+.txn-table tbody tr:active:not(.txn-subtotal) { background: #f0fdf4; }
+.txn-table tr.txn-subtotal td {
+  background: #f3f4f6; font-weight: 700; font-size: 0.72rem; color: var(--muted);
+  border-top: 1px dashed var(--card-border);
+}
+.txn-table .col-del { width: 1%; text-align: center; padding: 4px; }
+.txn-table .col-del .tx-delete {
+  margin: 0; padding: 4px 8px; font-size: 0.75rem; border: none; background: #fff5f5;
+  border-radius: 6px; cursor: pointer;
+}
+.month-group .txn-table-wrap { margin-bottom: 16px; }
 .txn-table tfoot td {
   background: #ecfdf5; font-weight: 700; font-size: 0.72rem; border-top: 2px solid var(--teal);
 }

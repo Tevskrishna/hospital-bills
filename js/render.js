@@ -16,35 +16,61 @@
     return `${+d} ${en[mi]}`;
   }
 
-  function renderTxnTable(bills, caption) {
+  function renderTxnTable(bills, caption, options) {
     if (!bills.length) return "";
+    const opts = options || {};
     const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
+    const nameOrder = ["Venky", "Deepa", "Kalyan"];
+    const sorted = [...bills].sort(
+      (a, b) =>
+        nameOrder.indexOf(a.who) - nameOrder.indexOf(b.who) ||
+        a.d.localeCompare(b.d) ||
+        b.amt - a.amt
+    );
     const total = bills.reduce((s, b) => s + b.amt, 0);
-    const rows = bills.map((b) => `
+    let rows = "";
+    nameOrder.forEach((who) => {
+      const personBills = sorted.filter((b) => b.who === who);
+      if (!personBills.length) return;
+      personBills.forEach((b) => {
+        const billIdx = opts.showDelete ? global.data.bills.indexOf(b) : -1;
+        rows += `
       <tr>
-        <td class="col-date">${shortDate(b.d)}</td>
         <td class="col-name">${whoIcon[b.who] || ""} ${esc(b.who)}</td>
+        <td class="col-date">${shortDate(b.d)}</td>
         <td class="col-amt">${fmt(b.amt)}</td>
         <td class="col-note">${esc(b.note || b.mode || "—")}</td>
-      </tr>`).join("");
+        ${opts.showDelete ? `<td class="col-del"><button type="button" class="tx-delete no-print" onclick="deleteBill(${billIdx})" aria-label="Delete">🗑</button></td>` : ""}
+      </tr>`;
+      });
+      const sub = personBills.reduce((s, b) => s + b.amt, 0);
+      rows += `
+      <tr class="txn-subtotal">
+        <td colspan="2">${whoIcon[who]} ${esc(who)} subtotal</td>
+        <td class="col-amt">${fmt(sub)}</td>
+        <td${opts.showDelete ? ' colspan="2"' : ""}></td>
+      </tr>`;
+    });
+    const colSpan = opts.showDelete ? 2 : 2;
     return `
       ${caption ? `<div class="txn-table-caption">${caption}</div>` : ""}
       <div class="txn-table-wrap">
         <table class="txn-table">
           <thead>
             <tr>
-              <th>Date</th>
               <th>Name</th>
+              <th>Date</th>
               <th>Amount</th>
               <th>Note</th>
+              ${opts.showDelete ? "<th></th>" : ""}
             </tr>
           </thead>
           <tbody>${rows}</tbody>
           <tfoot>
             <tr>
-              <td colspan="2">Total · ${bills.length} payment${bills.length === 1 ? "" : "s"}</td>
-              <td class="col-amt">${fmt(total)}</td>
-              <td></td>
+              <td colspan="${colSpan}"><strong>Total</strong> · ${bills.length} payment${bills.length === 1 ? "" : "s"}</td>
+              <td class="col-amt"><strong>${fmt(total)}</strong></td>
+              <td${opts.showDelete ? ' colspan="2"' : ""}></td>
             </tr>
           </tfoot>
         </table>
@@ -120,7 +146,6 @@
 
   function renderBillsList() {
     const bills = getFilteredBills();
-    const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
     const byMonth = {};
     bills.forEach((b) => {
       const mk = b.d.slice(0, 7);
@@ -133,27 +158,7 @@
       html += `<div class="month-group"><div class="month-head"><span>${monthLabel(mk + "-01")}</span><span class="mh-amt">${fmt(monthTotal)}</span></div>`;
       Object.keys(days).sort().reverse().forEach((d) => {
         const dayBills = days[d];
-        const dayT = dayBills.reduce((s, b) => s + b.amt, 0);
-        html += `<div class="order-day-head" style="border-radius:12px;margin-bottom:8px;border:1px solid var(--card-border)"><span>${fmtDate(d)}</span><span class="day-amt">${fmt(dayT)}</span></div>`;
-        dayBills.forEach((b, i) => {
-          const tag = b.mode ? esc(b.mode) : "";
-          const note = b.note ? esc(b.note) : "";
-          const hasNote = !!(b.note && b.note.trim());
-          const billIdx = global.data.bills.indexOf(b);
-          const id = "tx-" + d.replace(/-/g, "") + "-" + i;
-          html += `<div class="txn-card" id="${id}">
-          <div class="tx-ic">${whoIcon[b.who] || "💰"}</div>
-          <div class="tx-body">
-            <div class="tx-top">
-              <div class="tx-who">${esc(b.who)}</div>
-              <div class="tx-amt">${fmt(b.amt)}</div>
-            </div>
-            <div class="tx-meta">${tag || "Hospital payment"} · ${fmtDate(d)}</div>
-            ${hasNote ? `<div class="tx-note">${note}</div><button class="tx-toggle" onclick="toggleTxn('${id}')" aria-expanded="false">Show note</button>` : ""}
-            <button type="button" class="tx-delete no-print" onclick="deleteBill(${billIdx})" aria-label="Delete bill">🗑 Delete</button>
-          </div>
-        </div>`;
-        });
+        html += renderTxnTable(dayBills, fmtDate(d), { showDelete: true });
       });
       html += "</div>";
     });
@@ -210,7 +215,7 @@
       ? `${fmtDate(latestDay).split(" · ")[0]} · ${dayBills.length} payment${dayBills.length === 1 ? "" : "s"} · ${fmt(dayTotal)}`
       : "";
     document.getElementById("homeActivity").innerHTML = dayBills.length
-      ? renderTxnTable(dayBills.sort((a, b) => a.who.localeCompare(b.who) || b.amt - a.amt), caption)
+      ? renderTxnTable(dayBills, caption)
       : `<div class="empty-state"><div class="es-ic">📋</div><p>No bills yet</p><button class="qa-chip qa-primary" onclick="openAddModal()">Add first bill</button></div>`;
   }
 
