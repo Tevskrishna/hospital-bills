@@ -157,6 +157,13 @@
       "note": ""
     },
     {
+      "d": "2026-06-28",
+      "who": "Deepa",
+      "amt": 800,
+      "mode": "",
+      "note": ""
+    },
+    {
       "d": "2026-06-29",
       "who": "Deepa",
       "amt": 1051.85,
@@ -400,6 +407,13 @@
       "amt": 570,
       "mode": "UPI",
       "note": "Daipers"
+    },
+    {
+      "d": "2026-07-04",
+      "who": "Venky",
+      "amt": 190,
+      "mode": "UPI",
+      "note": "Medicine"
     }
   ],
   "advances": [
