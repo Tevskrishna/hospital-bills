@@ -400,6 +400,13 @@
       "amt": 5993,
       "mode": "Credit Card",
       "note": ""
+    },
+    {
+      "d": "2026-07-04",
+      "who": "Venky",
+      "amt": 570,
+      "mode": "UPI",
+      "note": "Daipers"
     }
   ],
   "advances": [
