@@ -62,12 +62,13 @@ function patchHtml(html) {
   );
 }
 
-function patchSw(sw) {
+function patchSw(sw, buildId) {
+  const cacheVer = "familycare-" + String(buildId).replace(/[^a-zA-Z0-9.-]/g, "-") + "-prod";
   const css = [
     "./css/theme.css", "./css/app.css", "./css/components.css",
     "./css/utilities.css", "./css/animations.css", "./css/responsive.css",
   ].map((c) => `  "${c}",`).join("\n");
-  const precache = `const CACHE_VERSION = "familycare-v25-family-dashboard-prod";
+  const precache = `const CACHE_VERSION = "${cacheVer}";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -138,7 +139,8 @@ async function main() {
     fs.writeFileSync(path.join(DIST, file), out, "utf8");
   }
 
-  const sw = patchSw(fs.readFileSync(path.join(ROOT, "sw.js"), "utf8"));
+  const version = JSON.parse(fs.readFileSync(path.join(ROOT, "version.json"), "utf8"));
+  const sw = patchSw(fs.readFileSync(path.join(ROOT, "sw.js"), "utf8"), version.build);
   fs.writeFileSync(path.join(DIST, "sw.js"), sw, "utf8");
 
   COPY_DIRS.forEach((d) => copyRecursive(path.join(ROOT, d), path.join(DIST, d)));

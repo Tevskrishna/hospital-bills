@@ -55,6 +55,8 @@
         ptr?.classList.add("show");
         loadData(true).then(() => {
           render();
+          checkLiveVersion();
+          navigator.serviceWorker?.getRegistration()?.then((r) => r?.update());
           ptr.textContent = "✓ Updated";
           setTimeout(() => { ptr?.classList.remove("show"); ptr.textContent = "↓ Pull to refresh"; }, 800);
         });

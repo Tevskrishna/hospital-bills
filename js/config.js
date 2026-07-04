@@ -7,7 +7,7 @@
   const ls = typeof localStorage !== "undefined" ? localStorage : { getItem: () => null };
 
   /** @type {string} Build identifier shown in UI and version.json */
-  FC.PAGE_VERSION = "2026-07-03-v25-lts";
+  FC.PAGE_VERSION = "2026-07-04-v25.1";
   FC.LS_KEY = "hospitalBillsLocal";
   FC.FC_METRICS_KEY = "fc_metrics_v1";
   FC.FETCH_TIMEOUT_MS = 15000;
