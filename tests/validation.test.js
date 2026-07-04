@@ -43,7 +43,8 @@ describe("validation", () => {
   it("detects duplicate bills", () => {
     const bill = { d: "2026-06-28", who: "Venky", amt: 100, note: "" };
     assert.equal(isDuplicateBill([bill], { ...bill }), true);
-    assert.equal(isDuplicateBill([bill], { ...bill, note: "x" }), false);
+    assert.equal(isDuplicateBill([bill], { ...bill, note: "Medicine" }), true);
+    assert.equal(isDuplicateBill([bill], { ...bill, amt: 200 }), false);
   });
 
   it("normalizes corrupt API JSON safely", () => {

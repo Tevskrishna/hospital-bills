@@ -3,8 +3,8 @@
  */
 (function (global) {
   const FC = global.FC || (global.FC = {});
-  const { esc, haptic, csvEsc, debounce, friendlySyncError } = FC.utils;
-  const { validateBill, validateAdvance, isDuplicateBill } = FC.validation;
+  const { esc, haptic, csvEsc, debounce, friendlySyncError, fmt } = FC.utils;
+  const { validateBill, validateAdvance, isDuplicateBill, findDuplicateBill } = FC.validation;
 
   function toast(msg, type) {
     const el = document.getElementById("toast");
@@ -49,8 +49,10 @@
     const v = validateBill({ d, who, amt, mode, note });
     if (!v.ok) return toast(v.error);
 
-    if (isDuplicateBill(global.data.bills, v.bill)) {
-      return toast("This bill looks like a duplicate — check date, amount, and payer.");
+    const dup = findDuplicateBill(global.data.bills, v.bill);
+    if (dup) {
+      const notePart = dup.note ? ` · note: ${dup.note}` : "";
+      return toast(`Duplicate payment blocked — ${v.bill.who} already has ₹${v.bill.amt} on ${v.bill.d}${notePart}`);
     }
 
     const bill = v.bill;
@@ -73,6 +75,38 @@
       await FC.sync.registerBgSync();
       const p = FC.storage.getLocalPending();
       FC.storage.saveLocalPending({ pendingBills: [...(p.pendingBills || []), bill] });
+      FC.sync.syncToastOnFailure(r);
+    }
+  }
+
+  function verifyDeletePin() {
+    const pin = prompt("Enter PIN to delete (family admin):");
+    if (pin === null) return false;
+    if (pin !== FC.CONFIG.syncPin) {
+      toast("Wrong PIN — delete cancelled.");
+      return false;
+    }
+    return true;
+  }
+
+  async function deleteBill(billIdx) {
+    if (!Number.isInteger(billIdx) || billIdx < 0 || billIdx >= global.data.bills.length) return;
+    const b = global.data.bills[billIdx];
+    if (!verifyDeletePin()) return;
+    const label = `${b.who} · ${fmt(b.amt)} · ${b.d}${b.note ? " · " + b.note : ""}`;
+    if (!confirm(`Delete this payment?\n\n${label}`)) return;
+
+    global.data.bills.splice(billIdx, 1);
+    FCAnalytics.track("bill_deleted");
+    global.render();
+    toast("Deleting...");
+
+    const r = await FC.sync.pushAllToCloud();
+    if (r.ok) {
+      toast("Bill deleted for family.", "success");
+      FC.sync.loadData?.(true);
+    } else {
+      FC.storage.cacheSnapshot(FC.sync.buildPayload());
       FC.sync.syncToastOnFailure(r);
     }
   }
@@ -269,7 +303,7 @@
     }
   }
 
-  FC.ui = { toast, openAddModal, closeAddModal, syncAdminStatusFields, addBill, addAdvance, saveStatus, downloadHistory, showPage, hideSplash, filterBills, setBillFilter, toggleTxn, openFamilyDashboardEdit, closeFamilyEditModal, saveFamilyDashboard, syncFamilyDashboardFields };
+  FC.ui = { toast, openAddModal, closeAddModal, syncAdminStatusFields, addBill, addAdvance, saveStatus, downloadHistory, showPage, hideSplash, filterBills, setBillFilter, toggleTxn, openFamilyDashboardEdit, closeFamilyEditModal, saveFamilyDashboard, syncFamilyDashboardFields, deleteBill, verifyDeletePin };
 
   global.toast = toast;
   global.openAddModal = openAddModal;
@@ -287,4 +321,5 @@
   global.openFamilyDashboardEdit = openFamilyDashboardEdit;
   global.closeFamilyEditModal = closeFamilyEditModal;
   global.saveFamilyDashboard = saveFamilyDashboard;
+  global.deleteBill = deleteBill;
 })(typeof window !== "undefined" ? window : global);

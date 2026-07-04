@@ -95,6 +95,7 @@
           const tag = b.mode ? esc(b.mode) : "";
           const note = b.note ? esc(b.note) : "";
           const hasNote = !!(b.note && b.note.trim());
+          const billIdx = global.data.bills.indexOf(b);
           const id = "tx-" + d.replace(/-/g, "") + "-" + i;
           html += `<div class="txn-card" id="${id}">
           <div class="tx-ic">${whoIcon[b.who] || "💰"}</div>
@@ -105,6 +106,7 @@
             </div>
             <div class="tx-meta">${tag || "Hospital payment"} · ${fmtDate(d)}</div>
             ${hasNote ? `<div class="tx-note">${note}</div><button class="tx-toggle" onclick="toggleTxn('${id}')" aria-expanded="false">Show note</button>` : ""}
+            <button type="button" class="tx-delete no-print" onclick="deleteBill(${billIdx})" aria-label="Delete bill">🗑 Delete</button>
           </div>
         </div>`;
         });

@@ -30,7 +30,7 @@
     const local = safeParseJson(localStorage.getItem(LS_KEY), null);
     if (!local) return;
     (local.pendingBills || []).forEach((b) => {
-      if (!global.data.bills.some((x) => x.d === b.d && x.who === b.who && x.amt === b.amt && x.note === b.note)) {
+      if (!global.data.bills.some((x) => x.d === b.d && x.who === b.who && Math.abs(x.amt - b.amt) < 0.001)) {
         global.data.bills.push(b);
       }
     });

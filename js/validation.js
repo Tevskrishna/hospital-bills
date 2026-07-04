@@ -39,8 +39,14 @@
 
   function isDuplicateBill(bills, bill) {
     return bills.some(
-      (b) => b.d === bill.d && b.who === bill.who && Math.abs(b.amt - bill.amt) < 0.001 && (b.note || "") === (bill.note || "")
+      (b) => b.d === bill.d && b.who === bill.who && Math.abs(b.amt - bill.amt) < 0.001
     );
+  }
+
+  function findDuplicateBill(bills, bill) {
+    return bills.find(
+      (b) => b.d === bill.d && b.who === bill.who && Math.abs(b.amt - bill.amt) < 0.001
+    ) || null;
   }
 
   function sanitizeBillRow(b) {
@@ -81,6 +87,7 @@
     validateBill,
     validateAdvance,
     isDuplicateBill,
+    findDuplicateBill,
     sanitizeBillRow,
     sanitizeAdvanceRow,
     normalizeApiJson,
@@ -93,6 +100,7 @@
       validateBill,
       validateAdvance,
       isDuplicateBill,
+      findDuplicateBill,
       sanitizeBillRow,
       sanitizeAdvanceRow,
       normalizeApiJson,
