@@ -52,6 +52,8 @@ describe("sync helpers", () => {
 
   it("mergeLocalStorage adds pending bills without duplicates", () => {
     const { mergeLocalStorage } = loadSync();
+    localStorage.setItem("hb_github_token", "github_pat_test");
+    global.FC.CONFIG.githubToken = "github_pat_test";
     localStorage.setItem(
       "hospitalBillsLocal",
       JSON.stringify({
@@ -65,6 +67,20 @@ describe("sync helpers", () => {
     assert.equal(global.data.bills.length, 2);
     mergeLocalStorage();
     assert.equal(global.data.bills.length, 2);
+  });
+
+  it("mergeLocalStorage clears pending for view-only phones", () => {
+    const { mergeLocalStorage } = loadSync();
+    localStorage.setItem(
+      "hospitalBillsLocal",
+      JSON.stringify({
+        pendingBills: [{ d: "2026-06-29", who: "Kalyan", amt: 500, note: "" }],
+      })
+    );
+    mergeLocalStorage();
+    assert.equal(global.data.bills.length, 1);
+    const stored = JSON.parse(localStorage.getItem("hospitalBillsLocal"));
+    assert.deepEqual(stored.pendingBills, []);
   });
 
   it("applyJson sanitizes invalid bill rows", () => {

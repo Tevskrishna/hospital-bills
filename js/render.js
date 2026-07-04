@@ -16,6 +16,10 @@
     return `${+d} ${en[mi]}`;
   }
 
+  function canWriteBills() {
+    return FC.sync?.canWriteBills?.() ?? false;
+  }
+
   function renderTxnTable(bills, caption, options) {
     if (!bills.length) return "";
     const opts = options || {};
@@ -155,11 +159,20 @@
       html += `<div class="month-group"><div class="month-head"><span>${monthLabel(mk + "-01")}</span><span class="mh-amt">${fmt(monthTotal)}</span></div>`;
       Object.keys(days).sort().reverse().forEach((d) => {
         const dayBills = days[d];
-        html += renderTxnTable(dayBills, fmtDate(d), { showDelete: true });
+        html += renderTxnTable(dayBills, fmtDate(d), { showDelete: canWriteBills() });
       });
       html += "</div>";
     });
-    document.getElementById("dayTable").innerHTML = html || `<div class="empty-state"><div class="es-ic">🔍</div><p>${global.data.bills.length ? "No bills match your search" : "No bills yet — tap + to add"}</p>${!global.data.bills.length ? '<button class="qa-chip qa-primary" onclick="openAddModal()">Add bill</button>' : ""}</div>`;
+    const canAdd = canWriteBills();
+    const emptyMsg = global.data.bills.length
+      ? "No bills match your search"
+      : canAdd
+        ? "No bills yet — tap + to add"
+        : "No bills yet — contact Venky to add";
+    const emptyBtn = !global.data.bills.length && canAdd
+      ? '<button class="qa-chip qa-primary add-bill-btn" onclick="openAddModal()">Add bill</button>'
+      : "";
+    document.getElementById("dayTable").innerHTML = html || `<div class="empty-state"><div class="es-ic">🔍</div><p>${emptyMsg}</p>${emptyBtn}</div>`;
   }
 
   function renderHomeSummary(total, venky, deepa, kalyan, fair) {
@@ -213,7 +226,9 @@
       : "";
     document.getElementById("homeActivity").innerHTML = dayBills.length
       ? renderTxnTable(dayBills, caption)
-      : `<div class="empty-state"><div class="es-ic">📋</div><p>No bills yet</p><button class="qa-chip qa-primary" onclick="openAddModal()">Add first bill</button></div>`;
+      : canWriteBills()
+        ? `<div class="empty-state"><div class="es-ic">📋</div><p>No bills yet</p><button class="qa-chip qa-primary add-bill-btn" onclick="openAddModal()">Add first bill</button></div>`
+        : `<div class="empty-state"><div class="es-ic">📋</div><p>No bills yet — contact Venky to add</p></div>`;
   }
 
   function renderShareHub(total, venky, deepa, kalyan) {

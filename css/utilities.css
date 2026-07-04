@@ -26,7 +26,9 @@
   box-shadow: 0 6px 20px rgba(12,131,31,0.35);
   display: flex; align-items: center; justify-content: center;
 }
-.app-nav .nav-add span { font-size: 1.6rem; }
+.app-nav .nav-add.hide { display: none; }
+.add-bill-btn.hide { display: none; }
+body.fc-view-only .bill-delete-btn { display: none; }
 
 .powered-by-tevs {
   text-align: center; padding: 24px 16px 8px; margin-top: 8px;

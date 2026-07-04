@@ -15,7 +15,21 @@
     setTimeout(() => el.classList.remove("show"), 3200);
   }
 
+  const ADD_BILL_BLOCKED_MSG =
+    "Only Venky can add bills.\n\nPlease contact Venky on WhatsApp with your payment screenshot or amount.";
+
+  function canWriteBills() {
+    return FC.sync?.canWriteBills?.() ?? false;
+  }
+
+  function blockIfViewer() {
+    if (canWriteBills()) return false;
+    alert(ADD_BILL_BLOCKED_MSG);
+    return true;
+  }
+
   function openAddModal() {
+    if (blockIfViewer()) return;
     document.getElementById("aDate").value = new Date().toISOString().slice(0, 10);
     syncAdminStatusFields();
     document.getElementById("addModal").classList.add("open");
@@ -40,6 +54,7 @@
   }
 
   async function addBill() {
+    if (blockIfViewer()) return;
     const d = document.getElementById("aDate").value;
     const who = document.getElementById("aWho").value;
     const amt = document.getElementById("aAmt").value;
@@ -90,6 +105,7 @@
   }
 
   async function deleteBill(billIdx) {
+    if (blockIfViewer()) return;
     if (!Number.isInteger(billIdx) || billIdx < 0 || billIdx >= global.data.bills.length) return;
     const b = global.data.bills[billIdx];
     if (!verifyDeletePin()) return;
@@ -112,6 +128,7 @@
   }
 
   async function addAdvance() {
+    if (blockIfViewer()) return;
     const d = document.getElementById("aDate").value;
     const raw = prompt("Shivaji → Venky amount (₹)");
     if (raw === null) return;
@@ -266,7 +283,7 @@
       else b.removeAttribute("aria-current");
     });
     const fab = document.getElementById("addFabPremium");
-    if (fab) fab.classList.toggle("hide", tab === "share");
+    if (fab) fab.classList.toggle("hide", tab === "share" || !canWriteBills());
     window.scrollTo({ top: 0, behavior: "smooth" });
     document.getElementById("main")?.focus({ preventScroll: true });
     if (tab === "care") renderFamilyDashboard?.();

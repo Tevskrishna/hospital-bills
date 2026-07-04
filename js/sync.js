@@ -26,7 +26,35 @@
     FC.storage.cacheSnapshot(buildPayload());
   }
 
+  function canWriteBills() {
+    try {
+      return !!(
+        CONFIG.githubToken ||
+        localStorage.getItem("hb_github_token") ||
+        CONFIG.apiUrl ||
+        localStorage.getItem("hb_apiUrl")
+      );
+    } catch {
+      return false;
+    }
+  }
+
   function mergeLocalStorage() {
+    if (!canWriteBills()) {
+      const local = safeParseJson(localStorage.getItem(LS_KEY), null);
+      if (!local) return;
+      const hadPending =
+        (local.pendingBills || []).length > 0 || (local.pendingAdvances || []).length > 0;
+      if (hadPending) {
+        try {
+          localStorage.setItem(
+            LS_KEY,
+            JSON.stringify({ ...local, pendingBills: [], pendingAdvances: [] })
+          );
+        } catch (e) { /* ignore */ }
+      }
+      return;
+    }
     const local = safeParseJson(localStorage.getItem(LS_KEY), null);
     if (!local) return;
     (local.pendingBills || []).forEach((b) => {
@@ -118,11 +146,22 @@
     }
   }
 
+  function updateWriteAccessUI() {
+    const canWrite = canWriteBills();
+    document.body.classList.toggle("fc-view-only", !canWrite);
+    document.getElementById("addFabPremium")?.classList.toggle("hide", !canWrite);
+    document.querySelector(".nav-add")?.classList.toggle("hide", !canWrite);
+    document.querySelectorAll(".add-bill-btn").forEach((el) => {
+      el.classList.toggle("hide", !canWrite);
+    });
+  }
+
   function updateSyncUI() {
-    const synced = !!(CONFIG.githubToken || CONFIG.apiUrl);
+    const synced = canWriteBills();
     document.getElementById("setupBox")?.style.setProperty("display", synced ? "none" : "block");
     const apiEl = document.getElementById("setupApiUrl");
     if (apiEl && CONFIG.apiUrl) apiEl.value = CONFIG.apiUrl;
+    updateWriteAccessUI();
   }
 
   async function saveToGitHub() {
@@ -253,6 +292,8 @@
     mergeLocalStorage,
     buildPayload,
     loadData,
+    canWriteBills,
+    updateWriteAccessUI,
     updateSyncUI,
     saveToGitHub,
     cloudPost,
@@ -271,6 +312,7 @@
   global.saveToGitHub = saveToGitHub;
   global.pushAllToCloud = pushAllToCloud;
   global.updateSyncUI = updateSyncUI;
+  global.canWriteBills = canWriteBills;
   global.flushPendingToCloud = flushPendingToCloud;
   global.saveGithubToken = saveGithubToken;
   global.saveApiUrl = saveApiUrl;
