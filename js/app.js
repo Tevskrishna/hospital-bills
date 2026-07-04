@@ -25,7 +25,7 @@
         hideSplash();
       });
 
-    setInterval(() => loadData(true), 60000);
+    setInterval(() => loadData(true), 20000);
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") loadData(true);
     });

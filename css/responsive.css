@@ -65,6 +65,12 @@
 .ring-card .ra { font-family: var(--display); font-weight: 800; font-size: 0.82rem; margin-top: 4px; }
 .activity-list { margin-bottom: 16px; background: var(--card); border-radius: var(--radius-lg);
   border: 1px solid var(--card-border); padding: 4px 16px; box-shadow: var(--shadow); }
+.activity-day-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0 8px; font-size: 0.72rem; color: var(--muted); font-weight: 600;
+  border-bottom: 1px dashed var(--card-border); margin-bottom: 4px;
+}
+.activity-day-head strong { font-family: var(--display); color: var(--text); font-size: 0.88rem; }
 .activity-item {
   display: flex; align-items: center; gap: 12px; padding: 12px 0;
   border-bottom: 1px solid var(--card-border);

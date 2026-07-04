@@ -151,10 +151,22 @@
       <button class="home-link" onclick="showPage('share')">Full share card for family →</button>`;
     }
 
-    const recent = [...global.data.bills].sort((a, b) => b.d.localeCompare(a.d) || b.amt - a.amt).slice(0, 5);
+    const today = new Date().toISOString().slice(0, 10);
+    const hasToday = global.data.bills.some((b) => b.d === today);
+    const latestDay = global.data.bills.length
+      ? (hasToday ? today : global.data.bills.map((b) => b.d).sort().pop())
+      : null;
+    const dayBills = latestDay
+      ? global.data.bills.filter((b) => b.d === latestDay).sort((a, b) => b.amt - a.amt)
+      : [];
+    const dayTotal = dayBills.reduce((s, b) => s + b.amt, 0);
     const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
-    document.getElementById("homeActivity").innerHTML = recent.length
-      ? recent.map((b) => `
+    document.getElementById("homeActivity").innerHTML = dayBills.length
+      ? `<div class="activity-day-head">
+          <span>${fmtDate(latestDay)} · ${dayBills.length} payment${dayBills.length === 1 ? "" : "s"}</span>
+          <strong>${fmt(dayTotal)}</strong>
+        </div>` +
+        dayBills.map((b) => `
       <div class="activity-item">
         <div class="ai-ic">${whoIcon[b.who] || "💰"}</div>
         <div class="ai-body">

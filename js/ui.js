@@ -65,8 +65,9 @@
     const r = await FC.sync.pushAllToCloud();
     if (r.ok) {
       FCAnalytics.track("sync_success");
-      toast("Saved! Family sees it in ~1 min.", "success");
+      toast("Saved! Family sees it in ~20 sec.", "success");
       FC.storage.clearLocalPending();
+      FC.sync.loadData?.(true);
     } else {
       FCAnalytics.track("sync_failure");
       await FC.sync.registerBgSync();
