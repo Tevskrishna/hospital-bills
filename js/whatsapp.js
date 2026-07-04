@@ -1,10 +1,14 @@
 /**
- * FamilyCare — WhatsApp share (v24)
- * MESSAGE LOGIC FROZEN — identical to v21+ warm Telugu tone.
+ * FamilyCare — WhatsApp share (compact family summary)
  */
 (function (global) {
   const FC = global.FC || (global.FC = {});
   const { fmt } = FC.utils;
+
+  /** Round to whole rupees for a cleaner WhatsApp read */
+  function waShort(amt) {
+    return "₹" + Math.round(amt).toLocaleString("en-IN");
+  }
 
   function buildWaText() {
     const t = totalBills();
@@ -13,46 +17,25 @@
     const k = sumWho("Kalyan");
     const fair = t / 3;
     const s = computeSettlement(t);
-    const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-
-    const paidLine = (te, amt, extra) => {
-      if (extra > 0.01) return `${te} — ${fmt(amt)} (ఎక్కువ చెల్లించారు 🙏)`;
-      if (extra < -0.01) return `${te} — ${fmt(amt)}`;
-      return `${te} — ${fmt(amt)} ✓`;
-    };
+    const patient = global.meta?.patient || "Sri Venkateswara Rao";
+    const hospital = global.meta?.hospital || "Mallareddy Hospital";
+    const date = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 
     let settle = "";
     if (s.settlements.length) {
-      settle = `\n*సమన్యయం — fair 1/3 share పూర్తి చేయడానికి* 🙏\n\n`;
-      s.settlements.forEach((x) => {
-        settle += `→ *${x.from}* (${x.fromTe}) → *${x.to}* (${x.toTe}): ${fmt(x.amt)}\n`;
-      });
-      settle += `(మొత్తం transfers: ${fmt(s.settleTotal)})\n`;
+      settle = "\nSettle:\n" + s.settlements.map((x) => `${x.from} → ${x.to} ${waShort(x.amt)}`).join("\n");
     } else {
-      settle = `\n✓ అందరూ సమాన వాటా పూర్తి — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు 🙏\n`;
+      settle = "\n✓ All balanced — no payments needed between sons";
     }
 
-    return `🙏 నమస్కారం అందరికీ,
+    return `🙏 Hospital bills — ${patient}
+${hospital} · ${date}
+Total: ${fmt(t)} | Fair share each: ${fmt(fair)}
 
-నాన్నగారు *శ్రీ వెంకటేశ్వర రావు* — మల్లారెడ్డి ఆసుపత్రి ఖర్చుల సారాంశం.
-మూడు కుమారులు కలిసి సమానంగా భాగస్వామ్యం చేస్తున్నాం 🙏
+Venky ${waShort(v)} | Deepa ${waShort(d)} | Kalyan ${waShort(k)}${settle}
 
-📅 ${date}
-💚 మొత్తం ఖర్చు: *${fmt(t)}*
-📊 ప్రతి ఒక్కరి వాటా (1/3): ${fmt(fair)}
-
-*ఆసుపత్రిలో ఎవరు ఎంత చెల్లించారు:*
-${paidLine("🙏 వెంకీ", v, s.extra.Venky)}
-${paidLine("💛 దీప", d, s.extra.Deepa)}
-${paidLine("💙 కల్యాణ్", k, s.extra.Kalyan)}
-${settle}
-పూర్తి వివరాలు:
-https://tevskrishna.github.io/hospital-bills/
-
-దయచేసి చూసి సరిగా అనిపిస్తే *OK* అని reply చేయండి 🙏
-ఏ సందేహం ఉంటే కాల్ చేయండి.
-
-— వెంకీ (శివాజీ)`;
+Details: https://tevskrishna.github.io/hospital-bills/
+Reply OK if correct 🙏`;
   }
 
   function updateWaPreview() {
@@ -65,7 +48,7 @@ https://tevskrishna.github.io/hospital-bills/
     haptic(10);
     navigator.clipboard.writeText(text).then(() => {
       FCAnalytics.track("whatsapp_copy");
-      toast("Copied — warm message ready for WhatsApp!", "success");
+      toast("Copied — ready to paste in WhatsApp!", "success");
       const cs = document.getElementById("copySuccess");
       if (cs) {
         cs.classList.add("show");
@@ -74,7 +57,7 @@ https://tevskrishna.github.io/hospital-bills/
     }).catch(() => prompt("Copy:", text));
   }
 
-  FC.whatsapp = { buildWaText, updateWaPreview, copyWhatsApp };
+  FC.whatsapp = { buildWaText, updateWaPreview, copyWhatsApp, waShort };
   global.buildWaText = buildWaText;
   global.updateWaPreview = updateWaPreview;
   global.copyWhatsApp = copyWhatsApp;
