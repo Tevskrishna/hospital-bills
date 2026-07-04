@@ -7,6 +7,50 @@
   const SONS = FC.SONS;
   const PAGE_VERSION = FC.PAGE_VERSION;
 
+  function shortDate(iso) {
+    if (!iso || typeof iso !== "string") return "—";
+    const [y, m, d] = iso.split("-");
+    const en = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const mi = +m - 1;
+    if (mi < 0 || mi > 11) return iso;
+    return `${+d} ${en[mi]}`;
+  }
+
+  function renderTxnTable(bills, caption) {
+    if (!bills.length) return "";
+    const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
+    const total = bills.reduce((s, b) => s + b.amt, 0);
+    const rows = bills.map((b) => `
+      <tr>
+        <td class="col-date">${shortDate(b.d)}</td>
+        <td class="col-name">${whoIcon[b.who] || ""} ${esc(b.who)}</td>
+        <td class="col-amt">${fmt(b.amt)}</td>
+        <td class="col-note">${esc(b.note || b.mode || "—")}</td>
+      </tr>`).join("");
+    return `
+      ${caption ? `<div class="txn-table-caption">${caption}</div>` : ""}
+      <div class="txn-table-wrap">
+        <table class="txn-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">Total · ${bills.length} payment${bills.length === 1 ? "" : "s"}</td>
+              <td class="col-amt">${fmt(total)}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+  }
+
   function getFilteredBills() {
     const q = (global.billSearchQuery || "").toLowerCase();
     const whoFilter = global.billFilterWho || "all";
@@ -162,21 +206,11 @@
       ? global.data.bills.filter((b) => b.d === latestDay).sort((a, b) => b.amt - a.amt)
       : [];
     const dayTotal = dayBills.reduce((s, b) => s + b.amt, 0);
-    const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
+    const caption = latestDay
+      ? `${fmtDate(latestDay).split(" · ")[0]} · ${dayBills.length} payment${dayBills.length === 1 ? "" : "s"} · ${fmt(dayTotal)}`
+      : "";
     document.getElementById("homeActivity").innerHTML = dayBills.length
-      ? `<div class="activity-day-head">
-          <span>${fmtDate(latestDay)} · ${dayBills.length} payment${dayBills.length === 1 ? "" : "s"}</span>
-          <strong>${fmt(dayTotal)}</strong>
-        </div>` +
-        dayBills.map((b) => `
-      <div class="activity-item">
-        <div class="ai-ic">${whoIcon[b.who] || "💰"}</div>
-        <div class="ai-body">
-          <div class="ai-who">${esc(b.who)} · ${fmt(b.amt)}</div>
-          <div class="ai-meta">${fmtDate(b.d)}${b.mode ? " · " + esc(b.mode) : ""}${b.note ? " · " + esc(b.note) : ""}</div>
-        </div>
-        <div class="ai-amt">${fmt(b.amt)}</div>
-      </div>`).join("")
+      ? renderTxnTable(dayBills.sort((a, b) => a.who.localeCompare(b.who) || b.amt - a.amt), caption)
       : `<div class="empty-state"><div class="es-ic">📋</div><p>No bills yet</p><button class="qa-chip qa-primary" onclick="openAddModal()">Add first bill</button></div>`;
   }
 
