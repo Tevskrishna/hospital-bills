@@ -1,5 +1,5 @@
 /* FamilyCare PWA v25 LTS — cache-first static, network-first data */
-const CACHE_VERSION = "familycare-2026-07-04-v25-2";
+const CACHE_VERSION = "familycare-2026-07-04-v25-3";
 const CSS_FILES = [
   "./css/theme.css",
   "./css/app.css",
@@ -58,6 +58,15 @@ function isDataRequest(url) {
   return url.pathname.includes("/data/bills.json") || url.pathname.endsWith("/version.json");
 }
 
+function isAppUpdateRequest(url) {
+  return (
+    url.pathname.endsWith("/app.min.js") ||
+    url.pathname.endsWith("/index.html") ||
+    url.pathname.endsWith("/hospital-bills.html") ||
+    url.pathname.endsWith("/sw.js")
+  );
+}
+
 async function networkFirst(request) {
   try {
     const res = await fetch(request);
@@ -95,7 +104,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin && !url.hostname.includes("githubusercontent.com")) return;
 
-  if (isDataRequest(url) || url.pathname.endsWith("version.json")) {
+  if (isDataRequest(url) || isAppUpdateRequest(url)) {
     event.respondWith(networkFirst(event.request));
     return;
   }

@@ -5,6 +5,20 @@
   const FC = global.FC || (global.FC = {});
   const PAGE_VERSION = FC.PAGE_VERSION;
 
+  function isInstalledPwa() {
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true
+    );
+  }
+
+  function dismissInstall() {
+    try {
+      localStorage.setItem("fc_install_dismiss", "1");
+    } catch (e) { /* ignore */ }
+    document.getElementById("installBanner")?.classList.remove("show");
+  }
+
   function promptInstall() {
     if (FC.state.deferredInstall) {
       FC.state.deferredInstall.prompt();
@@ -24,8 +38,21 @@
       if (v.build && v.build !== PAGE_VERSION) {
         document.getElementById("updateBanner")?.classList.add("show");
         FCAnalytics.track("version_mismatch");
+        if (!sessionStorage.getItem("fc_auto_update")) {
+          sessionStorage.setItem("fc_auto_update", "1");
+          setTimeout(() => {
+            location.replace("./refresh.html");
+          }, 2000);
+        }
       }
     } catch (e) { /* offline */ }
+  }
+
+  function setPtrMessage(msg) {
+    const ptr = document.getElementById("ptrIndicator");
+    if (!ptr) return;
+    ptr.textContent = msg;
+    ptr.setAttribute("aria-hidden", msg ? "false" : "true");
   }
 
   function initPullRefresh() {
@@ -42,8 +69,13 @@
     document.addEventListener("touchmove", (e) => {
       if (!pulling) return;
       const dy = e.touches[0].clientY - startY;
-      if (dy > 20 && dy < threshold * 2) ptr?.classList.add("show");
-      else if (dy <= 20) ptr?.classList.remove("show");
+      if (dy > 20 && dy < threshold * 2) {
+        setPtrMessage("↓ Pull to refresh");
+        ptr?.classList.add("show");
+      } else if (dy <= 20) {
+        ptr?.classList.remove("show");
+        setPtrMessage("");
+      }
     }, { passive: true });
     document.addEventListener("touchend", (e) => {
       if (!pulling) return;
@@ -51,15 +83,21 @@
       const dy = (e.changedTouches[0]?.clientY || 0) - startY;
       ptr?.classList.remove("show");
       if (dy > threshold && window.scrollY <= 0) {
-        ptr.textContent = "Refreshing…";
+        setPtrMessage("Refreshing…");
         ptr?.classList.add("show");
         loadData(true).then(() => {
           render();
+          FC.sync?.updateWriteAccessUI?.();
           checkLiveVersion();
           navigator.serviceWorker?.getRegistration()?.then((r) => r?.update());
-          ptr.textContent = "✓ Updated";
-          setTimeout(() => { ptr?.classList.remove("show"); ptr.textContent = "↓ Pull to refresh"; }, 800);
+          setPtrMessage("✓ Updated");
+          setTimeout(() => {
+            ptr?.classList.remove("show");
+            setPtrMessage("");
+          }, 800);
         });
+      } else {
+        setPtrMessage("");
       }
     }, { passive: true });
   }
@@ -81,12 +119,18 @@
   }
 
   function initPwa() {
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      FC.state.deferredInstall = e;
-      global.deferredInstall = e;
-      document.getElementById("installBanner")?.classList.add("show");
-    });
+    if (!isInstalledPwa()) {
+      try {
+        if (!localStorage.getItem("fc_install_dismiss")) {
+          window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();
+            FC.state.deferredInstall = e;
+            global.deferredInstall = e;
+            document.getElementById("installBanner")?.classList.add("show");
+          });
+        }
+      } catch (err) { /* private mode */ }
+    }
     window.addEventListener("appinstalled", () => FCAnalytics.track("pwa_installed"));
 
     registerServiceWorker();
@@ -94,12 +138,13 @@
     handleDeepLinks();
 
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(() => checkLiveVersion(), { timeout: 3000 });
+      requestIdleCallback(() => checkLiveVersion(), { timeout: 2000 });
     } else {
-      setTimeout(checkLiveVersion, 2000);
+      setTimeout(checkLiveVersion, 1500);
     }
   }
 
-  FC.pwa = { promptInstall, checkLiveVersion, initPullRefresh, initPwa };
+  FC.pwa = { promptInstall, dismissInstall, checkLiveVersion, initPullRefresh, initPwa };
   global.promptInstall = promptInstall;
+  global.dismissInstall = dismissInstall;
 })(typeof window !== "undefined" ? window : global);

@@ -15,6 +15,7 @@
       .then(() => {
         document.body.classList.remove("app-loading");
         render();
+        FC.sync?.updateWriteAccessUI?.();
         hideSplash();
         FCAnalytics.loadTime();
         flushPendingToCloud();

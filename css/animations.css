@@ -91,13 +91,13 @@
 /* ═══ v22 Premium design system ═══ */
 .ptr-indicator {
   position: fixed; top: calc(88px + env(safe-area-inset-top)); left: 50%;
-  transform: translateX(-50%) translateY(-120%); z-index: 130;
+  transform: translateX(-50%); z-index: 130;
   background: var(--surface); padding: 8px 16px; border-radius: 99px;
   font-size: 0.72rem; font-weight: 600; color: var(--teal);
-  box-shadow: var(--shadow-lg); transition: transform 0.3s var(--ease-out);
-  pointer-events: none;
+  box-shadow: var(--shadow-lg); transition: opacity 0.25s var(--ease-out);
+  pointer-events: none; opacity: 0; visibility: hidden;
 }
-.ptr-indicator.show { transform: translateX(-50%) translateY(0); }
+.ptr-indicator.show { opacity: 1; visibility: visible; }
 .splash-progress {
   width: 120px; height: 3px; background: rgba(12,131,31,0.15);
   border-radius: 99px; margin-top: 20px; overflow: hidden;
