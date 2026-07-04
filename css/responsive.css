@@ -80,27 +80,21 @@
   background: #f3f4f6; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
   letter-spacing: 0.04em; color: var(--muted); white-space: nowrap;
 }
-.txn-table .col-label {
-  background: #f3f4f6; font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.04em; color: var(--muted); white-space: nowrap; width: 1%;
+.txn-table tbody tr:nth-child(even):not(.txn-subtotal) { background: #fafafa; }
+.txn-table tr.txn-subtotal td {
+  background: #f3f4f6; font-weight: 700; font-size: 0.72rem; color: var(--muted);
+  border-top: 1px dashed var(--card-border);
 }
-.txn-pivot thead th.col-person {
-  text-align: center; background: #ecfdf5; color: var(--teal); font-size: 0.78rem;
-  text-transform: none; letter-spacing: 0;
+.txn-table .col-date { white-space: nowrap; width: 1%; }
+.txn-table .col-name { font-weight: 700; white-space: nowrap; }
+.txn-table .col-amt {
+  text-align: right; font-family: var(--display); font-weight: 800; white-space: nowrap; width: 1%;
 }
-.txn-pivot .col-stack { line-height: 1.6; vertical-align: top; text-align: center; }
-.txn-pivot tr.txn-pivot-total th,
-.txn-pivot tr.txn-pivot-total td {
-  background: #f0fdf4; font-weight: 800; border-top: 2px solid var(--teal);
+.txn-table .col-note { color: var(--muted); font-size: 0.72rem; }
+.txn-table .col-note .tx-delete {
+  margin-left: 6px; padding: 2px 6px; font-size: 0.65rem; border: none;
+  background: #fff5f5; border-radius: 4px; cursor: pointer;
 }
-.txn-pivot tfoot td.grand-total { text-align: center; font-size: 0.85rem; }
-.txn-pivot .col-stack.col-amt { font-family: var(--display); font-weight: 800; }
-.txn-pivot .col-stack.col-note { font-size: 0.68rem; color: var(--muted); text-align: left; }
-.txn-pivot .col-stack .tx-delete {
-  margin-left: 4px; padding: 2px 6px; font-size: 0.65rem; vertical-align: middle;
-  border: none; background: #fff5f5; border-radius: 4px; cursor: pointer;
-}
-.txn-table .col-amt { text-align: center; font-family: var(--display); font-weight: 800; }
 .month-group .txn-table-wrap { margin-bottom: 16px; }
 .txn-table tfoot td {
   background: #ecfdf5; font-weight: 700; font-size: 0.72rem; border-top: 2px solid var(--teal);

@@ -16,66 +16,58 @@
     return `${+d} ${en[mi]}`;
   }
 
-  function pivotCellLines(bills, renderLine, empty) {
-    if (!bills.length) return empty || "—";
-    return bills.map(renderLine).join("<br>");
-  }
-
   function renderTxnTable(bills, caption, options) {
     if (!bills.length) return "";
     const opts = options || {};
     const whoIcon = { Venky: "🙏", Deepa: "💛", Kalyan: "💙" };
     const nameOrder = ["Venky", "Deepa", "Kalyan"];
-    const byWho = {};
-    nameOrder.forEach((w) => { byWho[w] = bills.filter((b) => b.who === w).sort((a, b) => a.d.localeCompare(b.d) || b.amt - a.amt); });
+    const sorted = [...bills].sort(
+      (a, b) =>
+        nameOrder.indexOf(a.who) - nameOrder.indexOf(b.who) ||
+        a.d.localeCompare(b.d) ||
+        b.amt - a.amt
+    );
     const total = bills.reduce((s, b) => s + b.amt, 0);
-
-    const colCells = nameOrder.map((who) => {
-      const list = byWho[who];
-      const dates = pivotCellLines(list, (b) => shortDate(b.d));
-      const amounts = pivotCellLines(list, (b) => fmt(b.amt));
-      const notes = pivotCellLines(list, (b) => {
-        const note = esc(b.note || b.mode || "—");
-        if (!opts.showDelete) return note;
-        const billIdx = global.data.bills.indexOf(b);
-        return `${note} <button type="button" class="tx-delete no-print" onclick="deleteBill(${billIdx})" aria-label="Delete">🗑</button>`;
+    let rows = "";
+    nameOrder.forEach((who) => {
+      const personBills = sorted.filter((b) => b.who === who);
+      if (!personBills.length) return;
+      personBills.forEach((b) => {
+        const billIdx = opts.showDelete ? global.data.bills.indexOf(b) : -1;
+        rows += `
+      <tr>
+        <td class="col-name">${whoIcon[b.who] || ""} ${esc(b.who)}</td>
+        <td class="col-date">${shortDate(b.d)}</td>
+        <td class="col-amt">${fmt(b.amt)}</td>
+        <td class="col-note">${esc(b.note || b.mode || "—")}${opts.showDelete ? ` <button type="button" class="tx-delete no-print" onclick="deleteBill(${billIdx})" aria-label="Delete">🗑</button>` : ""}</td>
+      </tr>`;
       });
-      const sub = list.reduce((s, b) => s + b.amt, 0);
-      return { who, dates, amounts, notes, sub, count: list.length };
+      const sub = personBills.reduce((s, b) => s + b.amt, 0);
+      rows += `
+      <tr class="txn-subtotal">
+        <td colspan="2">${whoIcon[who]} ${esc(who)} subtotal</td>
+        <td class="col-amt">${fmt(sub)}</td>
+        <td></td>
+      </tr>`;
     });
-
     return `
       ${caption ? `<div class="txn-table-caption">${caption}</div>` : ""}
       <div class="txn-table-wrap">
-        <table class="txn-table txn-pivot">
+        <table class="txn-table">
           <thead>
             <tr>
-              <th class="col-label"></th>
-              ${nameOrder.map((w) => `<th class="col-person">${whoIcon[w]} ${w}</th>`).join("")}
+              <th>Name</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Note</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <th class="col-label">Date</th>
-              ${colCells.map((c) => `<td class="col-stack">${c.dates}</td>`).join("")}
-            </tr>
-            <tr>
-              <th class="col-label">Amount</th>
-              ${colCells.map((c) => `<td class="col-stack col-amt">${c.amounts}</td>`).join("")}
-            </tr>
-            <tr>
-              <th class="col-label">Note</th>
-              ${colCells.map((c) => `<td class="col-stack col-note">${c.notes}</td>`).join("")}
-            </tr>
-            <tr class="txn-pivot-total">
-              <th class="col-label">Total</th>
-              ${colCells.map((c) => `<td class="col-amt">${c.count ? fmt(c.sub) : "—"}</td>`).join("")}
-            </tr>
-          </tbody>
+          <tbody>${rows}</tbody>
           <tfoot>
             <tr>
-              <td class="col-label"><strong>Grand total</strong></td>
-              <td colspan="3" class="col-amt grand-total"><strong>${fmt(total)}</strong> · ${bills.length} payment${bills.length === 1 ? "" : "s"}</td>
+              <td colspan="2"><strong>Total</strong> · ${bills.length} payment${bills.length === 1 ? "" : "s"}</td>
+              <td class="col-amt"><strong>${fmt(total)}</strong></td>
+              <td></td>
             </tr>
           </tfoot>
         </table>
