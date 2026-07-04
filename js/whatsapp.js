@@ -23,17 +23,11 @@
 
     let settle = "";
     if (s.settlements.length) {
-      const credits = [];
-      if (s.extra.Venky > 0.01) credits.push(`వెంకీకి తిరిగి: ${fmt(s.extra.Venky)}`);
-      if (s.extra.Deepa > 0.01) credits.push(`దీపకు తిరిగి: ${fmt(s.extra.Deepa)}`);
-      settle = `\n*సమన్యయం — అందరికి సమానం చేయడానికి* 🙏\n`;
-      settle += `(ఎవరు ఎక్కువ చెల్లించారో వారికి తిరిగి ఇవ్వడం మాత్రమే)\n\n`;
-      if (credits.length) settle += credits.join("\n") + "\n\n";
-      settle += `కల్యాణ్ గారు ఈ విధంగా పంపితే అందరికి సరిపోతుంది:\n`;
+      settle = `\n*సమన్యయం — fair 1/3 share పూర్తి చేయడానికి* 🙏\n\n`;
       s.settlements.forEach((x) => {
-        settle += `→ ${x.toTe} గారికి: ${fmt(x.amt)}\n`;
+        settle += `→ *${x.from}* (${x.fromTe}) → *${x.to}* (${x.toTe}): ${fmt(x.amt)}\n`;
       });
-      settle += `(మొత్తం: ${fmt(s.kalyanOwes)})\n`;
+      settle += `(మొత్తం transfers: ${fmt(s.settleTotal)})\n`;
     } else {
       settle = `\n✓ అందరూ సమాన వాటా పూర్తి — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు 🙏\n`;
     }

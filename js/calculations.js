@@ -48,32 +48,54 @@
       Deepa: paid.Deepa - fair,
       Kalyan: paid.Kalyan - fair,
     };
+    const remaining = {
+      Venky: fair - paid.Venky,
+      Deepa: fair - paid.Deepa,
+      Kalyan: fair - paid.Kalyan,
+    };
+    const PAYER_TE = { Venky: "వెంకీ", Deepa: "దీప", Kalyan: "కల్యాణ్" };
+
+    const creditors = Object.keys(paid)
+      .filter((w) => extra[w] > EPS)
+      .map((w) => ({ who: w, amt: extra[w] }))
+      .sort((a, b) => b.amt - a.amt);
+    const debtors = Object.keys(paid)
+      .filter((w) => extra[w] < -EPS)
+      .map((w) => ({ who: w, amt: -extra[w] }))
+      .sort((a, b) => b.amt - a.amt);
+
     const settlements = [];
-    const kalyanOwes = Math.max(0, fair - paid.Kalyan);
-    if (kalyanOwes > EPS) {
-      const creditors = [
-        { who: "Deepa", te: "దీప", amt: extra.Deepa },
-        { who: "Venky", te: "వెంకీ", amt: extra.Venky },
-      ]
-        .filter((c) => c.amt > EPS)
-        .sort((a, b) => b.amt - a.amt);
-      let left = kalyanOwes;
-      creditors.forEach((c) => {
-        const pay = Math.min(left, c.amt);
-        if (pay > EPS) {
-          settlements.push({
-            from: "Kalyan",
-            fromTe: "కల్యాణ్",
-            to: c.who,
-            toTe: c.te,
-            amt: pay,
-            why: c.who === "Deepa" ? "Deepa paid the most extra" : "Venky paid a little extra",
-          });
-          left -= pay;
-        }
-      });
+    const cred = creditors.map((c) => ({ ...c }));
+    const debt = debtors.map((d) => ({ ...d }));
+    let ci = 0;
+    let di = 0;
+    while (ci < cred.length && di < debt.length) {
+      const pay = Math.min(cred[ci].amt, debt[di].amt);
+      if (pay > EPS) {
+        settlements.push({
+          from: debt[di].who,
+          fromTe: PAYER_TE[debt[di].who],
+          to: cred[ci].who,
+          toTe: PAYER_TE[cred[ci].who],
+          amt: pay,
+        });
+        cred[ci].amt -= pay;
+        debt[di].amt -= pay;
+        if (cred[ci].amt < EPS) ci++;
+        if (debt[di].amt < EPS) di++;
+      } else break;
     }
-    return { fair, paid, extra, settlements, kalyanOwes };
+
+    const settleTotal = settlements.reduce((s, x) => s + x.amt, 0);
+    return {
+      fair,
+      paid,
+      extra,
+      remaining,
+      settlements,
+      settleTotal,
+      kalyanOwes: Math.max(0, remaining.Kalyan),
+    };
   }
 
   /* Browser wrappers — use global data (unchanged behaviour) */

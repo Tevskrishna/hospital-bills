@@ -1,6 +1,6 @@
 /**
  * @vitest-environment node
- * Settlement & fair-share regression tests — logic frozen v1–v24
+ * Settlement & fair-share tests
  */
 const { describe, it } = require("node:test");
 const assert = require("node:assert/strict");
@@ -41,31 +41,31 @@ describe("calculations", () => {
     assert.equal(s.fair, 20000);
   });
 
-  it("Kalyan owes Venky when Venky paid most extra", () => {
+  it("underpayers settle with overpayers", () => {
     const bills = [
       { d: "2026-06-28", who: "Venky", amt: 50000, mode: "", note: "" },
       { d: "2026-06-29", who: "Deepa", amt: 10000, mode: "", note: "" },
       { d: "2026-06-30", who: "Kalyan", amt: 10000, mode: "", note: "" },
     ];
     const s = computeSettlementFromBills(bills);
-    assert.ok(s.kalyanOwes > 0);
-    assert.equal(s.settlements.length, 1);
-    assert.equal(s.settlements[0].from, "Kalyan");
+    assert.equal(s.settlements.length, 2);
+    assert.equal(s.settlements[0].from, "Deepa");
     assert.equal(s.settlements[0].to, "Venky");
+    assert.equal(s.settlements[1].from, "Kalyan");
+    assert.equal(s.settlements[1].to, "Venky");
+    assert.ok(Math.abs(s.settleTotal - 26666.67) < 0.02);
   });
 
-  it("Venky never pays Deepa — no cross-settlement between them", () => {
+  it("routes payments to largest creditor first", () => {
     const bills = [
       { d: "2026-06-28", who: "Venky", amt: 10000, mode: "", note: "" },
       { d: "2026-06-29", who: "Deepa", amt: 40000, mode: "", note: "" },
       { d: "2026-06-30", who: "Kalyan", amt: 10000, mode: "", note: "" },
     ];
     const s = computeSettlementFromBills(bills);
-    s.settlements.forEach((x) => {
-      const pair = [x.from, x.to].sort().join("-");
-      assert.notEqual(pair, "Deepa-Venky", "Venky must never pay Deepa directly");
-      assert.notEqual(pair, "Venky-Deepa", "Venky must never pay Deepa directly");
-    });
+    assert.equal(s.settlements.length, 2);
+    assert.equal(s.settlements[0].to, "Deepa");
+    assert.equal(s.settlements[1].to, "Deepa");
   });
 
   it("balanced payments yield no settlements", () => {
@@ -76,7 +76,7 @@ describe("calculations", () => {
     ];
     const s = computeSettlementFromBills(bills);
     assert.equal(s.settlements.length, 0);
-    assert.ok(s.kalyanOwes < 0.02);
+    assert.ok(s.settleTotal < 0.02);
   });
 
   it("computeSplitFromBills returns three son rows", () => {
@@ -104,10 +104,10 @@ describe("calculations", () => {
       { d: "2026-06-30", who: "Kalyan", amt: 20000, mode: "", note: "" },
     ];
     const s = computeSettlementFromBills(bills);
-    assert.ok(s.settlements.length <= 1);
+    assert.ok(s.settlements.length <= 2);
   });
 
-  it("Kalyan pays creditors in descending credit order", () => {
+  it("debtor pays creditors in descending credit order", () => {
     const bills = [
       { d: "2026-06-28", who: "Venky", amt: 30000, mode: "", note: "" },
       { d: "2026-06-29", who: "Deepa", amt: 30000, mode: "", note: "" },
@@ -115,7 +115,9 @@ describe("calculations", () => {
     ];
     const s = computeSettlementFromBills(bills);
     assert.equal(s.settlements.length, 2);
-    assert.equal(s.settlements[0].to, "Deepa");
-    assert.equal(s.settlements[1].to, "Venky");
+    assert.equal(s.settlements[0].from, "Kalyan");
+    assert.equal(s.settlements[1].from, "Kalyan");
+    const recipients = s.settlements.map((x) => x.to).sort();
+    assert.deepEqual(recipients, ["Deepa", "Venky"]);
   });
 });

@@ -147,7 +147,7 @@
         </div>
         <div class="settle-total-box">
           <div class="lbl">Balance to settle</div>
-          <div class="val">${fmt(s.kalyanOwes)}</div>
+          <div class="val">${fmt(s.settleTotal)}</div>
         </div>
       </div>
       <button class="home-link" onclick="showPage('share')">Full share card for family →</button>`;
@@ -231,19 +231,19 @@
         </div>
         <div class="settle-total-box">
           <div class="lbl">Balance to settle · సమన్యయం</div>
-          <div class="val">${fmt(s.kalyanOwes)}</div>
+          <div class="val">${fmt(s.settleTotal)}</div>
         </div>
       </div>
       <div class="settle-te-big">
-        <strong>కల్యాణ్ గారు ఈ మొత్తం పంపితే అందరికి సమానం అవుతుంది — ${fmt(s.kalyanOwes)}</strong><br>
-        ${s.settlements.map((x) => `${x.toTe}కు <strong>${fmt(x.amt)}</strong>`).join(" · ")}
+        <strong>ఈ చెల్లింపులు పూర్తైతే అందరికి సమాన వాటా అవుతుంది — ${fmt(s.settleTotal)}</strong><br>
+        ${s.settlements.map((x) => `<strong>${x.from}</strong> → ${x.to}: ${fmt(x.amt)}`).join("<br>")}
       </div>`;
     } else {
       hero.innerHTML = `<div class="settle-te-big"><strong>✓ అందరూ సమానం — ఎవరికీ ఎవరు డబ్బు ఇవ్వాల్సిన అవసరం లేదు</strong></div>`;
     }
 
     document.getElementById("shareNote").innerHTML =
-      `<strong>గమనిక:</strong> వెంకీ & దీప ఒకరికొకరు డబ్బు ఇవ్వరు — ఎవరు ఎక్కువ చెల్లించారో వారికి మాత్రమే తిరిగి ఇవ్వడం. శివాజీ→వెంకీ అడ్వాన్స్ (₹${totalAdv().toLocaleString("en-IN")}) వేరు.`;
+      `<strong>గమనిక:</strong> ఎవరు తక్కువ చెల్లించారో వారు ఎక్కువ చెల్లించిన వారికి తిరిగి ఇవ్వాలి — fair 1/3 share. శివాజీ→వెంకీ అడ్వాన్స్ (₹${totalAdv().toLocaleString("en-IN")}) వేరు.`;
   }
 
   function render() {
@@ -318,6 +318,17 @@
     <div class="row"><span>Balance with Venky</span><span class="hi" style="color:${adv - venky >= 0 ? "#86efac" : "#fca5a5"}">${fmt(adv - venky)}</span></div>`;
 
     const splits = computeSplit(total);
+    const settle = computeSettlement(total);
+    const payTo = {};
+    settle.settlements.forEach((x) => {
+      if (!payTo[x.from]) payTo[x.from] = [];
+      payTo[x.from].push(`${fmt(x.amt)} → ${x.to}`);
+    });
+    const receiveFrom = {};
+    settle.settlements.forEach((x) => {
+      if (!receiveFrom[x.to]) receiveFrom[x.to] = [];
+      receiveFrom[x.to].push(`${x.from}: ${fmt(x.amt)}`);
+    });
     document.getElementById("splitCards").innerHTML = splits.map((s) => {
       const owe = s.remaining > 0.01;
       const credit = s.remaining < -0.01;
@@ -325,6 +336,11 @@
       const remV = owe ? fmt(s.remaining) : credit ? fmt(Math.abs(s.remaining)) : "✓";
       const remC = owe ? "owe" : credit ? "credit" : "";
       const extra = s.payer === "Venky" ? `<p style="font-size:0.68rem;color:var(--muted);margin-top:10px">Advance ${fmt(adv)} · Balance ${fmt(adv - venky)}</p>` : "";
+      const settleHint = payTo[s.payer]?.length
+        ? `<p class="split-settle-hint owe-hint">Pay: ${payTo[s.payer].join(" · ")}</p>`
+        : receiveFrom[s.payer]?.length
+          ? `<p class="split-settle-hint receive-hint">Receive: ${receiveFrom[s.payer].join(" · ")}</p>`
+          : "";
       return `
       <div class="card split-card" style="--c:${s.color}">
         <div class="card-head">
@@ -338,6 +354,7 @@
         <div class="bar-track"><div class="bar-fill" data-w="${s.fulfillPct}" style="background:${s.color}"></div></div>
         <div class="bar-meta"><span>${s.fulfillPct}% fulfilled</span></div>
         ${extra}
+        ${settleHint}
       </div>`;
     }).join("");
 

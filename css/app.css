@@ -244,6 +244,11 @@
   background: #fff8f0; border: 1px solid #ffe4c4; font-size: 0.78rem; color: #7c4a1a;
 }
 .split-card { --c: var(--teal); }
+.split-settle-hint {
+  font-size: 0.68rem; margin-top: 10px; padding: 8px 10px; border-radius: 10px; line-height: 1.45;
+}
+.split-settle-hint.owe-hint { background: #fff5f5; color: #b91c1c; border: 1px solid #fecaca; }
+.split-settle-hint.receive-hint { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
 .split-metrics {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0;
 }
