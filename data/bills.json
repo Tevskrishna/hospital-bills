@@ -428,6 +428,13 @@
       "amt": 100,
       "mode": "Credit Card",
       "note": "Masks"
+    },
+    {
+      "d": "2026-07-05",
+      "who": "Kalyan",
+      "amt": 1302,
+      "mode": "Credit Card",
+      "note": "Medicine"
     }
   ],
   "advances": [
