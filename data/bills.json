@@ -435,6 +435,13 @@
       "amt": 1302,
       "mode": "Credit Card",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-05",
+      "who": "Venky",
+      "amt": 68,
+      "mode": "UPI",
+      "note": "Medicine"
     }
   ],
   "advances": [
