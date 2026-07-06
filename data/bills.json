@@ -484,6 +484,13 @@
       "amt": 3039,
       "mode": "UPI",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-06",
+      "who": "Venky",
+      "amt": 250,
+      "mode": "UPI",
+      "note": "Consultant charges"
     }
   ],
   "advances": [
