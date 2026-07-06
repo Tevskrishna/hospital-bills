@@ -449,6 +449,13 @@
       "amt": 68.37,
       "mode": "UPI",
       "note": "Medicine"
+    },
+    {
+      "d": "2026-07-06",
+      "who": "Deepa",
+      "amt": 390,
+      "mode": "UPI",
+      "note": "Medicine"
     }
   ],
   "advances": [
