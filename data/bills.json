@@ -512,6 +512,13 @@
       "amt": 500,
       "mode": "Credit Card",
       "note": "Chest xray"
+    },
+    {
+      "d": "2026-07-07",
+      "who": "Kalyan",
+      "amt": 10,
+      "mode": "Cash",
+      "note": "Tablet"
     }
   ],
   "advances": [
