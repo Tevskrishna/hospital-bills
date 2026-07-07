@@ -519,6 +519,13 @@
       "amt": 10,
       "mode": "Cash",
       "note": "Tablet"
+    },
+    {
+      "d": "2026-07-07",
+      "who": "Venky",
+      "amt": 3672,
+      "mode": "UPI",
+      "note": "Medicines"
     }
   ],
   "advances": [
