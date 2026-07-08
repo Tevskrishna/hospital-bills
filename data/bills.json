@@ -547,6 +547,13 @@
       "amt": 1601,
       "mode": "Credit Card",
       "note": "Ultra sound operator kit"
+    },
+    {
+      "d": "2026-07-08",
+      "who": "Venky",
+      "amt": 500,
+      "mode": "Cash",
+      "note": "Daipers"
     }
   ],
   "advances": [
