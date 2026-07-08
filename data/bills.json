@@ -554,6 +554,13 @@
       "amt": 500,
       "mode": "Cash",
       "note": "Daipers"
+    },
+    {
+      "d": "2026-07-08",
+      "who": "Kalyan",
+      "amt": 14958,
+      "mode": "Credit Card",
+      "note": "Medicines Fluid tests"
     }
   ],
   "advances": [
