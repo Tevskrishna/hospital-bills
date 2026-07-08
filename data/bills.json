@@ -561,6 +561,13 @@
       "amt": 14958,
       "mode": "Credit Card",
       "note": "Medicines Fluid tests"
+    },
+    {
+      "d": "2026-07-08",
+      "who": "Venky",
+      "amt": 11,
+      "mode": "UPI",
+      "note": "Sugar tablet"
     }
   ],
   "advances": [
