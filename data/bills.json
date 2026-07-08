@@ -540,6 +540,13 @@
       "amt": 1100,
       "mode": "Credit Card",
       "note": "Ultra sound"
+    },
+    {
+      "d": "2026-07-08",
+      "who": "Kalyan",
+      "amt": 1601,
+      "mode": "Credit Card",
+      "note": "Ultra sound operator kit"
     }
   ],
   "advances": [
