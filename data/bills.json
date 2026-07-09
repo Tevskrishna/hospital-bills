@@ -568,6 +568,13 @@
       "amt": 11,
       "mode": "UPI",
       "note": "Sugar tablet"
+    },
+    {
+      "d": "2026-07-09",
+      "who": "Kalyan",
+      "amt": 41028,
+      "mode": "Credit Card",
+      "note": "Discharge bill"
     }
   ],
   "advances": [
