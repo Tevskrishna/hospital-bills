@@ -575,6 +575,13 @@
       "amt": 41028,
       "mode": "Credit Card",
       "note": "Discharge bill"
+    },
+    {
+      "d": "2026-07-09",
+      "who": "Kalyan",
+      "amt": 6625,
+      "mode": "Credit Card",
+      "note": "Medicines"
     }
   ],
   "advances": [
