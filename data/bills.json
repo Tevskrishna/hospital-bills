@@ -582,6 +582,13 @@
       "amt": 6625,
       "mode": "Credit Card",
       "note": "Medicines"
+    },
+    {
+      "d": "2026-07-09",
+      "who": "Kalyan",
+      "amt": 2382,
+      "mode": "Credit Card",
+      "note": "Nebulizer machine"
     }
   ],
   "advances": [
