@@ -599,10 +599,10 @@
     },
     {
       "d": "2026-07-12",
-      "who": "Venky",
-      "amt": 1000,
-      "mode": "UPI",
-      "note": "Saline charges"
+      "who": "Kalyan",
+      "amt": 300,
+      "mode": "Credit Card",
+      "note": "Daipers"
     }
   ],
   "advances": [
