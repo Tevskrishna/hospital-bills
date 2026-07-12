@@ -603,6 +603,13 @@
       "amt": 300,
       "mode": "Credit Card",
       "note": "Daipers"
+    },
+    {
+      "d": "2026-07-12",
+      "who": "Venky",
+      "amt": 1000,
+      "mode": "UPI",
+      "note": "Antibiotics"
     }
   ],
   "advances": [
