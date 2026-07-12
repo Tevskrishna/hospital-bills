@@ -596,6 +596,13 @@
       "amt": 241,
       "mode": "UPI",
       "note": "Daipers"
+    },
+    {
+      "d": "2026-07-12",
+      "who": "Venky",
+      "amt": 1000,
+      "mode": "UPI",
+      "note": "Saline charges"
     }
   ],
   "advances": [
