@@ -610,6 +610,13 @@
       "amt": 1000,
       "mode": "UPI",
       "note": "Antibiotics"
+    },
+    {
+      "d": "2026-07-16",
+      "who": "Kalyan",
+      "amt": 2800,
+      "mode": "Credit Card",
+      "note": "Tests"
     }
   ],
   "advances": [
