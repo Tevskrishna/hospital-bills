@@ -617,6 +617,13 @@
       "amt": 2800,
       "mode": "Credit Card",
       "note": "Tests"
+    },
+    {
+      "d": "2026-07-24",
+      "who": "Kalyan",
+      "amt": 1617,
+      "mode": "UPI",
+      "note": "Medicines"
     }
   ],
   "advances": [
