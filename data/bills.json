@@ -631,6 +631,20 @@
       "amt": 3120,
       "mode": "Credit Card",
       "note": "Testd"
+    },
+    {
+      "d": "2026-07-27",
+      "who": "Kalyan",
+      "amt": 100000,
+      "mode": "Credit Card",
+      "note": "1 lac paid"
+    },
+    {
+      "d": "2026-07-27",
+      "who": "Kalyan",
+      "amt": 3549,
+      "mode": "Credit Card",
+      "note": "Medicines"
     }
   ],
   "advances": [
