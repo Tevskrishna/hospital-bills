@@ -652,6 +652,13 @@
       "amt": 34.58,
       "mode": "UPI",
       "note": "Jelly"
+    },
+    {
+      "d": "2026-07-28",
+      "who": "Kalyan",
+      "amt": 1500,
+      "mode": "UPI",
+      "note": "2D echo"
     }
   ],
   "advances": [
