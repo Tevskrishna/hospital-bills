@@ -687,6 +687,13 @@
       "amt": 13455,
       "mode": "UPI",
       "note": "Tests"
+    },
+    {
+      "d": "2026-07-28",
+      "who": "Kalyan",
+      "amt": 3256,
+      "mode": "UPI",
+      "note": "Tests"
     }
   ],
   "advances": [
