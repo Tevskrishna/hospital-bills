@@ -659,6 +659,13 @@
       "amt": 252.71,
       "mode": "UPI",
       "note": "Medicines"
+    },
+    {
+      "d": "2026-07-28",
+      "who": "Deepa",
+      "amt": 1397.01,
+      "mode": "UPI",
+      "note": "Medicines kit"
     }
   ],
   "advances": [
