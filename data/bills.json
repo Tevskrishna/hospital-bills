@@ -645,6 +645,13 @@
       "amt": 3549,
       "mode": "Credit Card",
       "note": "Medicines"
+    },
+    {
+      "d": "2026-07-28",
+      "who": "Deepa",
+      "amt": 1397,
+      "mode": "UPI",
+      "note": "Tests"
     }
   ],
   "advances": [
