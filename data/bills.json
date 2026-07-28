@@ -673,6 +673,13 @@
       "amt": 1500,
       "mode": "UPI",
       "note": "2d echo"
+    },
+    {
+      "d": "2026-07-28",
+      "who": "Kalyan",
+      "amt": 13455,
+      "mode": "UPI",
+      "note": "Tests"
     }
   ],
   "advances": [
