@@ -27,9 +27,9 @@
   <script>
     (function () {
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") return;
-      if (!location.search.includes("b=28")) {
+      if (!location.search.includes("b=29")) {
         var u = new URL(location.href);
-        u.searchParams.set("b", "28");
+        u.searchParams.set("b", "29");
         location.replace(u.toString());
       }
     })();

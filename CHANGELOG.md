@@ -5,6 +5,27 @@ Format based on [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-07-29-v25.4] — Day total in WhatsApp + dedupe Jul 29
+
+### Changed
+- WhatsApp share now includes **today’s total** and who paid (with notes); falls back to latest bill day if none today
+
+### Fixed
+- Removed Kalyan Jul 29 ₹5,205 Medical — duplicate of Jul 28 same amount
+- Jul 28 same-day: no duplicates found
+
+### Files
+- `js/whatsapp.js`, `data/bills.json`, `js/config.js`, `version.json`, `sw.js`, `index.html`, `hospital-bills.html`, `refresh.html`
+
+### Testing performed
+- `npm test`
+- Manual: Jul 29 kept ₹3,256 Tests + ₹223 Medical only
+
+### Known limitations
+- Cross-day duplicate removal is one-time data fix; app still blocks same-day duplicates only on add
+
+---
+
 ## [2026-07-03-v25-lts] — Final LTS release 🧊
 
 ### Added

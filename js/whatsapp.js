@@ -10,6 +10,55 @@
     return "₹" + Math.round(amt).toLocaleString("en-IN");
   }
 
+  function isoToday() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function shortDayLabel(iso) {
+    if (!iso) return "";
+    const [y, m, d] = iso.split("-");
+    const en = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${+d} ${en[+m - 1]}`;
+  }
+
+  /** Prefer today; if no bills today, use latest bill date */
+  function dayFocusBills() {
+    const bills = global.data?.bills || [];
+    const today = isoToday();
+    const todayBills = bills.filter((b) => b.d === today);
+    if (todayBills.length) return { day: today, bills: todayBills, isToday: true };
+    if (!bills.length) return { day: today, bills: [], isToday: true };
+    const day = bills.map((b) => b.d).sort().pop();
+    return { day, bills: bills.filter((b) => b.d === day), isToday: false };
+  }
+
+  function buildDaySection() {
+    const { day, bills, isToday } = dayFocusBills();
+    const label = isToday ? `Today (${shortDayLabel(day)})` : `Latest day (${shortDayLabel(day)})`;
+    if (!bills.length) return `${label}: no payments yet`;
+
+    const dayTotal = bills.reduce((s, b) => s + b.amt, 0);
+    const byWho = {};
+    bills.forEach((b) => {
+      if (!byWho[b.who]) byWho[b.who] = [];
+      byWho[b.who].push(b);
+    });
+    const order = ["Venky", "Deepa", "Kalyan"];
+    const lines = order
+      .filter((w) => byWho[w])
+      .map((w) => {
+        const rows = byWho[w];
+        const sub = rows.reduce((s, b) => s + b.amt, 0);
+        const detail = rows
+          .map((b) => (b.note ? `${b.note} ${waShort(b.amt)}` : waShort(b.amt)))
+          .join(", ");
+        return `${w} ${waShort(sub)} — ${detail}`;
+      });
+
+    return `${label}: ${fmt(dayTotal)} · ${bills.length} payment${bills.length === 1 ? "" : "s"}
+${lines.join("\n")}`;
+  }
+
   function buildWaText() {
     const t = totalBills();
     const v = sumWho("Venky");
@@ -34,6 +83,8 @@ Total: ${fmt(t)} | Fair share each: ${fmt(fair)}
 
 Venky ${waShort(v)} | Deepa ${waShort(d)} | Kalyan ${waShort(k)}${settle}
 
+${buildDaySection()}
+
 Details: https://tevskrishna.github.io/hospital-bills/
 Reply OK if correct 🙏`;
   }
@@ -57,7 +108,7 @@ Reply OK if correct 🙏`;
     }).catch(() => prompt("Copy:", text));
   }
 
-  FC.whatsapp = { buildWaText, updateWaPreview, copyWhatsApp, waShort };
+  FC.whatsapp = { buildWaText, updateWaPreview, copyWhatsApp, waShort, buildDaySection, dayFocusBills };
   global.buildWaText = buildWaText;
   global.updateWaPreview = updateWaPreview;
   global.copyWhatsApp = copyWhatsApp;
