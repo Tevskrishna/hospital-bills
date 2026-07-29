@@ -634,10 +634,17 @@
     },
     {
       "d": "2026-07-27",
+      "who": "Venky",
+      "amt": 95000,
+      "mode": "UPI",
+      "note": "Shivaji/Venky share of 1 lac (surgery day)"
+    },
+    {
+      "d": "2026-07-27",
       "who": "Kalyan",
-      "amt": 100000,
+      "amt": 5000,
       "mode": "Credit Card",
-      "note": "1 lac paid"
+      "note": "Kalyan share of 1 lac"
     },
     {
       "d": "2026-07-27",
@@ -701,6 +708,27 @@
       "amt": 223,
       "mode": "UPI",
       "note": "Medical"
+    },
+    {
+      "d": "2026-07-29",
+      "who": "Kalyan",
+      "amt": 5205,
+      "mode": "UPI",
+      "note": "Medical"
+    },
+    {
+      "d": "2026-07-29",
+      "who": "Kalyan",
+      "amt": 3628,
+      "mode": "UPI",
+      "note": "Medicines"
+    },
+    {
+      "d": "2026-07-29",
+      "who": "Kalyan",
+      "amt": 2150,
+      "mode": "UPI",
+      "note": "Medicines"
     }
   ],
   "advances": [
