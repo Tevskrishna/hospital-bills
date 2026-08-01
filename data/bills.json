@@ -736,6 +736,13 @@
       "amt": 20000,
       "mode": "Credit Card",
       "note": "Discharge Bill"
+    },
+    {
+      "d": "2026-08-01",
+      "who": "Venky",
+      "amt": 40000,
+      "mode": "Credit Card",
+      "note": "Discharge bill"
     }
   ],
   "advances": [
