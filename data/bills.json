@@ -729,6 +729,13 @@
       "amt": 2150,
       "mode": "UPI",
       "note": "Medicines"
+    },
+    {
+      "d": "2026-08-01",
+      "who": "Venky",
+      "amt": 40000,
+      "mode": "Credit Card",
+      "note": "Discharge bill"
     }
   ],
   "advances": [
