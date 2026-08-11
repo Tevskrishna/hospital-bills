@@ -771,6 +771,13 @@
       "amt": 10000,
       "mode": "UPI",
       "note": "Admission"
+    },
+    {
+      "d": "2026-08-11",
+      "who": "Deepa",
+      "amt": 2140.43,
+      "mode": "UPI",
+      "note": ""
     }
   ],
   "advances": [
