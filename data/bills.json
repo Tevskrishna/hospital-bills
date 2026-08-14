@@ -778,6 +778,13 @@
       "amt": 2140.43,
       "mode": "UPI",
       "note": ""
+    },
+    {
+      "d": "2026-08-14",
+      "who": "Deepa",
+      "amt": 26000,
+      "mode": "UPI",
+      "note": "Discharge"
     }
   ],
   "advances": [
