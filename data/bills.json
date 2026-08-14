@@ -785,6 +785,13 @@
       "amt": 26000,
       "mode": "UPI",
       "note": "Discharge"
+    },
+    {
+      "d": "2026-08-14",
+      "who": "Kalyan",
+      "amt": 3580,
+      "mode": "UPI",
+      "note": "Medicines"
     }
   ],
   "advances": [
