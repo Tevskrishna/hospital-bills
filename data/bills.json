@@ -799,6 +799,13 @@
       "amt": 1910,
       "mode": "UPI",
       "note": "Medicines"
+    },
+    {
+      "d": "2026-08-22",
+      "who": "Deepa",
+      "amt": 2630,
+      "mode": "UPI",
+      "note": ""
     }
   ],
   "advances": [
