@@ -806,6 +806,13 @@
       "amt": 2630,
       "mode": "UPI",
       "note": ""
+    },
+    {
+      "d": "2026-08-22",
+      "who": "Deepa",
+      "amt": 150,
+      "mode": "UPI",
+      "note": ""
     }
   ],
   "advances": [
